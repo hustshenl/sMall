@@ -1,0 +1,25 @@
+.subscribe-index{
+
+}
+.thumbnail {
+    margin-bottom: 10px;
+}
+.thumbnail img{
+    width: 100%;
+}
+.thumbnail .caption {
+    font-size: 10px;
+}
+
+.summary{
+    margin-bottom: 1em;
+}
+.items{
+    margin: 0 -5px;
+}
+.list-item-subscribe{
+    padding: 5px;
+}
+.pagination {
+    float: right;
+}
