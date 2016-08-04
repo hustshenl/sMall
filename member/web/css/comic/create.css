@@ -1,0 +1,22 @@
+#comic-cover{
+
+}
+#comic-cover img{
+    width: 6em;
+    height: 8em;
+    margin-bottom: 1em;
+}
+@media (min-width: 768px){
+    .col-current-cover {
+        border-right: 1px solid #ccc;
+    }
+}
+.col-current-cover{
+    height: 15em;
+}
+.history-image.active img {
+    border: .2em solid #4cae4c;
+}
+.history-image.active .apply-cover {
+    background-color: #ccc;
+}
