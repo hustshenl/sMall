@@ -13,7 +13,7 @@ sMall是一个基于Yii2的商城系统
 
 1. 下载项目
 
-`git clone https://github.com/hustshenl/sMall small`
+`git clone https://github.com/hustshenl/sMall-application small`
 
 [composer](https://getcomposer.org/)安装第三方组件
 
