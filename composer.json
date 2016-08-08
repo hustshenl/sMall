@@ -11,6 +11,14 @@
   "homepage": "http://small.shenl.com/",
   "type": "project",
   "license": "MIT",
+  "authors": [
+    {
+      "name": "Shen Lei",
+      "email": "shen@shenl.com",
+      "homepage": "http://www.shenl.com/",
+      "role": "Founder and project lead"
+    }
+  ],
   "support": {
     "issues": "https://github.com/hustshenl/sMall/issues?state=open",
     "forum": "http://small.shenl.com/",
