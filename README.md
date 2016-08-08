@@ -1,6 +1,6 @@
-# sMall 商城系统(开发中)
+# sMall 商城系统
 
-sMall是一个基于Yii2的商城系统
+sMall是一个基于Yii2的商城系统（开发中）
 
 # 文档
 + [CHANGELOG](CHANGELOG.md)
