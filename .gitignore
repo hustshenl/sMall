@@ -15,6 +15,7 @@ nbproject
 .htaccess
 web.config
 httpd.ini
+nginx.conf
 
 # windows thumbnail cache
 Thumbs.db

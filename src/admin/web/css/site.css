@@ -74,6 +74,7 @@ a.desc:after {
 
 .grid-view td {
     white-space: nowrap;
+    vertical-align: middle!important;
 }
 
 .grid-view .filters input,

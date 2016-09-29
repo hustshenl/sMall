@@ -6,10 +6,10 @@ use yii\helpers\Html;
 /* @var $content string */
 
 dmstr\web\AdminLteAsset::register($this);
-\common\assets\PluginAsset::register($this);
+\common\widgets\PluginAsset::register($this);
 $directoryPluginsAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/plugins');
 $this->registerCssFile($directoryPluginsAsset.'/iCheck/square/blue.css');
-$this->registerJsFile($directoryPluginsAsset.'/iCheck/icheck.min.js',['depends'=>\common\assets\PluginAsset::className()]);
+$this->registerJsFile($directoryPluginsAsset.'/iCheck/icheck.min.js',['depends'=>\common\widgets\PluginAsset::className()]);
 $this->registerJs("$('input').iCheck({
       checkboxClass: 'icheckbox_square-blue',
       radioClass: 'iradio_square-blue',

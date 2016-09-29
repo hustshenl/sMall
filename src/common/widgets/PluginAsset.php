@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace common\assets;
+namespace common\widgets;
 
 use dmstr\web\AdminLteAsset;
 use yii\web\AssetBundle;

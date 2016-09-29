@@ -2,10 +2,12 @@
 
 namespace admin\models\access;
 
+use mdm\admin\models\AuthItem;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\access\User as User;
+use yii\rbac\Permission;
 
 /**
  * User represents the model behind the search form about `common\models\access\User`.
@@ -41,8 +43,7 @@ class Admin extends User
 
     public function isRemovable()
     {
-        return !in_array( Yii::$app->user->id,Yii::$app->params['super_admin']) && $this->id !== Yii::$app->user->id;
-        return false;
+        return !in_array( $this->id,Yii::$app->params['super_admin']) && $this->id !== Yii::$app->user->id;
     }
 
     public function remove()
@@ -67,6 +68,15 @@ class Admin extends User
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE,'role'=>static::ROLE_ADMIN]);
+    }
+
+    public function getPermission()
+    {
+        $manager = Yii::$app->getAuthManager();
+        return $manager->getAssignments($this->id);
+        return $this->hasMany(AuthItem::className(), ['name' => 'item_name'])->where(['type'=>1])
+            ->viaTable('{{%auth_assignment}}', ['user_id' => 'id']);
+        return 'aa';
     }
 
 }

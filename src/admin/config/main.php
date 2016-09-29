@@ -1,5 +1,5 @@
 <?php
-$params =  \yii\helpers\ArrayHelper::merge(
+$params = \yii\helpers\ArrayHelper::merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),
     require(__DIR__ . '/params.php'),
@@ -26,7 +26,29 @@ return [
         ],
         'access' => [
             'class' => 'mdm\admin\Module',
-            'defaultUrlLabel'=>'Access',
+            'defaultUrlLabel' => 'Access',
+            'viewPath'=>'@admin/views/access',
+            'controllerMap' => [
+                'assignment' => [
+                    'class' => 'admin\controllers\access\AssignmentController',
+                    /* 'userClassName' => 'app\models\User', */
+                    'extraColumns' => [
+                        'nickname',
+                        'phone',
+                        'email',
+                        [
+                            'attribute' => 'permission',
+                            'label' => Yii::t('admin','用户组/权限'),
+                            'value' => function ($model, $key, $index, $column) {
+                                $permission = array_keys($model->permission);
+                                if(empty($permission)) return Yii::t('admin','Empty');
+                                return implode(',',$permission);
+                            },
+                        ],
+                    ],
+                    'searchClass' => 'admin\models\access\AdminSearch'
+                ],
+            ],
         ]
     ],
     'as access' => [

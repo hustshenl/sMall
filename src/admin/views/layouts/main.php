@@ -12,7 +12,7 @@ use yii\helpers\Html;
     }
 
     dmstr\web\AdminLteAsset::register($this);
-    \common\assets\PluginAsset::register($this);
+    \common\widgets\PluginAsset::register($this);
 
     $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
     $directoryPluginsAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/plugins');

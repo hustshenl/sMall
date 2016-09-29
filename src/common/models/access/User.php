@@ -54,10 +54,10 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_FORBIDDEN = 0;
     const STATUS_ACTIVE = 1;
 
-    const ROLE_USER = 0b1;
-    const ROLE_AUTHOR = 0b100;
-    const ROLE_ADMIN = 0b10000;
-    const ROLE_SYSTEM = 0b1000000;
+    const ROLE_USER = 0x1;
+    const ROLE_SELLER = 0x10;
+    const ROLE_ADMIN = 0x1000;
+    const ROLE_SYSTEM = 0x10000;
 
     const AUTHOR_UNAUTH = 0;
     const AUTHOR_ACTIVE = 1;
