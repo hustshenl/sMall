@@ -18,7 +18,7 @@ $columns = [
 
     [
         'class' => 'common\widgets\ActionColumn',
-        'template' => '{:update} {:delete}'
+        'template' => '{update::_self} {delete}'
     ],
     $usernameField,
 ];
