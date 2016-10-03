@@ -1,8 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+//use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $searchModel admin\models\member\member */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -18,17 +20,43 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a(Yii::t('admin', 'Create Member'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-<?php Pjax::begin(); ?>    <?= GridView::widget([
+    <?php
+    $editableUrl = '';
+
+    Pjax::begin(['id'=>'pjax-content']);
+    ?>
+    <?= GridView::widget([
+        'export' => false,
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            ['class' => 'kartik\grid\CheckboxColumn', 'rowSelectedClass' => 'success selected'],
             //['class' => 'yii\grid\ActionColumn'],
             [
                 'class' => 'common\widgets\ActionColumn',
                 'template' => '{view::bottom} {update} {delete}'
             ],
             'id',
+            [
+                'class' => 'kartik\grid\EditableColumn',
+                'attribute' => 'username',
+                'value' => 'username',
+                /*'readonly'=>function($model, $key, $index, $widget) {
+                    return (!$model->status); // do not allow editing of inactive records
+                },*/
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_TEXT,
+                    'pjaxContainerId'=>'pjax-content',
+                    'formOptions' => ['action' => $editableUrl]
+                ],
+
+                'hAlign' => 'left',
+                'vAlign' => 'middle',
+                //'width' => '100px',
+                'format' => 'raw',
+                //'pageSummary' => true
+            ],
 
             'status',
             'username',
@@ -69,4 +97,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         ],
     ]); ?>
-<?php Pjax::end(); ?></div>
+    <?php
+    Pjax::end();
+    ?></div>

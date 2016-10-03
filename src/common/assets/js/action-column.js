@@ -89,7 +89,7 @@ yii.actionColumn = (function ($) {
                 var modal = $(document).find('#action-view-modal');
                 if (modal.length <= 0) modal = $(viewModal);
                 modal.modal('show');
-                modal.find('.modal-body').empty().load(url + ' .action-ajax-content');
+                modal.find('.modal-body').text('loading').load(url + ' .action-ajax-content');
             }
 
         },

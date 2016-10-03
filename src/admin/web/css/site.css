@@ -110,3 +110,20 @@ a.desc:after {
 .nav > li > form > button:hover {
     text-decoration: none;
 }
+
+/**此段样式仅兼容google chrome**/
+.select-on-check-all,.kv-row-checkbox{
+    -webkit-appearance:none;
+    /*-moz-appearance:none;*/
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ccc !important;
+    text-align: center;
+    line-height: 14px!important;
+}
+.select-on-check-all:checked:before,.kv-row-checkbox:checked:before{
+    content: '\2714';
+    /*border: 2px solid #999;*/
+}
+
+
