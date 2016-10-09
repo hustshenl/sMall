@@ -31,5 +31,10 @@ Pjax::end();
 
 ### CheckboxColumn 多选列
 
+使用`kartik\grid\CheckboxColumn`,基本功能已经完善。
 
+### 高级搜索
+
+1. 在适当的地方添加出发元素
+2. 适用`common\widgets\AdvanceSearch`挂件添加高级搜索表单，适用方式和普通表单类似，推荐写在搜索模板中。
 

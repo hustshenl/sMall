@@ -1,99 +1,145 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+//use yii\widgets\ActiveForm;
+use kartik\form\ActiveForm;
+use kartik\builder\Form;
+use common\widgets\AdvanceSearch;
 
 /* @var $this yii\web\View */
 /* @var $model admin\models\member\member */
 /* @var $form yii\widgets\ActiveForm */
+
+
 ?>
 
 <div class="member-search">
 
-    <?php $form = ActiveForm::begin([
+    <?php
+    $form = ActiveForm::begin([
+        'type' => ActiveForm::TYPE_VERTICAL,
+        'formConfig' => [
+            'deviceSize' => ActiveForm::SIZE_SMALL,
+            'showErrors' => true,
+            'showLabels' => false,
+        ],
         'action' => ['index'],
         'method' => 'get',
-    ]); ?>
+    ]);
+    echo Form::widget([ // continuation fields to row above without labels
+        'model' => $model,
+        'form' => $form,
+        'columns' => 3,
+        'attributes' => [
 
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'status') ?>
-
-    <?= $form->field($model, 'username') ?>
-
-    <?= $form->field($model, 'nickname') ?>
-
-    <?= $form->field($model, 'auth_key') ?>
-
-    <?php // echo $form->field($model, 'password_hash') ?>
-
-    <?php // echo $form->field($model, 'password_reset_token') ?>
-
-    <?php // echo $form->field($model, 'access_token') ?>
-
-    <?php // echo $form->field($model, 'identity') ?>
-
-    <?php // echo $form->field($model, 'identity_sn') ?>
-
-    <?php // echo $form->field($model, 'qq') ?>
-
-    <?php // echo $form->field($model, 'email') ?>
-
-    <?php // echo $form->field($model, 'phone') ?>
-
-    <?php // echo $form->field($model, 'weibo') ?>
-
-    <?php // echo $form->field($model, 'address') ?>
-
-    <?php // echo $form->field($model, 'postcode') ?>
-
-    <?php // echo $form->field($model, 'scores') ?>
-
-    <?php // echo $form->field($model, 'grade') ?>
-
-    <?php // echo $form->field($model, 'credit') ?>
-
-    <?php // echo $form->field($model, 'vip') ?>
-
-    <?php // echo $form->field($model, 'vip_scores') ?>
-
-    <?php // echo $form->field($model, 'vip_expires') ?>
-
-    <?php // echo $form->field($model, 'role') ?>
-
-    <?php // echo $form->field($model, 'gender') ?>
-
-    <?php // echo $form->field($model, 'district') ?>
-
-    <?php // echo $form->field($model, 'city') ?>
-
-    <?php // echo $form->field($model, 'province') ?>
-
-    <?php // echo $form->field($model, 'country') ?>
-
-    <?php // echo $form->field($model, 'language') ?>
-
-    <?php // echo $form->field($model, 'avatar') ?>
-
-    <?php // echo $form->field($model, 'signature') ?>
-
-    <?php // echo $form->field($model, 'remark') ?>
-
-    <?php // echo $form->field($model, 'register_ip') ?>
-
-    <?php // echo $form->field($model, 'login_at') ?>
-
-    <?php // echo $form->field($model, 'login_ip') ?>
-
-    <?php // echo $form->field($model, 'created_at') ?>
-
-    <?php // echo $form->field($model, 'updated_at') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton(Yii::t('admin', 'Search'), ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton(Yii::t('admin', 'Reset'), ['class' => 'btn btn-default']) ?>
-    </div>
-
-    <?php ActiveForm::end(); ?>
+            /*'category' => [
+                'type' => Form::INPUT_WIDGET,
+                'widgetClass' => '\kartik\widgets\Select2',
+                'options' => [
+                    'data' => Yii::$app->params['lookup']['authorCategory'],
+                    'options' => ['placeholder' => '分类'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ]
+                ]
+            ],
+            'status' => [
+                'type' => Form::INPUT_WIDGET,
+                'widgetClass' => '\kartik\widgets\Select2',
+                'options' => [
+                    'data' => Yii::$app->params['lookup']['userStatus'],
+                    'options' => ['placeholder' => '状态'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ]
+                ]
+            ],
+            'vip' => [
+                'type' => Form::INPUT_WIDGET,
+                'widgetClass' => '\kartik\widgets\Select2',
+                'options' => [
+                    'data' => Yii::$app->params['lookup']['vipStatus'],
+                    'options' => ['placeholder' => '是否VIP'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ]
+                ]
+            ],*/
+            'username' => ['options' => ['placeholder' => '搜索名称']],
+            'email' => ['options' => ['placeholder' => '搜索Email']],
+            'actions' => [
+                'type' => Form::INPUT_RAW,
+                'value' => '<div>' .
+                    Html::submitButton(Yii::t('common', 'Search'), ['class' => 'btn btn-primary']) . ' ' .
+                    Html::resetButton(Yii::t('common', 'Reset'), ['class' => 'btn default']) . ' ' .
+                    Html::button(Yii::t('common', '高级筛选'), ['class' => 'btn btn-info advance-search-trigger']) .
+                    '</div>'
+            ],
+        ]
+    ]);
+    ActiveForm::end();
+    ?>
 
 </div>
+
+<?php
+$advanceForm = AdvanceSearch::begin([
+    'trigger' => '.advance-search-trigger',
+    'action' => ['index'],
+    'method' => 'get',
+]);
+echo Form::widget([ // continuation fields to row above without labels
+    'model' => $model,
+    'form' => $advanceForm,
+    'columns' => 1,
+    'attributes' => [
+
+        /*'category' => [
+            'type' => Form::INPUT_WIDGET,
+            'widgetClass' => '\kartik\widgets\Select2',
+            'options' => [
+                'data' => Yii::$app->params['lookup']['authorCategory'],
+                'options' => ['placeholder' => '分类'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                ]
+            ]
+        ],
+        'status' => [
+            'type' => Form::INPUT_WIDGET,
+            'widgetClass' => '\kartik\widgets\Select2',
+            'options' => [
+                'data' => Yii::$app->params['lookup']['userStatus'],
+                'options' => ['placeholder' => '状态'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                ]
+            ]
+        ],
+        'vip' => [
+            'type' => Form::INPUT_WIDGET,
+            'widgetClass' => '\kartik\widgets\Select2',
+            'options' => [
+                'data' => Yii::$app->params['lookup']['vipStatus'],
+                'options' => ['placeholder' => '是否VIP'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                ]
+            ]
+        ],*/
+        'username' => ['options' => ['placeholder' => '搜索名称']],
+        'email' => ['options' => ['placeholder' => '搜索Email']],
+        'status' => ['options' => ['placeholder' => '搜索Email']],
+        'nickname' => ['options' => ['placeholder' => '搜索Email']],
+        'phone' => ['options' => ['placeholder' => '搜索Email']],
+        'actions' => [
+            'type' => Form::INPUT_RAW,
+            'value' => '<div>' .
+                Html::submitButton(Yii::t('common', 'Search'), ['class' => 'btn btn-primary']) . ' ' . ' ' .
+                Html::button(Yii::t('common', '关闭'), ['class' => 'btn default advance-search-trigger']) .
+                '</div>'
+        ],
+    ]
+]);
+AdvanceSearch::end();
+?>

@@ -15,20 +15,22 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="member-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
         <?= Html::a(Yii::t('admin', 'Create Member'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <?=Html::button(Yii::t('common', '高级筛选'), ['class' => 'btn btn-info advance-search-trigger']);?>
+        </p>
+    <?php  ?>
     <?php
     $editableUrl = '';
 
     Pjax::begin(['id'=>'pjax-content']);
+    echo $this->render('_search', ['model' => $searchModel]);
     ?>
     <?= GridView::widget([
         'export' => false,
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        //'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             ['class' => 'kartik\grid\CheckboxColumn', 'rowSelectedClass' => 'success selected'],
@@ -51,8 +53,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'formOptions' => ['action' => $editableUrl]
                 ],
 
-                'hAlign' => 'left',
-                'vAlign' => 'middle',
+                //'hAlign' => 'left',
+                //'vAlign' => 'middle',
                 //'width' => '100px',
                 'format' => 'raw',
                 //'pageSummary' => true

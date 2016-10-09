@@ -16,6 +16,7 @@ dmstr\web\AdminLteAsset::register($this);
 
 $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 $directoryPluginsAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/plugins');
+$this->registerJsFile($directoryPluginsAsset.'/slimScroll/jquery.slimscroll.min.js',['depends'=>\common\widgets\PluginAsset::className()]);
 
 ?>
 <?php $this->beginPage() ?>
@@ -28,7 +29,7 @@ $directoryPluginsAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almas
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini fixed">
 <?php $this->beginBody() ?>
 <div class="wrapper">
 

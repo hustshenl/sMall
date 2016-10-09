@@ -117,13 +117,17 @@ a.desc:after {
     /*-moz-appearance:none;*/
     width: 18px;
     height: 18px;
-    border: 2px solid #ccc !important;
+    border: 2px solid #ccc;
     text-align: center;
     line-height: 14px!important;
 }
+.select-on-check-all:focus,.kv-row-checkbox:focus{
+    outline: none!important;
+}
 .select-on-check-all:checked:before,.kv-row-checkbox:checked:before{
     content: '\2714';
-    /*border: 2px solid #999;*/
+    color: #00c0ef;
 }
+
 
 
