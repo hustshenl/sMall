@@ -5,8 +5,8 @@
 
 yii.actionColumn = (function ($) {
     var messageModal = '<div class="modal fade" id="action-message-modal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><h4 class="modal-title" id="messageModalLabel">提示信息</h4></div><div class="modal-body"></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">取消</button><button type="button" class="btn btn-primary modal-confirm-ok">确定</button></div> </div> </div> </div>';
-    var viewModal = '<div class="modal fade" id="action-view-modal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><h4 class="modal-title" id="viewModalLabel"></h4></div><div class="modal-body"></div> </div> </div> </div>';
-    var bottomView = '<tr id="action-bottom-view"><td style="padding: 8px 0;"></td></tr>';
+    var actionModal = '<div class="modal fade" id="action-modal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><h4 class="modal-title" id="actionModalLabel"></h4></div><div class="modal-body ajax-content-wrap"></div> </div> </div> </div>';
+    var bottomView = '<tr id="action-bottom-view"><td style="padding: 8px 0;" class="ajax-content-wrap"></td></tr>';
     var pub = {
         clickableSelector: 'act, a.action-view',
         isActive: true,
@@ -57,8 +57,8 @@ yii.actionColumn = (function ($) {
             }
             $.extend(pub.params, params);
             if (mode == 'ajax') {
-                $.post(url, pub.params,
-                    function (res) {
+                $.ajax({url:url, data:pub.params,type:method,
+                    success:function (res) {
                         if (action == 'delete' && res.status == 0) {
                             $e.parents('tr').hide();
                         }
@@ -68,28 +68,15 @@ yii.actionColumn = (function ($) {
                             pub.notify(res.data);
                         }
                     },
-                    'json'
+                    error:function (res) {
+                        pub.notify({type: 'error', title: res.responseText});
+                    },
+                    dataType:'json'}
                 );
             } else if (mode == 'bottom') {
-                var view = $(document).find('#action-bottom-view');
-                var tr = $e.parents('tr');
-                if (view.length <= 0) {
-                    view = $(bottomView);
-                    view.find('td').attr('colspan', tr.find('td').length);
-                }
-                if (view.data('key') == tr.data('key')) {
-                    return tr.parent().append(view.hide().data('key', 0));
-                }
-                view.show().data('key', tr.data('key'));
-                var content = view.find('td');
-                content.load(url + ' .action-ajax-content');
-                tr.after(view);
-                $("html,body").animate({scrollTop: $("#action-bottom-view").prev().offset().top}, 800);
+                pub.handleBottomAction($e);
             } else {
-                var modal = $(document).find('#action-view-modal');
-                if (modal.length <= 0) modal = $(viewModal);
-                modal.modal('show');
-                modal.find('.modal-body').text('loading').load(url + ' .action-ajax-content');
+                pub.handleModalAction($e);
             }
 
         },
@@ -99,23 +86,70 @@ yii.actionColumn = (function ($) {
         notify: function (data) {
             if (!data) return;
             if (data.type == undefined || data.title == undefined) return;
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "positionClass": "toast-top-right",
-                "onclick": null,
-                "showDuration": "1000",
-                "hideDuration": "1000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
             toastr[data.type](data.content == undefined ? null : data.content, data.title);
-        }
+        },
+        handleModalAction: function ($e) {
+            var modal = $(document).find('#action-modal');
+            var url = $e.data('href');
+            if (modal.length <= 0) modal = $(actionModal);
+            modal.modal('show');
+            modal.find('..ajax-content-wrap').text('loading').load(
+                url + ' .ajax-content',
+                function ($event) {
+                    pub.handleUpdateModal($e, modal);
+                }
+            );
+        },
+        handleUpdateModal: function ($e, modal) {
+            console.log(yii.actionColumn.onLoad);
+            if (typeof yii.actionColumn.onLoad == 'function') {
+                yii.actionColumn.onLoad($e, modal);
+            }
+            modal.find('form').submit(function (event) {
+                event.preventDefault();
+                var $this = $(this);
+                $this.ajaxSubmit(function (res) {
+                    if (typeof yii.actionColumn.onSuccess == 'function') {
+                        yii.actionColumn.onSuccess(res, $e, modal);
+                    }
+                });
+                return false;
+            })
 
+        },
+        handleBottomAction: function ($e) {
+            var view = $(document).find('#action-bottom-view');
+            var tr = $e.parents('tr');
+            var url = $e.data('href');
+            if (view.length <= 0) {
+                view = $(bottomView);
+                view.find('td').attr('colspan', tr.find('td').length);
+            }
+            if (view.data('key') == tr.data('key')) {
+                return tr.parent().append(view.hide().data('key', 0));
+            }
+            view.show().data('key', tr.data('key'));
+            var content = view.find('.ajax-content-wrap');
+            content.load(url + ' .ajax-content',function (event) {
+                if (typeof yii.actionColumn.onLoad == 'function') {
+                    yii.actionColumn.onLoad($e,view);
+                }
+            });
+            tr.after(view);
+            $("html,body").animate({scrollTop: $("#action-bottom-view").prev().offset().top-$('header').height()}, 800);
+        },
+        onLoad:function ($e,$obj) {
+            console.log('do something.');
+        },
+        onSuccess:function (res,$e,modal) {
+            if (typeof (res.data) == 'string') {
+                pub.notify({type: res.status == 0 ? 'success' : 'error', title: res.data});
+            } else {
+                pub.notify(res.data);
+            }
+            modal.modal('hide');
+            $.pjax.reload("#pjax-content");
+        },
     };
 
     function initDataMethods() {

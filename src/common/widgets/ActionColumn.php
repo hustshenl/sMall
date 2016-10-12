@@ -141,7 +141,7 @@ class ActionColumn extends \yii\grid\ActionColumn
                     \Yii::t('common', $this->deleteButtonText), [
                     'title' => \Yii::t('yii', 'Delete'),
                     'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
-                    'data-method' => 'post',
+                    'data-method' => 'get',
                     'data-href' => $url!==null?Url::to($url):'',
                     'data-pjax' => '0',
                     'data-action' => 'delete',

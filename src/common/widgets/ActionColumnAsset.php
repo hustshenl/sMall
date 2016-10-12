@@ -27,6 +27,7 @@ class ActionColumnAsset extends \kartik\base\AssetBundle
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
         'common\widgets\ToastrAsset',
+        'common\widgets\JQueryFormAsset',
     ];
     public $js = [
         'js/action-column.js',

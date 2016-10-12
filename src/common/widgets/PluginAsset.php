@@ -26,6 +26,7 @@ class PluginAsset extends AssetBundle
 //        'js/app.min.js'
     ];
     public $depends = [
+        'yii\web\YiiAsset',
         'dmstr\web\AdminLteAsset',
     ];
 

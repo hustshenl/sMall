@@ -11,15 +11,15 @@ use yii\web\AssetBundle;
 /**
  * SpinnerAsset for spinner widget.
  */
-class ToastrAsset extends AssetBundle
+class JQueryFormAsset extends AssetBundle
 {
-    public $sourcePath = '@bower/toastr';
+    public $sourcePath = '@bower/jquery-form';
     public $js = [
-        'toastr.min.js',
+        'jquery.form.js',
     ];
 
     public $css = [
-        'toastr.min.css',
+        //'toastr.min.css',
     ];
 
     public $depends = [

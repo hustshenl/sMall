@@ -11,6 +11,11 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('admin', 'Members');
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerJs(<<<JS
+yii.actionColumn.onLoad = {};
+JS
+);
+$this->registerJsFile('@web/js/member.js',['depends'=>\admin\widgets\AppAsset::className()]);
 ?>
 <div class="member-index">
 
@@ -18,13 +23,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a(Yii::t('admin', 'Create Member'), ['create'], ['class' => 'btn btn-success']) ?>
-    <?=Html::button(Yii::t('common', '高级筛选'), ['class' => 'btn btn-info advance-search-trigger']);?>
-        </p>
-    <?php  ?>
+        <?= Html::button(Yii::t('common', '高级筛选'), ['class' => 'btn btn-info advance-search-trigger']); ?>
+    </p>
+    <?php ?>
     <?php
     $editableUrl = '';
-
-    Pjax::begin(['id'=>'pjax-content']);
+    Pjax::begin(['id' => 'pjax-content']);
     echo $this->render('_search', ['model' => $searchModel]);
     ?>
     <?= GridView::widget([
@@ -49,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },*/
                 'editableOptions' => [
                     'inputType' => \kartik\editable\Editable::INPUT_TEXT,
-                    'pjaxContainerId'=>'pjax-content',
+                    'pjaxContainerId' => 'pjax-content',
                     'formOptions' => ['action' => $editableUrl]
                 ],
 

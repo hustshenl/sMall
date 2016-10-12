@@ -4,15 +4,9 @@ use yii\helpers\Html;
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-
-if (class_exists('backend\assets\AppAsset')) {
-    backend\assets\AppAsset::register($this);
-} else {
-    admin\widgets\AppAsset::register($this);
-}
-
-dmstr\web\AdminLteAsset::register($this);
+admin\widgets\AppAsset::register($this);
 \common\widgets\PluginAsset::register($this);
+dmstr\web\AdminLteAsset::register($this);
 
 $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 $directoryPluginsAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/plugins');

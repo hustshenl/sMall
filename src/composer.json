@@ -59,7 +59,8 @@
     "kartik-v/yii2-builder": "~1.6",
     "piwik/device-detector": "~3.7",
     "xj/yii2-oauth": "~2.0",
-    "bower-asset/toastr":"~2.1.1"
+    "bower-asset/jquery-form":"~3.0",
+    "bower-asset/toastr":"~2.0"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "~2.0",

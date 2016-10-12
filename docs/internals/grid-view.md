@@ -38,3 +38,14 @@ Pjax::end();
 1. 在适当的地方添加出发元素
 2. 适用`common\widgets\AdvanceSearch`挂件添加高级搜索表单，适用方式和普通表单类似，推荐写在搜索模板中。
 
+### 列表状态更新
+1. 编辑数据后pjax或者直接刷新当前页（仅针对简单表单，复杂表单需要在新窗口打开）
+    1. action列拦截form内的表单提交，改用ajax方式提交；
+    2. 收到ajax返回值后，默认弹出提示并隐藏弹出层，并pjax加载列表，列表需要开启pjax并且pjax id为pjax-content，若需自定义，请重写`yii.actionColumn.onSuccess(res, $e, modal)`
+2. 执行详情页的操作后如何继续
+    1. 详情页操作均采用ajax操作，由于页面无法加载js，所以需要重写`yii.actionColumn.onLoad($e, $obj)`，载入页面初始化方法，注意不要重复绑定事件。
+    2. ajax返回数据处理视情况而定
+    3. 视情况进行`$.pjax.reload("#pjax-content");`
+    4. 推荐将查看和更新的全部自定义JS写到一个js文件，在需要的地方调用初始化即可
+    5. Widgets自动添加的JS无法加载，若需要Widgets含有JS代码则不可使用。
+

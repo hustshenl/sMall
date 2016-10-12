@@ -1,7 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+//use yii\widgets\ActiveForm;
+use kartik\form\ActiveForm;
+use kartik\builder\Form;
+
 
 /* @var $this yii\web\View */
 /* @var $model common\models\member\Member */
@@ -10,83 +13,62 @@ use yii\widgets\ActiveForm;
 
 <div class="member-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin();
+    echo Form::widget([ // continuation fields to row above without labels
+        'model' => $model,
+        'form' => $form,
+        'columns' => 1,
+        'attributes' => [
 
-    <?= $form->field($model, 'status')->textInput() ?>
+            /*'category' => [
+                'type' => Form::INPUT_WIDGET,
+                'widgetClass' => '\kartik\widgets\Select2',
+                'options' => [
+                    'data' => Yii::$app->params['lookup']['authorCategory'],
+                    'options' => ['placeholder' => '分类'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ]
+                ]
+            ],
+            'status' => [
+                'type' => Form::INPUT_WIDGET,
+                'widgetClass' => '\kartik\widgets\Select2',
+                'options' => [
+                    'data' => [0=>'禁用',10=>'正常'],
+                    'options' => ['placeholder' => '状态'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ]
+                ]
+            ],
 
-    <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
+            'vip' => [
+                'type' => Form::INPUT_WIDGET,
+                'widgetClass' => '\kartik\widgets\Select2',
+                'options' => [
+                    'data' => Yii::$app->params['lookup']['vipStatus'],
+                    'options' => ['placeholder' => '是否VIP'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ]
+                ]
+            ],*/
+            'username' => ['options' => ['placeholder' => '搜索名称']],
+            'email' => ['options' => ['placeholder' => '搜索Email']],
+            'actions' => [
+                'type' => Form::INPUT_RAW,
+                'value' => '<div>' .
+                    Html::submitButton($model->isNewRecord ? Yii::t('admin', 'Create') : Yii::t('admin', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']). ' ' .
+                    Html::resetButton(Yii::t('common', 'Reset'), ['class' => 'btn default']) . ' ' .
+                    '</div>'
+            ],
+        ]
+    ]);
 
-    <?= $form->field($model, 'nickname')->textInput(['maxlength' => true]) ?>
+    ?>
 
-    <?= $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'password_hash')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'password_reset_token')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'access_token')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'identity')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'identity_sn')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'qq')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'weibo')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'postcode')->textInput() ?>
-
-    <?= $form->field($model, 'scores')->textInput() ?>
-
-    <?= $form->field($model, 'grade')->textInput() ?>
-
-    <?= $form->field($model, 'credit')->textInput() ?>
-
-    <?= $form->field($model, 'vip')->textInput() ?>
-
-    <?= $form->field($model, 'vip_scores')->textInput() ?>
-
-    <?= $form->field($model, 'vip_expires')->textInput() ?>
-
-    <?= $form->field($model, 'role')->textInput() ?>
-
-    <?= $form->field($model, 'gender')->textInput() ?>
-
-    <?= $form->field($model, 'district')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'city')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'province')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'country')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'language')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'avatar')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'signature')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'remark')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'register_ip')->textInput() ?>
-
-    <?= $form->field($model, 'login_at')->textInput() ?>
-
-    <?= $form->field($model, 'login_ip')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('admin', 'Create') : Yii::t('admin', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
 
     <?php ActiveForm::end(); ?>
 
