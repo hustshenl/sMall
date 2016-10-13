@@ -11,21 +11,21 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('admin', 'Members');
 $this->params['breadcrumbs'][] = $this->title;
+$this->blocks['hideTitle'] = false;
 $this->registerJs(<<<JS
 yii.actionColumn.onLoad = {};
 JS
 );
 $this->registerJsFile('@web/js/member.js',['depends'=>\admin\widgets\AppAsset::className()]);
-?>
+
+
+$this->beginBlock('content-header-actions');
+echo Html::a(Yii::t('admin', 'Create Member'), ['create'], ['class' => 'btn btn-success']);
+echo ' '.Html::button(Yii::t('common', '多选'), ['class' => 'btn btn-info multi-select']);
+echo ' '.Html::button(Yii::t('common', '高级筛选'), ['class' => 'btn btn-info advance-search-trigger']);
+$this->endBlock(); ?>
+
 <div class="member-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('admin', 'Create Member'), ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::button(Yii::t('common', '高级筛选'), ['class' => 'btn btn-info advance-search-trigger']); ?>
-    </p>
-    <?php ?>
     <?php
     $editableUrl = '';
     Pjax::begin(['id' => 'pjax-content']);

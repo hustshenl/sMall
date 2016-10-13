@@ -110,6 +110,23 @@ a.desc:after {
 .nav > li > form > button:hover {
     text-decoration: none;
 }
+.breadcrumb {
+    background-color: rgba(60,141,188,0.2);
+    border-radius: 0;
+}
+.breadcrumb a{
+    color: black;
+}
+.breadcrumb > .active{
+    color: black;
+}
+.breadcrumb > li + li:before {
+    color: #777;
+}
+.btn {
+    border-radius: 0;
+}
+
 
 /**此段样式仅兼容google chrome**/
 .select-on-check-all,.kv-row-checkbox{
@@ -117,7 +134,7 @@ a.desc:after {
     /*-moz-appearance:none;*/
     width: 18px;
     height: 18px;
-    border: 2px solid #ccc;
+    border: 2px solid #d2d6de;
     text-align: center;
     line-height: 14px!important;
 }
@@ -127,6 +144,36 @@ a.desc:after {
 .select-on-check-all:checked:before,.kv-row-checkbox:checked:before{
     content: '\2714';
     color: #00c0ef;
+}
+
+
+/** 后台content-header样式调整 **/
+.content-header{
+    padding: 15px 15px 10px;
+    border-bottom: 1px solid #d2d6de;
+}
+.content-header .caption h1 {
+    font-size: 24px;
+    margin: 0;
+    line-height: 34px;
+}
+@media(max-width:480px){
+    .content-header .caption h1 {
+        display: none;
+    }
+}
+
+/** 后台表格样式 **/
+.table-bordered {
+    border: 1px solid #d2d6de;
+}
+.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td{
+    border: 1px solid #d2d6de;
+}
+/** 后台Select2样式 **/
+
+.select2-container.select2-container--krajee .select2-selection--single .select2-selection__rendered{
+    margin-top: 0;
 }
 
 

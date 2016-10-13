@@ -65,13 +65,11 @@ use common\widgets\AdvanceSearch;
                     ]
                 ]
             ],*/
-            'username' => ['options' => ['placeholder' => '搜索名称']],
-            'email' => ['options' => ['placeholder' => '搜索Email']],
+            'username' => ['options' => ['placeholder' => '用户名/手机号/Email']],
             'actions' => [
                 'type' => Form::INPUT_RAW,
                 'value' => '<div>' .
                     Html::submitButton(Yii::t('common', 'Search'), ['class' => 'btn btn-primary']) . ' ' .
-                    Html::resetButton(Yii::t('common', 'Reset'), ['class' => 'btn default']) . ' ' .
                     Html::button(Yii::t('common', '高级筛选'), ['class' => 'btn btn-info advance-search-trigger']) .
                     '</div>'
             ],

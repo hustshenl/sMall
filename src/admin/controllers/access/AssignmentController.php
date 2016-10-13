@@ -5,6 +5,7 @@ namespace admin\controllers\access;
 use admin\models\access\Admin;
 use common\behaviors\AjaxReturnBehavior;
 use EasyWeChat\Server\BadRequestException;
+use yii\web\BadRequestHttpException;
 use Yii;
 use mdm\admin\models\Assignment;
 use admin\models\access\AdminSearch;
@@ -115,7 +116,7 @@ class AssignmentController extends Controller
 
     public function actionDelete($id)
     {
-        if (!Yii::$app->request->isPost) throw new BadRequestException('非法请求');
+        if (!Yii::$app->request->isPost) throw new BadRequestHttpException('非法请求');
         $model = $this->findAdmin($id);
         $model->role = Admin::ROLE_USER;
         if ($model->isRemovable() && $model->remove()) {

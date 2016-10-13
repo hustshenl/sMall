@@ -4,9 +4,9 @@
 
 
 yii.actionColumn = (function ($) {
-    var messageModal = '<div class="modal fade" id="action-message-modal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><h4 class="modal-title" id="messageModalLabel">提示信息</h4></div><div class="modal-body"></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">取消</button><button type="button" class="btn btn-primary modal-confirm-ok">确定</button></div> </div> </div> </div>';
+    var messageModal = '<div class="modal fade" id="action-message-modal" tabindex="-1" role="dialog" aria-labelledby="actionMessageModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><h4 class="modal-title" id="actionMessageModalLabel">提示信息</h4></div><div class="modal-body"></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">取消</button><button type="button" class="btn btn-primary modal-confirm-ok">确定</button></div> </div> </div> </div>';
     var actionModal = '<div class="modal fade" id="action-modal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><h4 class="modal-title" id="actionModalLabel"></h4></div><div class="modal-body ajax-content-wrap"></div> </div> </div> </div>';
-    var bottomView = '<tr id="action-bottom-view"><td style="padding: 8px 0;" class="ajax-content-wrap"></td></tr>';
+    var bottomView = '<tr id="action-bottom-view"><td style="padding: 10px;" class="ajax-content-wrap"></td></tr>';
     var pub = {
         clickableSelector: 'act, a.action-view',
         isActive: true,
@@ -92,10 +92,15 @@ yii.actionColumn = (function ($) {
             var modal = $(document).find('#action-modal');
             var url = $e.data('href');
             if (modal.length <= 0) modal = $(actionModal);
-            modal.modal('show');
-            modal.find('..ajax-content-wrap').text('loading').load(
+            modal.find('.ajax-content-wrap').text('loading').load(
                 url + ' .ajax-content',
-                function ($event) {
+                function (res,status) {
+                    if(status=='error'){
+                        return pub.notify({type: 'error', title: res});
+                    }else if(status == 'timeout'){
+                        return pub.notify({type: 'error', title: '连接超时'});
+                    }
+                    modal.modal('show');
                     pub.handleUpdateModal($e, modal);
                 }
             );
@@ -128,15 +133,21 @@ yii.actionColumn = (function ($) {
             if (view.data('key') == tr.data('key')) {
                 return tr.parent().append(view.hide().data('key', 0));
             }
-            view.show().data('key', tr.data('key'));
             var content = view.find('.ajax-content-wrap');
-            content.load(url + ' .ajax-content',function (event) {
+            content.load(url + ' .ajax-content',function (res,status) {
+                if(status=='error'){
+                    //tr.parent().append(view.hide().data('key', 0));
+                    return pub.notify({type: 'error', title: res});
+                }else if(status == 'timeout'){
+                    return pub.notify({type: 'error', title: '连接超时'});
+                }
+                view.show().data('key', tr.data('key'));
                 if (typeof yii.actionColumn.onLoad == 'function') {
                     yii.actionColumn.onLoad($e,view);
                 }
+                tr.after(view);
+                $("html,body").animate({scrollTop: $("#action-bottom-view").prev().offset().top-$('header').height()}, 800);
             });
-            tr.after(view);
-            $("html,body").animate({scrollTop: $("#action-bottom-view").prev().offset().top-$('header').height()}, 800);
         },
         onLoad:function ($e,$obj) {
             console.log('do something.');

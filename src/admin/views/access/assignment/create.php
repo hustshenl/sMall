@@ -21,17 +21,7 @@ $this->params['breadcrumbs']['links'] = [
 
 <div class="row">
     <div class="col-md-12">
-        <div class="portlet light">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="icon-settings"></i><?= $this->params['subTitle'] ?>
-                </div>
-                <div class="actions btn-set">
-
-                </div>
-
-            </div>
-            <div class="portlet-body form">
+        <div class="form">
                 <!-- BEGIN FORM-->
                 <?php $form = ActiveForm::begin([
                     'type' => ActiveForm::TYPE_HORIZONTAL,
@@ -91,6 +81,5 @@ JS
                 ActiveForm::end(); ?>
                 <!-- END FORM-->
             </div>
-        </div>
     </div>
 </div>

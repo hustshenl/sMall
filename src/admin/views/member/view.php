@@ -6,26 +6,26 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\member\Member */
 
-$this->title = $model->id;
+$this->title = $model->username;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'Members'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
-$this->registerJsFile('@web/js/member.js',['depends'=>\admin\widgets\AppAsset::className()]);
+$this->params['breadcrumbs'][] = '会员详情';
+$this->registerJsFile('@web/js/member.js', ['depends' => \admin\widgets\AppAsset::className()]);
 
 ?>
+
+<?php $this->beginBlock('content-header-actions'); ?>
+<?= Html::a(Yii::t('admin', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+ <?= Html::a(Yii::t('admin', 'Delete'), ['delete', 'id' => $model->id], [
+    'class' => 'btn btn-danger',
+    'data' => [
+        'confirm' => Yii::t('admin', 'Are you sure you want to delete this item?'),
+        'method' => 'post',
+    ],
+]) ?>
+<?php $this->endBlock(); ?>
 <div class="member-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('admin', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('admin', 'Delete'), ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('admin', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
     <div class="ajax-content-wrap">
         <div class="ajax-content" data-url="<?= \yii\helpers\Url::current(); ?>">
             <?= Html::button(Yii::t('admin', 'Test'), ['class' => 'btn btn-primary', 'id' => 'test']) ?>

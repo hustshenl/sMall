@@ -2,31 +2,43 @@
 use yii\widgets\Breadcrumbs;
 use dmstr\widgets\Alert;
 
+/** @var $content string */
+
 ?>
 <div class="content-wrapper">
-    <section class="content-header">
-        <?php if (isset($this->blocks['content-header'])) { ?>
-            <h1><?= $this->blocks['content-header'] ?></h1>
-        <?php } else { ?>
-            <h1>
-                <?php
-                if ($this->title !== null) {
-                    echo \yii\helpers\Html::encode($this->title);
-                } else {
-                    echo \yii\helpers\Inflector::camel2words(
-                        \yii\helpers\Inflector::id2camel($this->context->module->id)
-                    );
-                    echo ($this->context->module->id !== \Yii::$app->id) ? '<small>Module</small>' : '';
-                } ?>
-            </h1>
-        <?php } ?>
-
-        <?=
-        Breadcrumbs::widget(
-            [
-                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-            ]
-        ) ?>
+    <section class="content-header clearfix">
+        <div>
+            <?=
+            Breadcrumbs::widget(
+                [
+                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                ]
+            ) ?>
+        </div>
+        <?php if (!isset($this->blocks['hideTitle']) || !$this->blocks['hideTitle']) { ?>
+            <div class="caption pull-left">
+                <?php if (isset($this->blocks['content-header-title'])) { ?>
+                    <h1><?= $this->blocks['content-header-title'] ?></h1>
+                <?php } else { ?>
+                    <h1>
+                        <?php
+                        if ($this->title !== null) {
+                            echo \yii\helpers\Html::encode($this->title);
+                        } else {
+                            echo \yii\helpers\Inflector::camel2words(
+                                \yii\helpers\Inflector::id2camel($this->context->module->id)
+                            );
+                            echo ($this->context->module->id !== \Yii::$app->id) ? '<small>Module</small>' : '';
+                        } ?>
+                    </h1>
+                <?php } ?>
+            </div>
+            <?php if (isset($this->blocks['content-header-actions'])) { ?>
+                <div class="actions pull-right">
+                    <?= $this->blocks['content-header-actions']; ?>
+                </div>
+            <?php }
+        } ?>
     </section>
 
     <section class="content">

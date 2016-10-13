@@ -6,12 +6,15 @@ use admin\models\access\Admin;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\validators\EmailValidator;
+use yii\validators\NumberValidator;
 
 /**
  * User represents the model behind the search form about `mdm\admin\models\User`.
  */
 class AdminSearch extends Admin
 {
+    public $keyword;
     /**
      * @inheritdoc
      */
@@ -19,7 +22,8 @@ class AdminSearch extends Admin
     {
         return [
             [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username','nickname','phone', 'email'], 'safe'],
+            [['username','keyword','nickname','phone', 'email'], 'string'],
+            [['username','keyword','nickname','phone', 'email'], 'safe'],
         ];
     }
 
@@ -34,9 +38,8 @@ class AdminSearch extends Admin
 
     /**
      * Creates data provider instance with search query applied
-     *
      * @param array $params
-     *
+     * @param string $formName
      * @return ActiveDataProvider
      */
     public function search($params, $formName = null)
@@ -48,10 +51,13 @@ class AdminSearch extends Admin
         ]);
 
         $this->load($params, $formName);
+        Yii::trace($this->keyword);
         if (!$this->validate()) {
             $query->where('1=0');
             return $dataProvider;
         }
+
+
 
         $query->andFilterWhere([
             'id' => $this->id,
@@ -64,6 +70,13 @@ class AdminSearch extends Admin
             ->andFilterWhere(['like', 'nickname', $this->nickname])
             ->andFilterWhere(['like', 'phone', $this->phone])
             ->andFilterWhere(['like', 'email', $this->email]);
+        if(!empty($this->keyword))
+            $query->andFilterWhere([
+                'or',
+                ['like','username',$this->keyword],
+                ['like','phone',$this->keyword],
+                ['like','email',$this->keyword],
+            ]);
 
         return $dataProvider;
     }

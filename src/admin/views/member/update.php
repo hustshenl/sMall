@@ -14,7 +14,6 @@ $this->params['breadcrumbs'][] = Yii::t('admin', 'Update');
 ?>
 <div class="member-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
     <div class="ajax-content-wrap">
         <div class="ajax-content">
             <?= $this->render('_form', [

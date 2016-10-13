@@ -105,7 +105,7 @@ class ActionColumn extends \yii\grid\ActionColumn
                 return Html::tag('act','<span class="' . $this->viewButtonIcon . '"></span> ' .
                     \Yii::t('common', $this->viewButtonText), [
                     'title' => \Yii::t('yii', 'View'),
-                    'data-method' => 'get',
+                    'data-method' => 'GET',
                     'data-href' => $url!==null?Url::to($url):'',
                     'data-action' => 'view',
                     'data-mode' => $mode,
@@ -141,7 +141,7 @@ class ActionColumn extends \yii\grid\ActionColumn
                     \Yii::t('common', $this->deleteButtonText), [
                     'title' => \Yii::t('yii', 'Delete'),
                     'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
-                    'data-method' => 'get',
+                    'data-method' => 'POST',
                     'data-href' => $url!==null?Url::to($url):'',
                     'data-pjax' => '0',
                     'data-action' => 'delete',

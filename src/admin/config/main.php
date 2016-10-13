@@ -32,20 +32,6 @@ return [
                 'assignment' => [
                     'class' => 'admin\controllers\access\AssignmentController',
                     /* 'userClassName' => 'app\models\User', */
-                    'extraColumns' => [
-                        'nickname',
-                        'phone',
-                        'email',
-                        [
-                            'attribute' => 'permission',
-                            'label' => Yii::t('admin','用户组/权限'),
-                            'value' => function ($model, $key, $index, $column) {
-                                $permission = array_keys($model->permission);
-                                if(empty($permission)) return Yii::t('admin','Empty');
-                                return implode(',',$permission);
-                            },
-                        ],
-                    ],
                     'searchClass' => 'admin\models\access\AdminSearch'
                 ],
             ],
