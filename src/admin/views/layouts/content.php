@@ -41,7 +41,7 @@ use dmstr\widgets\Alert;
         } ?>
     </section>
 
-    <section class="content">
+    <section class="content content-body" id="content-body">
         <?= Alert::widget() ?>
         <?= $content ?>
     </section>

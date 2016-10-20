@@ -10,7 +10,8 @@ use Yii;
 use mdm\admin\models\Assignment;
 use admin\models\access\AdminSearch;
 use admin\models\access\UserSearch;
-use yii\web\Controller;
+//use yii\web\Controller;
+use admin\components\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use admin\models\forms\Admin as AdminForm;
@@ -47,19 +48,15 @@ class AssignmentController extends Controller
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
+        $behaviors = parent::behaviors();
+        $behaviors['verbs'] =  [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'assign' => ['post'],
-                    'assign' => ['post'],
                     'revoke' => ['post'],
                 ],
-            ],
-            [
-                'class' => AjaxReturnBehavior::className()
-            ]
         ];
+        return $behaviors;
     }
 
     /**
@@ -73,7 +70,7 @@ class AssignmentController extends Controller
         $formName = Yii::$app->request->isAjax ? '' : $searchModel->formName();
         $dataProvider = $searchModel->search(Yii::$app->getRequest()->getQueryParams(),$formName);
 
-        return Yii::$app->request->isAjax ? $this->success($dataProvider, 'results') : $this->render('index', [
+        return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
             'idField' => $this->idField,
@@ -83,7 +80,6 @@ class AssignmentController extends Controller
     }
     public function actionUsers()
     {
-
         $searchModel = new UserSearch;
         $formName = Yii::$app->request->isAjax ? '' : $searchModel->formName();
         $dataProvider = $searchModel->search(Yii::$app->getRequest()->getQueryParams(),$formName);

@@ -10,15 +10,14 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('rbac-admin', 'Menus');
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->beginBlock('content-header-actions');
+echo Html::a(Yii::t('rbac-admin', 'Create Menu'), ['create'], ['class' => 'btn btn-success']);
+$this->endBlock();
 ?>
 <div class="menu-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
-
-    <p>
-        <?= Html::a(Yii::t('rbac-admin', 'Create Menu'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?php Pjax::begin(); ?>
     <?=
@@ -37,7 +36,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'route',
             'order',
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'common\widgets\ActionColumn',
+                //'template'=>'{view::_self} {update} {delete}'
+            ],
         ],
     ]);
     ?>

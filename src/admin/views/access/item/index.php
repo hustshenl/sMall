@@ -17,12 +17,12 @@ $this->params['breadcrumbs'][] = $this->title;
 $rules = array_keys(Yii::$app->getAuthManager()->getRules());
 $rules = array_combine($rules, $rules);
 unset($rules[RouteRule::RULE_NAME]);
+
+$this->beginBlock('content-header-actions');
+echo Html::a(Yii::t('rbac-admin', 'Create ' . $labels['Item']), ['create'], ['class' => 'btn btn-success']);
+$this->endBlock();
 ?>
 <div class="role-index">
-    <h1><?= Html::encode($this->title) ?></h1>
-    <p>
-        <?= Html::a(Yii::t('rbac-admin', 'Create ' . $labels['Item']), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
     <?=
     GridView::widget([
         'dataProvider' => $dataProvider,
@@ -42,7 +42,7 @@ unset($rules[RouteRule::RULE_NAME]);
                 'attribute' => 'description',
                 'label' => Yii::t('rbac-admin', 'Description'),
             ],
-            ['class' => 'yii\grid\ActionColumn',],
+            ['class' => 'common\widgets\ActionColumn',],
         ],
     ])
     ?>

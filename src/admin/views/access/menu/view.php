@@ -9,23 +9,23 @@ use yii\widgets\DetailView;
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('rbac-admin', 'Menus'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-?>
+
+$this->beginBlock('content-header-actions'); ?>
+
+<?= Html::a(Yii::t('rbac-admin', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+
+<?= \common\widgets\Dialog::confirm(
+    Yii::t('rbac-admin', 'Delete'),
+    [
+        'class' => 'btn btn-danger',
+        'data-href'=>['delete', 'id' => $model->id],
+        'data-mode'=>'confirm',
+        'data-confirm' => Yii::t('rbac-admin', 'Are you sure to delete this item?'),
+        'data-method' => 'post',
+    ]
+);?>
+<?php $this->endBlock(); ?>
 <div class="menu-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('rbac-admin', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?=
-        Html::a(Yii::t('rbac-admin', 'Delete'), ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ])
-        ?>
-    </p>
 
     <?=
     DetailView::widget([

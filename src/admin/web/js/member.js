@@ -7,8 +7,9 @@ sMall.member = function ($) {
         init: function () {
             console.log('member init');
             $document.on('click','#test',function (e) {
+                var $this = $(this),url = $this.data('url');
                 toastr['success']('test');
-                sMall.reloadAjaxContent();
+                sMall.ajaxReload(url+' .member-view-body','.member-view');
             });
             $document.off('click','.multi-select').on('click','.multi-select',function (e) {
                 var keys = sMall.getSelectedKeys(function (res) {
@@ -17,7 +18,7 @@ sMall.member = function ($) {
                     toastr['success']('批量操作成功');
                     toastr['error']('你没有权限执行此操作');
                     $.pjax.reload("#pjax-content");
-                    //sMall.reloadAjaxContent();
+                    //sMall.ajaxReload();
                     console.log(res);
                 },'确定要执行该批量操作？');
             });

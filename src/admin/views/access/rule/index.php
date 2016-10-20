@@ -11,14 +11,14 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('rbac-admin', 'Rules');
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->beginBlock('content-header-actions');
+echo Html::a(Yii::t('rbac-admin', 'Create Rule'), ['create'], ['class' => 'btn btn-success']);
+$this->endBlock();
 ?>
 <div class="role-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('rbac-admin', 'Create Rule'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?=
     GridView::widget([
@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'name',
                 'label' => Yii::t('rbac-admin', 'Name'),
             ],
-            ['class' => 'yii\grid\ActionColumn',],
+            ['class' => 'common\widgets\ActionColumn',],
         ],
     ]);
     ?>

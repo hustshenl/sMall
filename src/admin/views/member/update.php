@@ -13,12 +13,7 @@ $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' 
 $this->params['breadcrumbs'][] = Yii::t('admin', 'Update');
 ?>
 <div class="member-update">
-
-    <div class="ajax-content-wrap">
-        <div class="ajax-content">
-            <?= $this->render('_form', [
-                'model' => $model,
-            ]) ?>
-        </div>
-    </div>
+    <?= $this->render('_form', [
+        'model' => $model,
+    ]) ?>
 </div>

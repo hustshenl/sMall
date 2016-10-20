@@ -20,7 +20,6 @@ $this->registerJs("var _opts = {$opts};");
 $this->registerJs($this->render('_script.js'));
 $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i>';
 ?>
-<h1><?= Html::encode($this->title) ?></h1>
 <div class="row">
     <div class="col-sm-11">
         <div class="input-group">
@@ -38,13 +37,13 @@ $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate
 <p>&nbsp;</p>
 <div class="row">
     <div class="col-sm-5">
-        <div class="input-group">
+        <div class="input-group" style="margin-bottom: 8px;">
             <input class="form-control search" data-target="avaliable"
                    placeholder="<?= Yii::t('rbac-admin', 'Search for avaliable') ?>">
             <span class="input-group-btn">
                 <?= Html::a('<span class="glyphicon glyphicon-refresh"></span>', ['refresh'], [
                     'class' => 'btn btn-default',
-                    'id' => 'btn-refresh'
+                    'id' => 'btn-refresh',
                 ]) ?>
             </span>
         </div>
@@ -65,6 +64,7 @@ $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate
     </div>
     <div class="col-sm-5">
         <input class="form-control search" data-target="assigned"
+               style="margin-bottom: 8px;"
                placeholder="<?= Yii::t('rbac-admin', 'Search for assigned') ?>">
         <select multiple size="20" class="form-control list" data-target="assigned"></select>
     </div>

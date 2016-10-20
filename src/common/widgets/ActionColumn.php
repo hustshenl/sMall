@@ -26,7 +26,7 @@ class ActionColumn extends \yii\grid\ActionColumn
     /**
      * @var string the template that is used to render the content in each data cell.
      */
-    public $template = '{update}';
+    public $template = '{view::_self} {update::_self} {delete}';
 
     /**
      * @var string the icon for the view button.
@@ -128,6 +128,7 @@ class ActionColumn extends \yii\grid\ActionColumn
                 return Html::tag('act','<span class="' . $this->updateButtonIcon . '"></span> ' .
                     \Yii::t('common', $this->updateButtonText), [
                     'title' => \Yii::t('yii', 'Update'),
+                    'data-title' => \Yii::t('yii', 'Update'),
                     'data-method' => 'get',
                     'data-href' => $url!==null?Url::to($url):'',
                     'data-action' => 'update',
@@ -137,15 +138,15 @@ class ActionColumn extends \yii\grid\ActionColumn
         }
         if (!isset($this->buttons['delete'])) {
             $this->buttons['delete'] = function ($url, $model, $key) {
-                return Html::tag('act','<span class="' . $this->deleteButtonIcon . '"></span> ' .
+                return Dialog::confirm('<span class="' . $this->deleteButtonIcon . '"></span> ' .
                     \Yii::t('common', $this->deleteButtonText), [
                     'title' => \Yii::t('yii', 'Delete'),
                     'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
                     'data-method' => 'POST',
                     'data-href' => $url!==null?Url::to($url):'',
-                    'data-pjax' => '0',
-                    'data-action' => 'delete',
-                    'data-mode' => 'ajax',
+                    'data-pjax' => '1',
+                    'data-reload' => '1',
+                    'data-mode'=>'confirm',
                     'class' => $this->btnDeleteClass,
                 ]);
             };

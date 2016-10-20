@@ -5,6 +5,7 @@ use yii\widgets\DetailView;
 use yii\helpers\Json;
 use mdm\admin\AnimateAsset;
 use yii\web\YiiAsset;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model mdm\admin\models\AuthItem */
@@ -24,18 +25,23 @@ $opts = Json::htmlEncode([
 $this->registerJs("var _opts = {$opts};");
 $this->registerJs($this->render('_script.js'));
 $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i>';
-?>
-<div class="auth-item-view">
-    <h1><?= Html::encode($this->title) ?></h1>
-    <p>
-        <?= Html::a(Yii::t('rbac-admin', 'Update'), ['update', 'id' => $model->name], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('rbac-admin', 'Delete'), ['delete', 'id' => $model->name], [
+
+$this->beginBlock('content-header-actions'); ?>
+
+    <?= Html::a(Yii::t('rbac-admin', 'Update'), ['update', 'id' => $model->name], ['class' => 'btn btn-primary']) ?>
+    <?= \common\widgets\Dialog::confirm(
+        Yii::t('rbac-admin', 'Delete'),
+        [
             'class' => 'btn btn-danger',
+            'data-href'=>['delete', 'id' => $model->name],
+            'data-mode'=>'confirm',
             'data-confirm' => Yii::t('rbac-admin', 'Are you sure to delete this item?'),
             'data-method' => 'post',
-        ]); ?>
-        <?= Html::a(Yii::t('rbac-admin', 'Create'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        ]
+    );?>
+    <?= Html::a(Yii::t('rbac-admin', 'Create'), ['create'], ['class' => 'btn btn-success']) ?>
+<?php $this->endBlock(); ?>
+<div class="auth-item-view">
     <div class="row">
         <div class="col-sm-11">
             <?=
@@ -55,6 +61,7 @@ $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate
     <div class="row">
         <div class="col-sm-5">
             <input class="form-control search" data-target="avaliable"
+                   style="margin-bottom: 8px;"
                    placeholder="<?= Yii::t('rbac-admin', 'Search for avaliable') ?>">
             <select multiple size="20" class="form-control list" data-target="avaliable"></select>
         </div>
@@ -73,6 +80,7 @@ $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate
         </div>
         <div class="col-sm-5">
             <input class="form-control search" data-target="assigned"
+                   style="margin-bottom: 8px;"
                    placeholder="<?= Yii::t('rbac-admin', 'Search for assigned') ?>">
             <select multiple size="20" class="form-control list" data-target="assigned"></select>
         </div>

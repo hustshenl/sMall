@@ -26,7 +26,7 @@
         <!-- /.search form -->
 
         <?php
-        $items = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->id, null,
+        $items = common\helpers\MenuHelper::getAssignedMenu(Yii::$app->user->id, null,
             function ($menu) {
                 $data = json_decode($menu['data'], true);
                 if (!is_array($data)) $data = [];

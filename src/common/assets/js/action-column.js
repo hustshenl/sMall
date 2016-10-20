@@ -4,7 +4,6 @@
 
 
 yii.actionColumn = (function ($) {
-    var messageModal = '<div class="modal fade" id="action-message-modal" tabindex="-1" role="dialog" aria-labelledby="actionMessageModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><h4 class="modal-title" id="actionMessageModalLabel">提示信息</h4></div><div class="modal-body"></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">取消</button><button type="button" class="btn btn-primary modal-confirm-ok">确定</button></div> </div> </div> </div>';
     var actionModal = '<div class="modal fade" id="action-modal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><h4 class="modal-title" id="actionModalLabel"></h4></div><div class="modal-body ajax-content-wrap"></div> </div> </div> </div>';
     var bottomView = '<tr id="action-bottom-view"><td style="padding: 10px;" class="ajax-content-wrap"></td></tr>';
     var pub = {
@@ -27,22 +26,6 @@ yii.actionColumn = (function ($) {
                 pub.params[pub.getCsrfParam()] = token;
             }
         },
-        confirm: function (message, ok, cancel) {
-            var isOk = false;
-            var modal = $(document).find('#action-message-modal');
-            if (modal.length <= 0) modal = $(messageModal);
-            modal.find('.modal-body').text(message);
-            modal.modal('show');
-            modal.find('.modal-confirm-ok').one('click', function (e) {
-                isOk = true;
-                modal.modal('hide');
-                !ok || ok();
-            });
-            modal.one('hide.bs.modal', function (e) {
-                modal.find('.modal-confirm-ok').off('click');
-                isOk || !cancel || cancel();
-            });
-        },
         handleAction: function ($e) {
             var method = $e.data('method'),
                 url = $e.data('href'),
@@ -56,24 +39,7 @@ yii.actionColumn = (function ($) {
                 url = window.location.href;
             }
             $.extend(pub.params, params);
-            if (mode == 'ajax') {
-                $.ajax({url:url, data:pub.params,type:method,
-                    success:function (res) {
-                        if (action == 'delete' && res.status == 0) {
-                            $e.parents('tr').hide();
-                        }
-                        if (typeof (res.data) == 'string') {
-                            pub.notify({type: res.status == 0 ? 'success' : 'error', title: res.data});
-                        } else {
-                            pub.notify(res.data);
-                        }
-                    },
-                    error:function (res) {
-                        pub.notify({type: 'error', title: res.responseText});
-                    },
-                    dataType:'json'}
-                );
-            } else if (mode == 'bottom') {
+            if (mode == 'bottom') {
                 pub.handleBottomAction($e);
             } else {
                 pub.handleModalAction($e);
@@ -89,11 +55,12 @@ yii.actionColumn = (function ($) {
             toastr[data.type](data.content == undefined ? null : data.content, data.title);
         },
         handleModalAction: function ($e) {
-            var modal = $(document).find('#action-modal');
-            var url = $e.data('href');
+            var modal = $(document).find('#action-modal'),
+                title = $e.data('title')||'',
+                url = $e.data('href');
             if (modal.length <= 0) modal = $(actionModal);
-            modal.find('.ajax-content-wrap').text('loading').load(
-                url + ' .ajax-content',
+            modal.find('#actionModalLabel').text(title);
+            modal.find('.ajax-content-wrap').text('loading').load(url,
                 function (res,status) {
                     if(status=='error'){
                         return pub.notify({type: 'error', title: res});
@@ -134,7 +101,7 @@ yii.actionColumn = (function ($) {
                 return tr.parent().append(view.hide().data('key', 0));
             }
             var content = view.find('.ajax-content-wrap');
-            content.load(url + ' .ajax-content',function (res,status) {
+            content.load(url,function (res,status) {
                 if(status=='error'){
                     //tr.parent().append(view.hide().data('key', 0));
                     return pub.notify({type: 'error', title: res});
@@ -167,22 +134,15 @@ yii.actionColumn = (function ($) {
         var handler = function (event) {
             var $this = $(this),
                 method = $this.data('method'),
-                message = $this.data('confirm'),
                 raw = $this.data('raw');
             if (raw) {
                 event.stopImmediatePropagation();
                 return true;
             }
-            if (method === undefined && message === undefined) {
+            if (method === undefined) {
                 return true;
             }
-            if (message !== undefined) {
-                pub.confirm(message, function () {
-                    pub.handleAction($this);
-                });
-            } else {
-                pub.handleAction($this);
-            }
+            pub.handleAction($this);
             event.stopImmediatePropagation();
             return false;
         };

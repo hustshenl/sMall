@@ -16,9 +16,11 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/app.js',
+        //'js/dialog.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
+        'yii\widgets\PjaxAsset',
         'yii\bootstrap\BootstrapAsset',
         'dmstr\web\AdminLteAsset',
         'common\widgets\ToastrAsset'

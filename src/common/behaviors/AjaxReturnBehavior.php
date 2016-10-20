@@ -19,6 +19,10 @@ class AjaxReturnBehavior extends Behavior
         $this->_serializer = new Serializer();
     }
 
+    /**
+     * @param $data
+     * @return array|mixed
+     */
     public function ajax($data)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;

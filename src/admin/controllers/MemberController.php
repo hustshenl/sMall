@@ -6,7 +6,7 @@ use common\behaviors\AjaxReturnBehavior;
 use Yii;
 use common\models\member\Member;
 use admin\models\member\Member as MemberSearch;
-use yii\web\Controller;
+use admin\components\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -20,15 +20,14 @@ class MemberController extends Controller
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
+        $behaviors = parent::behaviors();
+        $behaviors['verbs'] = [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'delete' => ['POST'],
             ],
-            AjaxReturnBehavior::className(),
         ];
+        return $behaviors;
     }
 
     /**
@@ -87,7 +86,7 @@ class MemberController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return Yii::$app->request->isAjax?$this->success('更新成功！'):$this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -104,7 +103,7 @@ class MemberController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-        return Yii::$app->request->isAjax?$this->success('成功删除！'):$this->redirect(['index']);
+        return $this->redirect(['index']);
     }
 
     /**
