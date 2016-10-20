@@ -49,8 +49,9 @@ yii.dialog = function ($) {
                         url = $e.data('href'),
                         pjax = $e.data('pjax')||false,
                         reload = $e.data('reload') || false;
-                    $.extend(pub.params, params);
-                    $.ajax({
+                    params = $.extend({},pub.params, params);
+                    handleAction(url,method,params,reload,pjax);
+                    /*$.ajax({
                         url: url, data: pub.params, type: method,
                         success: function (res) {
                             if (res.status == 0) {
@@ -77,8 +78,7 @@ yii.dialog = function ($) {
                             pub.notify({type: 'error', title: xhr.responseText});
                         },
                         dataType: 'json'
-                    });
-
+                    });*/
                 } else {
                     if (typeof options.cancel == 'function') return options.cancel();
                 }
@@ -89,7 +89,16 @@ yii.dialog = function ($) {
             krajeeDialog.options['title'] = options.title||'提示信息';
             krajeeDialog.prompt({label: options.label, placeholder: options.placeholder}, function (res) {
                 if (res !== null) {
-                    // TODO 根据用户输入
+                    if (typeof options.success == 'function') return options.success(res);
+                    var method = $e.data('method') || 'GET',
+                        params = $e.data('params'),
+                        field = $e.data('field'),
+                        url = $e.data('href'),
+                        pjax = $e.data('pjax')||false,
+                        reload = $e.data('reload') || false;
+                    params = $.extend({},pub.params, params);
+                    if(field) params[field] = res;
+                    handleAction(url,method,params,reload,pjax);
                 }
                 console.log(res);
             });
@@ -123,6 +132,36 @@ yii.dialog = function ($) {
         pub.refreshCsrfToken();
         $(document).off('click.yiiDialog', pub.clickableSelector)
             .on('click.yiiDialog', pub.clickableSelector, handler);
+    }
+    function handleAction(url,method,params,reload,pjax) {
+        $.ajax({
+            url: url, data: params, type: method||'POST',
+            success: function (res) {
+                if (res.status == 0) {
+                    if(reload){
+                        if(pjax)
+                            return $.pjax.reload("#content-body");
+                        return window.location.reload();
+                    }
+                    if(res.redirect){
+                        if(pjax) {
+                            return $.pjax({url:res.redirect,container:'.content-body'});
+                        }else{
+                            return window.location.href = res.redirect;
+                        }
+                    }
+                }
+                if (typeof (res.data) == 'string') {
+                    pub.notify({type: res.status == 0 ? 'success' : 'error', title: res.data});
+                } else {
+                    pub.notify(res.data);
+                }
+            },
+            error: function (xhr,statusText,error) {
+                pub.notify({type: 'error', title: xhr.responseText});
+            },
+            dataType: 'json'
+        });
     }
 
     return pub;
