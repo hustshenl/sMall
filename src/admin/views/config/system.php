@@ -8,7 +8,8 @@ use yii\helpers\Html;
 use kartik\form\ActiveForm;
 use kartik\builder\Form;
 
-/** @var \admin\models\configs\BaseConfig $model */
+/* @var $this \yii\web\View */
+/** @var \admin\models\configs\SystemConfig $model */
 
 $this->title = \Yii::t('admin', 'System Config');
 $this->params['subTitle'] = \Yii::t('admin', 'Base Config');
@@ -20,11 +21,7 @@ $this->params['subTitle'] = \Yii::t('admin', 'Base Config');
 
 <div class="config-index">
     <div class="nav-tabs-custom">
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">基本设置</a></li>
-            <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Tab 2</a></li>
-            <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Tab 3</a></li>
-        </ul>
+        <?= $this->render('_nav.system.php',['tab'=>'system']);?>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
                 <!-- BEGIN FORM-->
@@ -91,12 +88,6 @@ $this->params['subTitle'] = \Yii::t('admin', 'Base Config');
                 ActiveForm::end();
                 ?>
                 <!-- END FORM-->
-            </div>
-            <!-- /.tab-pane -->
-            <div class="tab-pane" id="tab_2">
-            </div>
-            <!-- /.tab-pane -->
-            <div class="tab-pane" id="tab_3">
             </div>
             <!-- /.tab-pane -->
         </div>

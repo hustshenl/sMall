@@ -17,14 +17,14 @@ class MainController extends Controller
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
+        $behaviors = parent::behaviors();
+        $behaviors['verbs'] = [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'logout' => ['post'],
             ],
         ];
+        return $behaviors;
     }
 
     /**
@@ -43,9 +43,10 @@ class MainController extends Controller
     {
         return $this->render('index');
     }
+
     public function actionHome()
     {
-        if(isset(Yii::$app->params['domain'])&&isset(Yii::$app->params['domain']['frontend']))
+        if (isset(Yii::$app->params['domain']) && isset(Yii::$app->params['domain']['frontend']))
             return $this->redirect(Yii::$app->params['domain']['frontend']);
         throw new InvalidConfigException('You must config the domains!');
     }

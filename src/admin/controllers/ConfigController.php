@@ -9,9 +9,10 @@ namespace admin\controllers;
 
 
 
+use admin\models\configs\MallConfig;
 use common\components\Config;
 use yii\web\Controller;
-use admin\models\configs\BaseConfig;
+use admin\models\configs\SystemConfig;
 use admin\models\configs\OperationForm;
 use yii;
 
@@ -27,33 +28,38 @@ class ConfigController extends Controller
         $this->_config = Yii::$app->config;
     }
 
-    /**
-     * 系统设置首页
-     */
-    public function actionIndex()
+    public function actions()
     {
-        $model = new BaseConfig();
-        $model->attributes = $this->_config->get("siteInfo");
-        if ($model->load(Yii::$app->request->post())) {
-            $this->_config->set("siteInfo", $model->attributes);
-            Yii::$app->getSession()->setFlash('success', Yii::t('common', 'Save success!'));
-            return $this->refresh();
-        }
-        return $this->render('index', [
-            'model' => $model,
-        ]);
+        return parent::actions();
     }
 
-    public function actionOperation()
+    /**
+     * @return string|yii\web\Response
+     */
+    public function actionSystem()
     {
-        $model = new OperationForm();
-        $model->attributes = $this->_config->get("operationInfo");
+        return $this->_config('system',new SystemConfig());
+    }
+    public function actionMall()
+    {
+        return $this->_config('mall',new MallConfig());
+    }
+
+    /**
+     * @param $category string
+     * @param $model yii\base\Model
+     * @return string|yii\web\Response
+     */
+    private function _config($category,$model)
+    {
+        //$model = new BaseConfig();
+        $model->attributes = $this->_config->get($category);
         if ($model->load(Yii::$app->request->post())) {
-            $this->_config->set("operationInfo", $model->attributes);
+            $this->_config->set($category, $model->attributes);
             Yii::$app->getSession()->setFlash('success', Yii::t('common', 'Save success!'));
             return $this->refresh();
         }
-        return $this->render('operation', [
+        return $this->render($category, [
             'model' => $model,
         ]);
     }

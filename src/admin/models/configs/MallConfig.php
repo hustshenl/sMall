@@ -13,9 +13,9 @@ use yii\base\Model;
 /**
  * BaseForm
  */
-class BaseConfig extends Model
+class MallConfig extends Model
 {
-    public $siteName;
+    public $mallName;
     public $siteUrl;
     public $siteTitle;
     public $siteSlogan;
@@ -40,14 +40,14 @@ class BaseConfig extends Model
         return [
             ['status', 'boolean'],
             ['adminEmail', 'email'],
-            [['siteName', 'siteUrl', 'siteTitle', 'siteSlogan', 'siteKeywords', 'siteDescription', 'adminEmail', 'adminQQ', 'icpSN', 'siteCopyright','headerCode','footerCode','socialCommentCode','socialShareCode', 'message'], 'string']
+            [['mallName', 'siteUrl', 'siteTitle', 'siteSlogan', 'siteKeywords', 'siteDescription', 'adminEmail', 'adminQQ', 'icpSN', 'siteCopyright','headerCode','footerCode','socialCommentCode','socialShareCode', 'message'], 'string']
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'siteName' => Yii::t('admin', 'Site name'),
+            'mallName' => Yii::t('admin', 'Mall name'),
             'siteUrl' => Yii::t('admin', 'Site url'),
             'apiUrl' => Yii::t('admin', 'Api url'),
             'interfaceUrl' => Yii::t('admin', 'Interface url'),

@@ -15,7 +15,7 @@ use yii\base\InvalidConfigException;
 use Exception;
 use yii\httpclient\Client;
 use yii\httpclient\CurlTransport;
-use common\components\Configs;
+use common\components\Config;
 
 /**
  * Class SinmhSdk

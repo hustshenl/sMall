@@ -2,7 +2,7 @@
 
 namespace common\helpers;
 
-use common\components\Configs;
+use common\components\Config;
 use yii;
 use yii\caching\TagDependency;
 
