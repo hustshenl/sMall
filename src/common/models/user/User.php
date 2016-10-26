@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models\member;
+namespace common\models\user;
 
 use Yii;
 
@@ -17,35 +17,32 @@ use Yii;
  * @property string $access_token
  * @property string $identity
  * @property string $identity_sn
- * @property string $qq
  * @property string $email
  * @property string $phone
- * @property string $weibo
- * @property string $address
- * @property integer $postcode
+ * @property integer $credit
+ * @property integer $point
+ * @property integer $coin
  * @property integer $scores
  * @property integer $grade
- * @property integer $credit
- * @property integer $vip
- * @property integer $vip_scores
- * @property integer $vip_expires
  * @property integer $role
+ * @property string $qq
+ * @property string $weibo
  * @property integer $gender
+ * @property string $avatar
+ * @property string $signature
+ * @property string $address
+ * @property integer $postcode
  * @property string $district
  * @property string $city
  * @property string $province
  * @property string $country
  * @property string $language
- * @property string $avatar
- * @property string $signature
  * @property string $remark
  * @property integer $register_ip
- * @property integer $login_at
- * @property integer $login_ip
  * @property integer $created_at
  * @property integer $updated_at
  */
-class Member extends \yii\db\ActiveRecord
+class User extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -61,8 +58,8 @@ class Member extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status', 'postcode', 'scores', 'grade', 'credit', 'vip', 'vip_scores', 'vip_expires', 'role', 'gender', 'register_ip', 'login_at', 'login_ip', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'nickname', 'identity', 'identity_sn', 'qq', 'email', 'weibo', 'address', 'avatar'], 'string', 'max' => 255],
+            [['status', 'credit', 'point', 'coin', 'scores', 'grade', 'role', 'gender', 'postcode', 'register_ip', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'nickname', 'identity', 'identity_sn', 'email', 'qq', 'weibo', 'avatar', 'address'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['password_hash', 'phone', 'district', 'city', 'province', 'country', 'language'], 'string', 'max' => 64],
             [['password_reset_token', 'access_token'], 'string', 'max' => 128],
@@ -86,31 +83,28 @@ class Member extends \yii\db\ActiveRecord
             'access_token' => Yii::t('common', 'Access Token'),
             'identity' => Yii::t('common', 'Identity'),
             'identity_sn' => Yii::t('common', 'Identity Sn'),
-            'qq' => Yii::t('common', 'Qq'),
             'email' => Yii::t('common', 'Email'),
             'phone' => Yii::t('common', 'Phone'),
+            'credit' => Yii::t('common', '账户余额'),
+            'point' => Yii::t('common', '商城点数，类似天猫积分/京东京豆'),
+            'coin' => Yii::t('common', '商城币，类似天猫点券/Q币之类，可充值不可提现'),
+            'scores' => Yii::t('common', '等级积分'),
+            'grade' => Yii::t('common', '用户等级'),
+            'role' => Yii::t('common', 'Role'),
+            'qq' => Yii::t('common', 'Qq'),
             'weibo' => Yii::t('common', 'Weibo'),
+            'gender' => Yii::t('common', 'Gender'),
+            'avatar' => Yii::t('common', 'Avatar'),
+            'signature' => Yii::t('common', 'Signature'),
             'address' => Yii::t('common', 'Address'),
             'postcode' => Yii::t('common', 'Postcode'),
-            'scores' => Yii::t('common', 'Scores'),
-            'grade' => Yii::t('common', 'Grade'),
-            'credit' => Yii::t('common', 'Credit'),
-            'vip' => Yii::t('common', 'Vip'),
-            'vip_scores' => Yii::t('common', 'Vip Scores'),
-            'vip_expires' => Yii::t('common', 'Vip Expires'),
-            'role' => Yii::t('common', 'Role'),
-            'gender' => Yii::t('common', 'Gender'),
             'district' => Yii::t('common', 'District'),
             'city' => Yii::t('common', 'City'),
             'province' => Yii::t('common', 'Province'),
             'country' => Yii::t('common', 'Country'),
             'language' => Yii::t('common', 'Language'),
-            'avatar' => Yii::t('common', 'Avatar'),
-            'signature' => Yii::t('common', 'Signature'),
             'remark' => Yii::t('common', 'Remark'),
             'register_ip' => Yii::t('common', 'Register Ip'),
-            'login_at' => Yii::t('common', 'Login At'),
-            'login_ip' => Yii::t('common', 'Login Ip'),
             'created_at' => Yii::t('common', 'Created At'),
             'updated_at' => Yii::t('common', 'Updated At'),
         ];
@@ -118,10 +112,10 @@ class Member extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * @return MemberQuery the active query used by this AR class.
+     * @return UserQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new MemberQuery(get_called_class());
+        return new UserQuery(get_called_class());
     }
 }

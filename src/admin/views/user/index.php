@@ -6,26 +6,26 @@ use kartik\grid\GridView;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $searchModel admin\models\member\member */
+/* @var $searchModel admin\models\user\user */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('admin', 'Members');
+$this->title = Yii::t('admin', 'Users');
 $this->params['breadcrumbs'][] = $this->title;
 $this->blocks['hideTitle'] = false;
 $this->registerJs(<<<JS
 yii.actionColumn.onLoad = {};
 JS
 );
-$this->registerJsFile('@web/js/member.js',['depends'=>\admin\widgets\AppAsset::className()]);
+$this->registerJsFile('@web/js/user.js',['depends'=>\admin\widgets\AppAsset::className()]);
 
 
 $this->beginBlock('content-header-actions');
-echo Html::a(Yii::t('admin', 'Create Member'), ['create'], ['class' => 'btn btn-success']);
+echo Html::a(Yii::t('admin', 'Create User'), ['create'], ['class' => 'btn btn-success']);
 echo ' '.Html::button(Yii::t('common', '多选'), ['class' => 'btn btn-info multi-select']);
 echo ' '.Html::button(Yii::t('common', '高级筛选'), ['class' => 'btn btn-info advance-search-trigger']);
 $this->endBlock(); ?>
 
-<div class="member-index">
+<div class="user-index">
     <?php
     $editableUrl = '';
     Pjax::begin(['id' => 'pjax-content']);

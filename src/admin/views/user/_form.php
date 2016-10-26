@@ -7,11 +7,11 @@ use kartik\builder\Form;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\member\Member */
+/* @var $model common\models\user\User */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="member-form">
+<div class="user-form">
 
     <?php $form = ActiveForm::begin();
     echo Form::widget([ // continuation fields to row above without labels

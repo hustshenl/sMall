@@ -2,14 +2,14 @@
  * Created by Shen.L on 2016/10/12.
  */
 
-sMall.member = function ($) {
+sMall.user = function ($) {
     var pub = {
         init: function () {
-            console.log('member init');
+            console.log('user init');
             $document.on('click','#test',function (e) {
                 var $this = $(this),url = $this.data('url');
                 toastr['success']('test');
-                sMall.ajaxReload(url+' .member-view-body','.member-view');
+                sMall.ajaxReload(url+' .user-view-body','.user-view');
             });
             $document.off('click','.multi-select').on('click','.multi-select',function (e) {
                 var keys = sMall.getSelectedKeys(function (res) {

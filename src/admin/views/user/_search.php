@@ -7,13 +7,13 @@ use kartik\builder\Form;
 use common\widgets\AdvanceSearch;
 
 /* @var $this yii\web\View */
-/* @var $model admin\models\member\member */
+/* @var $model admin\models\user\user */
 /* @var $form yii\widgets\ActiveForm */
 
 
 ?>
 
-<div class="member-search">
+<div class="user-search">
 
     <?php
     $form = ActiveForm::begin([

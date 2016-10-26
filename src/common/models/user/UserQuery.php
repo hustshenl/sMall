@@ -1,13 +1,13 @@
 <?php
 
-namespace common\models\member;
+namespace common\models\user;
 
 /**
- * This is the ActiveQuery class for [[Member]].
+ * This is the ActiveQuery class for [[User]].
  *
- * @see Member
+ * @see User
  */
-class MemberQuery extends \yii\db\ActiveQuery
+class UserQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class MemberQuery extends \yii\db\ActiveQuery
 
     /**
      * @inheritdoc
-     * @return Member[]|array
+     * @return User[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class MemberQuery extends \yii\db\ActiveQuery
 
     /**
      * @inheritdoc
-     * @return Member|array|null
+     * @return User|array|null
      */
     public function one($db = null)
     {

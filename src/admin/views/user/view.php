@@ -4,12 +4,12 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\member\Member */
+/* @var $model common\models\user\User */
 
 $this->title = $model->username;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'Members'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'Users'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = '会员详情';
-$this->registerJsFile('@web/js/member.js', ['depends' => \admin\widgets\AppAsset::className()]);
+$this->registerJsFile('@web/js/user.js', ['depends' => \admin\widgets\AppAsset::className()]);
 
 ?>
 
@@ -27,8 +27,8 @@ $this->registerJsFile('@web/js/member.js', ['depends' => \admin\widgets\AppAsset
 ); ?>
 
 <?php $this->endBlock(); ?>
-<div class="member-view">
-    <div class="member-view-body">
+<div class="user-view">
+    <div class="user-view-body">
     <?= Html::button(Yii::t('admin', 'Test'), ['class' => 'btn btn-primary', 'id' => 'test',
         'data-url'=>\yii\helpers\Url::current()]) ?>
 
@@ -45,31 +45,28 @@ $this->registerJsFile('@web/js/member.js', ['depends' => \admin\widgets\AppAsset
             'access_token',
             'identity',
             'identity_sn',
-            'qq',
             'email:email',
             'phone',
-            'weibo',
-            'address',
-            'postcode',
+            'credit',
+            'point',
+            'coin',
             'scores',
             'grade',
-            'credit',
-            'vip',
-            'vip_scores',
-            'vip_expires',
             'role',
+            'qq',
+            'weibo',
             'gender',
+            'avatar',
+            'signature',
+            'address',
+            'postcode',
             'district',
             'city',
             'province',
             'country',
             'language',
-            'avatar',
-            'signature',
             'remark',
             'register_ip',
-            'login_at',
-            'login_ip',
             'created_at',
             'updated_at',
         ],
