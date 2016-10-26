@@ -27,7 +27,7 @@ class Admin extends User
     public function rules()
     {
         return [
-            [['id', 'status', 'scores', 'grade', 'gender', 'role', 'login_at', 'login_ip', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'status', 'scores', 'grade', 'gender', 'role', 'created_at', 'updated_at'], 'integer'],
             [['username', 'auth_key', 'password_hash', 'password_reset_token', 'access_token', 'email', 'phone', 'nickname', 'city', 'province', 'country', 'language', 'avatar'], 'safe'],
         ];
     }
