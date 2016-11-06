@@ -1,5 +1,5 @@
 <?php
-namespace frontend\controllers;
+namespace passport\controllers;
 
 use yii;
 use yii\base\InvalidParamException;
@@ -8,15 +8,15 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\access\LoginForm;
-use frontend\models\PasswordResetRequestForm;
-use frontend\models\ResetPasswordForm;
-use frontend\models\SignupForm;
-use frontend\models\ContactForm;
+use passport\models\PasswordResetRequestForm;
+use passport\models\ResetPasswordForm;
+use passport\models\SignupForm;
+use passport\models\ContactForm;
 
 /**
  * Site controller
  */
-class SiteController extends Controller
+class PassportController extends Controller
 {
     /**
      * @inheritdoc
@@ -26,15 +26,9 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
+                'except' => ['login','register','error'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -76,12 +70,12 @@ class SiteController extends Controller
     }
 
     /**
-     * Logs in a user.
-     *
-     * @return mixed
+     * @param string $redirect
+     * @return string|yii\web\Response
      */
-    public function actionLogin()
+    public function actionLogin($redirect='')
     {
+        $this->layout = 'login';
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -146,7 +140,7 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    public function actionSignup()
+    public function actionRegister()
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {

@@ -39,6 +39,8 @@ return [
             'common/runtime',
             'frontend/runtime',
             'frontend/web/assets',
+            'passport/runtime',
+            'passport/web/assets',
         ],
         'setExecutable' => [
             'yii',
@@ -48,6 +50,7 @@ return [
             'admin/config/main-local.php',
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
+            'passport/config/main-local.php',
         ],
     ],
     'Production' => [
@@ -60,6 +63,8 @@ return [
             'common/runtime',
             'frontend/runtime',
             'frontend/web/assets',
+            'passport/runtime',
+            'passport/web/assets',
         ],
         'setExecutable' => [
             'yii',
@@ -68,6 +73,7 @@ return [
             'admin/config/main-local.php',
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
+            'passport/config/main-local.php',
         ],
     ],
 ];

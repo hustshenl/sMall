@@ -18,7 +18,8 @@ use yii\httpclient\CurlTransport;
 use common\models\access\User as UserModel;
 
 /**
- * Class User
+ * 用户服务
+ * 提供注册/登陆/
  * @package common\components
  * @property string $firstError
  */
@@ -27,15 +28,13 @@ class User extends Component
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
     const EVENT_AFTER_CREATE = 'afterCreate';
-    const EVENT_AFTER_APPROVE = 'afterApprove';
     const EVENT_BEFORE_DELETE = 'beforeDelete';
     const EVENT_AFTER_DELETE = 'afterDelete';
 
-    const CACHE_TAG_COLLECT_RULE = 'sinmh.collect.rules';
-    const CACHE_TAG_ACCESS_TOKEN = 'sinmh.sdk.access.token';
-    const CACHE_TAG_VERSION = 'sinmh.sdk.version';
-    const CACHE_TAG_LICENSE = 'sinmh.sdk.license';
-    const CACHE_TAG_BEHAVIOR = 'sinmh.sdk.behavior';
+    const CACHE_TAG_ACCESS_TOKEN = 'hust.shenl.small.sdk.access.token';
+    const CACHE_TAG_VERSION = 'hust.shenl.small.sdk.version';
+    const CACHE_TAG_LICENSE = 'hust.shenl.small.sdk.license';
+    const CACHE_TAG_BEHAVIOR = 'hust.shenl.small.sdk.behavior';
 
     public $debug = false;
     public $errCode = 40001;
