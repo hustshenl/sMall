@@ -24,7 +24,7 @@ use yii\helpers\Json;
 class RestController extends Controller {
     protected $_callback = false;
     public $serializer = [
-        'class' => 'common\components\Serializer',
+        'class' => 'common\components\base\Serializer',
         'collectionEnvelope' => 'items',
     ];
 

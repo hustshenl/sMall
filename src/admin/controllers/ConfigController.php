@@ -8,12 +8,11 @@
 namespace admin\controllers;
 
 
-
 use admin\models\configs\MallConfig;
-use common\components\Config;
+use common\components\base\Config;
 use yii\web\Controller;
 use admin\models\configs\SystemConfig;
-use admin\models\configs\OperationForm;
+use admin\models\configs\RsaConfig;
 use yii;
 
 class ConfigController extends Controller
@@ -38,11 +37,41 @@ class ConfigController extends Controller
      */
     public function actionSystem()
     {
-        return $this->_config('system',new SystemConfig());
+        return $this->_config('system', new SystemConfig());
     }
+
+    public function actionRsa()
+    {
+
+        $model = new RsaConfig();
+        $category = 'rsa';
+        $model->attributes = $this->_config->get($category);
+        if ($model->load(Yii::$app->request->post())) {
+            $privateKey = openssl_pkey_get_private($model->privateKey);
+            $publicKey = openssl_pkey_get_public($model->publicKey);
+            if ($privateKey === false || $publicKey === false) {
+                Yii::$app->getSession()->setFlash('error', Yii::t('common', '不合法的密钥格式。'));
+            } else {
+                $source = Yii::$app->security->generateRandomString();
+                openssl_private_encrypt($source, $encrypted, $privateKey);
+                openssl_public_decrypt($encrypted, $decrypted, $publicKey);
+                if ($decrypted == $source) {
+                    $this->_config->set($category, $model->attributes);
+                    Yii::$app->getSession()->setFlash('success', Yii::t('common', 'Save success!'));
+                }else{
+                    Yii::$app->getSession()->setFlash('error', Yii::t('common', '密钥不配对。'));
+                }
+            }
+            return $this->refresh();
+        }
+        return $this->render($category, [
+            'model' => $model,
+        ]);
+    }
+
     public function actionMall()
     {
-        return $this->_config('mall',new MallConfig());
+        return $this->_config('mall', new MallConfig());
     }
 
     /**
@@ -50,7 +79,7 @@ class ConfigController extends Controller
      * @param $model yii\base\Model
      * @return string|yii\web\Response
      */
-    private function _config($category,$model)
+    private function _config($category, $model)
     {
         //$model = new BaseConfig();
         $model->attributes = $this->_config->get($category);

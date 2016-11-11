@@ -5,7 +5,7 @@ namespace admin\controllers;
 use yii;
 use common\models\user\User;
 use admin\models\user\User as UserSearch;
-use admin\components\Controller;
+use common\components\base\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 

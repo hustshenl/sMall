@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace common\components;
+namespace common\components\base;
 
 use yii;
 use yii\base\Arrayable;

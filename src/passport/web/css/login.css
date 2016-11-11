@@ -1,0 +1,66 @@
+input,.input-group-addon,button{
+    border-radius: 0!important;
+}
+
+nav .container {
+    width:990px!important;
+}
+
+.wrap > .container {
+    width: 100%;
+    min-width: 1100px;
+    padding: 20px 0;
+}
+
+.login-wrap .inner{
+    position: relative;
+    width: 1100px;
+    height: 600px;
+    margin: 0 auto;
+}
+
+.login-ad {
+    display: block;
+    position: absolute;
+    top: 80px;
+    left: 40px;
+    width: 500px;
+    height: 440px;
+    border: none;
+    outline: none;
+}
+
+.login-wrap .form{
+    position: absolute;
+    top:90px;
+    right: 60px;
+    width: 400px;
+    background: #FFF;
+    padding: 20px;
+}
+
+.footer {
+    height: 60px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+@media(max-width:768px) {
+	.nav li > form {
+	    padding: 3px;
+	}
+}
+
+.nav > li > form > button:hover {
+    text-decoration: none;
+}
+
+
+.radio, .checkbox{
+    margin-top: 0;
+}
+/*
+.form-group-lg input{
+    font-size: 14px!important;
+}*/

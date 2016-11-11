@@ -11,6 +11,9 @@ use passport\assets\AppAsset;
 use common\widgets\Alert;
 
 AppAsset::register($this);
+\kartik\icons\Icon::map($this,\kartik\icons\Icon::FA);
+$this->registerCssFile('@web/css/login.css',['depends'=>'passport\assets\AppAsset']);
+$this->registerJsFile('@web/js/login.js',['depends'=>'passport\assets\AppAsset']);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -26,7 +29,7 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div class="wrap">
-    <nav class="navbar-inverse navbar-fixed-top navbar" role="navigation">
+    <nav class="navbar" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">My Company</a></div>

@@ -6,7 +6,7 @@
  * Time: 18:39
  */
 
-namespace admin\components;
+namespace common\components\base;
 
 
 use common\behaviors\AjaxReturnBehavior;

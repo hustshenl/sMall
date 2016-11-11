@@ -5,7 +5,7 @@
  * @Description:
  */
 
-namespace common\components;
+namespace common\components\base;
 
 use yii;
 use yii\db\Connection;

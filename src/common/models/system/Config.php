@@ -39,8 +39,9 @@ class Config extends yii\db\ActiveRecord
      */
     public static function submit($key,$value)
     {
+
         $config = static::findOne($key);
-        if($config === false){
+        if($config === null){
             $config = new static();
             $config->conf_key = $key;
         }

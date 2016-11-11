@@ -11,7 +11,7 @@ use mdm\admin\models\Assignment;
 use admin\models\access\AdminSearch;
 use admin\models\access\UserSearch;
 //use yii\web\Controller;
-use admin\components\Controller;
+use common\components\base\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use admin\models\forms\Admin as AdminForm;

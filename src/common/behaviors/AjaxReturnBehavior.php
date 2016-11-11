@@ -1,7 +1,7 @@
 <?php
 namespace common\behaviors;
 
-use common\components\Serializer;
+use common\components\base\Serializer;
 use yii\base\Behavior;
 use yii;
 use yii\web\Response;

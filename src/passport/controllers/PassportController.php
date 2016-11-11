@@ -4,7 +4,7 @@ namespace passport\controllers;
 use yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
-use yii\web\Controller;
+use common\components\base\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\access\LoginForm;
@@ -23,24 +23,24 @@ class PassportController extends Controller
      */
     public function behaviors()
     {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'except' => ['login','register','error'],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
+        $behaviors = parent::behaviors();
+        $behaviors['access'] = [
+            'class' => AccessControl::className(),
+            'except' => ['login','register','error'],
+            'rules' => [
+                [
+                    'allow' => true,
+                    'roles' => ['@'],
                 ],
             ],
         ];
+        $behaviors['verbs'] = [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'logout' => ['post'],
+            ],
+        ];
+        return $behaviors;
     }
 
     /**
@@ -75,18 +75,32 @@ class PassportController extends Controller
      */
     public function actionLogin($redirect='')
     {
+        if(Yii::$app->request->isAjax) return $this->ajaxLogin($redirect);
         $this->layout = 'login';
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+            return Yii::$app->request->isAjax?$this->success('logged'):$this->goHome();
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        if ($model->load(Yii::$app->request->post(),'') && $model->login()) {
+            return Yii::$app->request->isAjax?$this->success('success'):$this->goBack();
         } else {
             return $this->render('login', [
                 'model' => $model,
             ]);
+        }
+    }
+    private function ajaxLogin($redirect=''){
+
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirect($redirect);
+        }
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post(),'') && $model->login()) {
+            return $this->success('success');
+        } else {
+            // TODO 根据错误信息，输出明确错误提示
+            return $this->error(['errors'=>$model->errors]);
         }
     }
 
