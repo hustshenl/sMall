@@ -24,7 +24,7 @@ $this->params['subTitle'] = \Yii::t('admin', 'Base Config');
         <?= $this->render('_nav.system.php',['tab'=>'rsa']);?>
         <div class="tab-content">
             <p class="text-muted well well-sm no-shadow">
-                提示信息：RSA加密用于用户登陆。
+                提示信息：RSA加密用于用户登陆；设置更新后请立即清理缓存。
             </p>
             <div class="tab-pane active" id="tab_1">
                 <!-- BEGIN FORM-->

@@ -11,7 +11,8 @@ use common\models\access\LoginForm;
 use passport\models\PasswordResetRequestForm;
 use passport\models\ResetPasswordForm;
 use passport\models\SignupForm;
-use passport\models\ContactForm;
+use common\models\access\User;
+use common\helpers\StringHelper;
 
 /**
  * Site controller
@@ -73,7 +74,7 @@ class PassportController extends Controller
      * @param string $redirect
      * @return string|yii\web\Response
      */
-    public function actionLogin($redirect='')
+    public function actionLogin($redirect='/')
     {
         if(Yii::$app->request->isAjax) return $this->ajaxLogin($redirect);
         $this->layout = 'login';
@@ -90,17 +91,21 @@ class PassportController extends Controller
             ]);
         }
     }
-    private function ajaxLogin($redirect=''){
+    private function ajaxLogin($redirect='/'){
 
         if (!Yii::$app->user->isGuest) {
             return $this->redirect($redirect);
         }
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post(),'') && $model->login()) {
-            return $this->success('success');
+            return $this->redirect($redirect);
         } else {
             // TODO 根据错误信息，输出明确错误提示
-            return $this->error(['errors'=>$model->errors]);
+            $message = '未知错误';
+            foreach ($model->errors as $attribute=>$error){
+                $message = reset($error);
+            }
+            return $this->error(['msg'=>$message]);
         }
     }
 
@@ -116,38 +121,6 @@ class PassportController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Displays contact page.
-     *
-     * @return mixed
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
-            } else {
-                Yii::$app->session->setFlash('error', 'There was an error sending email.');
-            }
-
-            return $this->refresh();
-        } else {
-            return $this->render('contact', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return mixed
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
 
     /**
      * Signs user up.
@@ -217,5 +190,30 @@ class PassportController extends Controller
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * @param $user User
+     * @param $redirect_uri string
+     * @return string
+     */
+    protected function generateCallbackUrl($user,$redirect_uri)
+    {
+        $auth = $user->getAuthKey();
+        // TODO 获取各应用对应的单点登陆密钥
+        $ssoSecret = Yii::$app->cache->get(static::CACHE_TAG_SSO_SECRET);
+        if(!$ssoSecret) {
+            $ssoSecret = Yii::$app->security->generateRandomString();
+            Yii::$app->cache->set(static::CACHE_TAG_SSO_SECRET,$ssoSecret);
+        }
+        $code = Yii::$app->security->encryptByPassword($user->id.'__'.$auth.'__'.time(),$ssoSecret);
+        $uri = parse_url($redirect_uri);
+        if(!isset($uri['scheme'])) $uri['scheme'] = 'http';
+        if(isset($uri['port'])&&$uri['port']!='80') {
+            $callbackUrl = $uri['scheme'].'://'.$uri['host'].':'.$uri['port'].'/login/?code='.StringHelper::base64url_encode($code).'&redirect_uri='.urlencode($redirect_uri);
+        } else{
+            $callbackUrl = $uri['scheme'].'://'.$uri['host'].'/login/?code='.StringHelper::base64url_encode($code).'&redirect_uri='.urlencode($redirect_uri);
+        }
+        return $callbackUrl;
     }
 }

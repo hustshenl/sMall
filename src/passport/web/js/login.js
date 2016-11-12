@@ -19,7 +19,6 @@ var login = function ($) {
             if(''==data.username||''==data.password) {showMessage('请填写账户名或者密码');return false;}
             // TODO 对password进行加密
             data.password = security.encrypt(data.password);
-            console.log(data);//return false;
             //window.
             // 提交表单
             $.post(
@@ -28,12 +27,19 @@ var login = function ($) {
                 function (res) {
                     // TODO 根据返回信息进行处理
                     console.log(res);
+                    if(res.status > 0){
+                        showMessage(res.msg);
+                        return false;
+                    }
+                    if(res.redirect) window.location.href = res.redirect;
+                    window.location.href = '/';
                 }
             );
             return false;
         });
     }
     function showMessage(message) {
+        // TODO 展示错误信息
         console.log(message);
     }
     function getData(form) {
