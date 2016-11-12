@@ -65,12 +65,12 @@ class JavascriptController extends Controller
         return $this->render('index');
     }
 
-    public function actionKeys()
+    public function actionConfig()
     {
         $this->layout = false;
         Yii::$app->response->format = Response::FORMAT_RAW;
         Yii::$app->response->headers->add('Content-Type','application/javascript');
-        return $this->render('keys');
+        return $this->render('config');
     }
 
 }

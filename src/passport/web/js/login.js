@@ -18,6 +18,9 @@ var login = function ($) {
             // 判断数据情况
             if(''==data.username||''==data.password) {showMessage('请填写账户名或者密码');return false;}
             // TODO 对password进行加密
+            data.password = security.encrypt(data.password);
+            console.log(data);//return false;
+            //window.
             // 提交表单
             $.post(
                 '/login',

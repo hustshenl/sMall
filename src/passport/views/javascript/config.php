@@ -12,12 +12,17 @@ use \yii\helpers\Json;
 // TODO 获取公钥
 /** @var \common\components\base\Config $config */
 $config = Yii::$app->config;
-$rsaPubKey = $config->get('ras','publicKey');
+$rsaStatus = $config->get('rsa','status');
+$rsaPublicKey = base64_encode($config->get('rsa','publicKey'));
 ob_start();
 echo <<<JS
-var keys = function () {
+var config = function () {
     return {
-        rsa:'$rsaKey',
+        version:'1.0.0',
+        security:{
+            rasStatus:$rsaStatus,
+            publicKey:'$rsaPublicKey'
+        },
     };
 }();
 JS;

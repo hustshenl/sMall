@@ -13,6 +13,9 @@ use common\widgets\Alert;
 AppAsset::register($this);
 \kartik\icons\Icon::map($this,\kartik\icons\Icon::FA);
 $this->registerCssFile('@web/css/login.css',['depends'=>'passport\assets\AppAsset']);
+$this->registerJsFile('@web/js/lib/jsencrypt.js',['depends'=>'passport\assets\AppAsset']);
+$this->registerJsFile('@web/js/lib/security.js',['depends'=>'passport\assets\AppAsset']);
+$this->registerJsFile('@web/javascript/config');
 $this->registerJsFile('@web/js/login.js',['depends'=>'passport\assets\AppAsset']);
 ?>
 <?php $this->beginPage() ?>

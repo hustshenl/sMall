@@ -1,6 +1,7 @@
 <?php
 namespace common\models\access;
 
+use common\helpers\Security;
 use yii;
 use yii\base\Model;
 
@@ -46,6 +47,13 @@ class LoginForm extends Model
                 $this->addError($attribute, 'Incorrect username or password.');
             }
         }
+    }
+
+    public function load($data, $formName = null)
+    {
+        if(!parent::load($data, $formName)) return false;
+        $this->password = Security::rsaDecrypt($this->password);
+        return true;
     }
 
     /**

@@ -23,6 +23,9 @@ $this->params['subTitle'] = \Yii::t('admin', 'Base Config');
     <div class="nav-tabs-custom">
         <?= $this->render('_nav.system.php',['tab'=>'rsa']);?>
         <div class="tab-content">
+            <p class="text-muted well well-sm no-shadow">
+                提示信息：RSA加密用于用户登陆。
+            </p>
             <div class="tab-pane active" id="tab_1">
                 <!-- BEGIN FORM-->
                 <?php $form = ActiveForm::begin([
@@ -35,6 +38,18 @@ $this->params['subTitle'] = \Yii::t('admin', 'Base Config');
                     'form' => $form,
                     'columns' => 1,
                     'attributes' => [
+                        'status' => [
+                            'type' => Form::INPUT_WIDGET,
+                            'widgetClass' => '\kartik\widgets\SwitchInput',
+                            'options' => [
+                                'containerOptions' => ['class' => ''],
+                                'pluginOptions' => [
+                                    'onText' => '开启',
+                                    'offText' => '关闭',
+                                ],
+                            ]
+                        ],
+
                         'publicKey' => ['type'=>Form::INPUT_TEXTAREA,'options' => ['placeholder' => '请输入网站描述，用于首页描述显示...','rows'=>3]],
                         'privateKey' => ['type'=>Form::INPUT_TEXTAREA,'options' => ['placeholder' => '请输入网站描述，用于首页描述显示...','rows'=>3]],
                     ]
