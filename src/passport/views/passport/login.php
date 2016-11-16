@@ -19,13 +19,21 @@ $this->registerJs(';login.init();');
         <div class="form form-group-lg">
             <h3 class="margin-bottom">用户登陆</h3>
             <?php $form = ActiveForm::begin(['id' => 'login-form','enableClientScript'=>false]); ?>
+            <div id="login-message"
+                 style="display:none;"
+                 class="login-message error">
+                <i class="icon-font">&#xe604;</i>
+                <p class="login-error" id="login-error"></p>
+
+            </div>
+
             <div class="input-group margin-bottom"><!-- has-error-->
-                <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                <span class="input-group-addon"><i class="icon-font">&#xe601;</i></span>
                 <input class="form-control" type="text" placeholder="用户名/邮箱/手机" name="username" autofocus>
             </div>
             <p class="help-block"></p>
             <div class="input-group margin-bottom">
-                <span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+                <span class="input-group-addon"><i class="icon-font">&#xe600;</i></span>
                 <input class="form-control" type="password" placeholder="密码" name="password">
             </div>
             <div class="row">
@@ -44,7 +52,7 @@ $this->registerJs(';login.init();');
             </div>
 
             <div class="form-group">
-                <?= Html::submitButton('登 &nbsp; 陆', ['class' => 'btn btn-danger btn-lg btn-block', 'name' => 'login-button']) ?>
+                <?= Html::submitButton('登 &nbsp; 陆', ['class' => 'btn btn-danger btn-lg btn-block', 'name' => 'login-button','id'=>'login-button']) ?>
             </div>
 
             <div class="row">

@@ -16,7 +16,7 @@ $rsaStatus = $config->get('rsa','status');
 $rsaPublicKey = base64_encode($config->get('rsa','publicKey'));
 ob_start();
 echo <<<JS
-var config = function () {
+var ssoConfig = function () {
     return {
         version:'1.0.0',
         security:{

@@ -116,12 +116,13 @@ var security = function () {
 
     }();
 
-    var jsEncrypt = new JSEncrypt();
-    jsEncrypt.setKey(base64.decode(config.security.publicKey));
-    var encrypt = function (string) {
-        if(!config.version) return null;
-        if(!config.security.rasStatus) return string;
-        return jsEncrypt.encrypt(string);
+    var jsEncrypt;
+    var encrypt = function (string,salt) {
+        if(!ssoConfig.version) return string;
+        jsEncrypt =new JSEncrypt();
+        jsEncrypt.setKey(base64.decode(ssoConfig.security.publicKey));
+        if(!ssoConfig.security.rasStatus) return string;
+        return jsEncrypt.encrypt(salt+'___'+string);
     };
 
 

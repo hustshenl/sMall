@@ -1,0 +1,101 @@
+@font-face {
+    font-family: icon-font;
+    src: url(../fonts/sso-icon.eot);
+    src: url(../fonts/sso-icon.eot?#iefix) format('embedded-opentype'),
+    url(../fonts/sso-icon.woff) format('woff'),
+    url(../fonts/sso-icon.ttf) format('truetype'),
+    url(../fonts/sso-icon.svg#icon-font) format('svg');
+}
+.icon-font {
+    font-family: icon-font!important;
+    font-size: 22px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: .2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.sso-wrap{
+    width: 320px;
+}
+input {
+    border-radius: 0 !important;
+}
+
+.margin-bottom {
+    margin-bottom: 20px;
+}
+
+#sso-form {
+    padding: 20px;
+}
+
+span.sso-input-group-addon {
+    border-radius: 0;
+    border: 1px solid #ccc;
+    background: #FFF;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    box-sizing: border-box;
+    line-height: 34px;
+}
+
+input.sso-form-control {
+    border: 1px solid #ccc;
+    height: 40px;
+    width: 100%;
+    padding-left: 48px;
+    outline: none;
+}
+
+.sso-btn {
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 2.25;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid #d43f3a;
+    color: #fff;
+    background-color: #d9534f;
+    display: block;
+    width: 100%;
+}
+.sso-btn.disabled, .sso-btn[disabled], fieldset[disabled] .sso-btn {
+    cursor: not-allowed;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    opacity: .65;
+}
+.sso-message{
+    line-height: 16px;
+    padding: 6px 10px;
+    overflow: hidden;
+    background: rgb(254, 242, 242);
+    margin: 0 0 10px;
+
+}
+.sso-message p{
+    margin: 0 0 0 27px;
+    text-align: left;
+    white-space: normal;
+    word-wrap: break-word;
+}
+.sso-message .icon-font{
+    color: #D64848;
+    padding-right: 10px;
+    float: left;
+    font-size: 16px;
+
+}

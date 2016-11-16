@@ -88,6 +88,12 @@ class User extends ActiveRecord implements IdentityInterface
 
         ];
     }
+
+    public function fields()
+    {
+        return ['id','status','username','nickname','email','phone','credit','point','coin','scores','grade','role','qq','weibo','gender','avatar','signature','address','postcode','district','city','province','country','language','remark','register_ip','created_at'];
+    }
+
     /**
      * @inheritdoc
      */

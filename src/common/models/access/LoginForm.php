@@ -51,8 +51,20 @@ class LoginForm extends Model
 
     public function load($data, $formName = null)
     {
-        if(!parent::load($data, $formName)) return false;
-        $this->password = Security::rsaDecrypt($this->password);
+        if (!parent::load($data, $formName)) return false;
+        $decrypted = Security::rsaDecrypt($this->password);
+        preg_match('/^(?P<salt>\w{1,16})___(?P<password>.*)/i', $decrypted, $matches);
+        if (empty($matches)) {
+            $this->password = $decrypted;
+        } else {
+            $salt = Yii::$app->session->get('sso.salt');
+            if ($salt != $matches['salt']) {
+                $this->addError('password', '登陆超时，请刷新页面！');
+                return false;
+            }
+            $this->password = $matches['password'];
+
+        }
         return true;
     }
 
@@ -83,7 +95,6 @@ class LoginForm extends Model
         if ($this->_user === false) {
             $this->_user = User::findByUsername($this->username);
         }
-
         return $this->_user;
     }
 }

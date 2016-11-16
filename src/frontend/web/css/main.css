@@ -100,12 +100,22 @@ a.desc:after {
     padding: 8px;
 }
 
-@media(max-width:768px) {
-	.nav li > form {
-	    padding: 3px;
-	}
+@media (max-width: 768px) {
+    .nav li > form {
+        padding: 3px;
+    }
 }
 
 .nav > li > form > button:hover {
     text-decoration: none;
+}
+.oss-modal{
+    /**overflow: hidden;**/
+}
+.oss-modal>.wrap, .oss-modal>footer {
+    webkit-filter: blur(4px);
+    -moz-filter: blur(4px);
+    -o-filter: blur(4px);
+    -ms-filter: blur(4px);
+    filter: blur(4px);
 }

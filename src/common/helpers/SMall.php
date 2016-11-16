@@ -22,4 +22,24 @@ class SMall extends Component
         return 1;
     }
 
+    /**
+     * @param $app
+     * @return string
+     */
+    public static function getHost($app)
+    {
+        if(in_array($app,['resource','passport'])){
+            return call_user_func([static::className(),'get'.ucfirst($app).'Host']);
+        }
+        return null;
+    }
+    public static function getResourceHost()
+    {
+        return '//res.small.dev.com';
+    }
+    public static function getPassportHost()
+    {
+        return '//passport.small.dev.com';
+    }
+
 }

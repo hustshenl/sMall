@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             ],
                             'phone',
                             'email',
-                            [
+                            /*[
                                 'label' => '最后登陆时间',
                                 'format' => ['datetime','php: Y-m-d H:i:s'],
                                 'value' => $model->login_at,
@@ -55,8 +55,8 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             [
                                 'label' => '最后登陆IP',
                                 //'format' => ['datetime','php: Y-m-d H:i:s'],
-                                'value' => long2ip($model->login_ip)/*.Yii::$app->request->getUserIP()*/,
-                            ],
+                                'value' => long2ip($model->login_ip)
+                            ],*/
                         ],
                     ]) ?>
                 </div>

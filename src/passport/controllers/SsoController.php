@@ -16,10 +16,7 @@ use common\helpers\StringHelper;
 use yii\web\Response;
 
 
-/**
- * Site controller
- */
-class PassportController extends Controller
+class SsoController extends Controller
 {
     /**
      * @inheritdoc
@@ -29,7 +26,7 @@ class PassportController extends Controller
         $behaviors = parent::behaviors();
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'except' => ['user', 'login', 'register', 'error'],
+            'except' => ['user', 'login', 'register', 'index','salt', 'error'],
             'rules' => [
                 [
                     'allow' => true,
@@ -80,49 +77,36 @@ class PassportController extends Controller
      */
     public function actionIndex()
     {
+        $this->layout = false;
         return $this->render('index');
     }
 
     public function actionUser()
     {
-        Yii::$app->response->format = Response::FORMAT_JSONP;
         if (!Yii::$app->user->isGuest) {
             return $this->success(['data' => Yii::$app->user->identity]);
         }
         return $this->error('Error.');
     }
-
-    /**
-     * @param string $redirect
-     * @return string|yii\web\Response
-     */
-    public function actionLogin($redirect = '/')
+    public function actionTime()
     {
-        if (Yii::$app->request->isAjax) return $this->ajaxLogin($redirect);
-        $this->layout = 'login';
-        if (!Yii::$app->user->isGuest) {
-            return Yii::$app->request->isAjax ? $this->success('logged') : $this->goHome();
-        }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
-            return Yii::$app->request->isAjax ? $this->success('success') : $this->goBack();
-        } else {
-            return $this->render('login', [
-                'model' => $model,
-            ]);
-        }
+        return $this->success(time());
+    }
+    public function actionSalt()
+    {
+        $salt = time();
+        Yii::$app->session->set('sso.salt',$salt);
+        return $this->success($salt);
     }
 
-    private function ajaxLogin($redirect = '/')
+    public function actionLogin($redirect = '/')
     {
-
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect($redirect);
+            return $this->success('Success');
         }
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
-            return $this->redirect($redirect);
+        if ($model->load(Yii::$app->request->get(), '') && $model->login()) {
+            return $this->success(['data' => Yii::$app->user->identity]);
         } else {
             // TODO 根据错误信息，输出明确错误提示
             $message = '未知错误';
@@ -132,6 +116,30 @@ class PassportController extends Controller
             return $this->error(['msg' => $message]);
         }
     }
+
+    public function actionSyncLogin()
+    {
+
+        if (Yii::$app->user->isGuest) {
+            return $this->error('用户未登陆');
+        }
+        // TODO 读取应用列表生成各自的登录链接
+        // 此处只返回主应用后续完善功能
+        // 获取用户id,auth_key,ip,当前时间
+        $configs = [
+            [
+                'host'=>'//www.small.dev.com',
+                'route'=>'/sso/login',
+                'secret'=>'123456',
+            ]
+        ];
+        $data = [];
+        foreach ($configs as $config){
+            $data[] = $this->generateAuthUrl($config);
+        }
+        return $this->success(['data'=>$data]);
+    }
+
 
     /**
      * Logs out the current user.
@@ -217,20 +225,15 @@ class PassportController extends Controller
     }
 
     /**
-     * @param $user User
-     * @param $redirect_uri string
+     * @param $config
      * @return string
      */
-    protected function generateCallbackUrl($user, $redirect_uri)
+    protected function generateAuthUrl($config)
     {
-        $auth = $user->getAuthKey();
-        // TODO 获取各应用对应的单点登陆密钥
-        $ssoSecret = Yii::$app->cache->get(static::CACHE_TAG_SSO_SECRET);
-        if (!$ssoSecret) {
-            $ssoSecret = Yii::$app->security->generateRandomString();
-            Yii::$app->cache->set(static::CACHE_TAG_SSO_SECRET, $ssoSecret);
-        }
-        $code = Yii::$app->security->encryptByPassword($user->id . '__' . $auth . '__' . time(), $ssoSecret);
+        if(!isset($config['host'])||!isset($config['route'])||!isset($config['secret'])) return false;
+        $code = $this->generateAuthCode($config['secret']);
+        $separator = strpos($config['route'],'?')!==false?'&':'?';
+        return rtrim($config['host'],'/').'/'.$config['route'].$separator.'code='.$code;
         $uri = parse_url($redirect_uri);
         if (!isset($uri['scheme'])) $uri['scheme'] = 'http';
         if (isset($uri['port']) && $uri['port'] != '80') {
@@ -239,5 +242,30 @@ class PassportController extends Controller
             $callbackUrl = $uri['scheme'] . '://' . $uri['host'] . '/login/?code=' . StringHelper::base64url_encode($code) . '&redirect_uri=' . urlencode($redirect_uri);
         }
         return $callbackUrl;
+    }
+
+    /**
+     * 生成授权代码
+     * @param $secret
+     * @return string
+     */
+    protected function generateAuthCode($secret)
+    {
+        /** @var User $user */
+        $user = Yii::$app->user->identity;
+        $authKey = $user->getAuthKey();
+        if (!$secret) {
+            $secret = Yii::$app->security->generateRandomString();
+        }
+        $data = [
+            'id'=>$user->id,
+            'username'=>$user->username,
+            'email'=>$user->email,
+            'phone'=>$user->phone,
+            'token'=>$authKey,
+            'ip'=>Yii::$app->request->getUserIP(),
+            'time'=>time(),
+        ];
+        return StringHelper::base64url_encode(Yii::$app->security->encryptByPassword(http_build_query($data), $secret));
     }
 }

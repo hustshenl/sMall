@@ -8,8 +8,8 @@ $this->title = 'My Yii Application';
 
     <div class="jumbotron">
         <h1>Congratulations!</h1>
-
         <p class="lead">You have successfully created your Yii-powered application.</p>
+        <p><a class="btn btn-success" href="javascript:sso.initUser(function(res) {console.log(res)}).done(function (res) {console.log(res);});">初始化用户信息</a></p>
 
         <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
     </div>

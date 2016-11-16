@@ -35,6 +35,7 @@ return [
             'showScriptName' => false,
             //'suffix' => '/',
             'rules' => [
+                'user'=>'passport/user',
                 'login'=>'passport/login',
                 'logout'=>'passport/logout',
                 'register'=>'passport/register',
