@@ -93,15 +93,10 @@ class SsoController extends Controller
         if(!isset($auth['ip'])||$auth['ip']!=Yii::$app->request->getUserIP()) return $this->error('IP地址发生变化，授权失败。',100001);
         var_dump($auth);
         $user = User::findIdentity($auth['id']);
-        if(empty($user)||$user->getAuthKey() != $auth[1]) return $this->error('授权失效或者用户不存在！');
+        if(empty($user)||$user->getAuthKey() != $auth['token']) return $this->error('授权失效或者用户不存在！');
         if(Yii::$app->user->login($user,3600 * 24 * 30)){
             Yii::$app->response->cookies->add(
-                new Cookie([
-                    'name'=>'access_token',
-                    'value'=>Yii::$app->user->identity->getAuthKey(),
-                    'expire'=>time()+3600 * 24 * 30,
-                    'httpOnly'=>false
-                ])
+                new Cookie(['name'=>'access_token', 'value'=>Yii::$app->user->identity->getAuthKey(), 'expire'=>time()+3600 * 24 * 30, 'httpOnly'=>false])
             );
             return $this->success('Success');
         }
