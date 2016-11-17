@@ -5,14 +5,14 @@
  * @Description:
  */
 
-namespace admin\controllers;
+namespace admin\controllers\system;
 
 
-use admin\models\configs\MallConfig;
+use admin\models\system\configs\MallConfig;
 use common\components\base\Config;
 use yii\web\Controller;
-use admin\models\configs\SystemConfig;
-use admin\models\configs\RsaConfig;
+use admin\models\system\configs\SystemConfig;
+use admin\models\system\configs\RsaConfig;
 use yii;
 
 class ConfigController extends Controller
@@ -35,7 +35,7 @@ class ConfigController extends Controller
     /**
      * @return string|yii\web\Response
      */
-    public function actionSystem()
+    public function actionIndex()
     {
         return $this->_config('system', new SystemConfig());
     }

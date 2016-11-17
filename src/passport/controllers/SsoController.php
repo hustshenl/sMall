@@ -1,6 +1,7 @@
 <?php
 namespace passport\controllers;
 
+use common\components\access\Sso;
 use yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -119,25 +120,10 @@ class SsoController extends Controller
 
     public function actionSyncLogin()
     {
-
         if (Yii::$app->user->isGuest) {
             return $this->error('用户未登陆');
         }
-        // TODO 读取应用列表生成各自的登录链接
-        // 此处只返回主应用后续完善功能
-        // 获取用户id,auth_key,ip,当前时间
-        $configs = [
-            [
-                'host'=>'//www.small.dev.com',
-                'route'=>'/sso/login',
-                'secret'=>'123456',
-            ]
-        ];
-        $data = [];
-        foreach ($configs as $config){
-            $data[] = $this->generateAuthUrl($config);
-        }
-        return $this->success(['data'=>$data]);
+        return $this->success(['data'=>(new Sso())->generateSyncLinks()]);
     }
 
 
@@ -224,48 +210,4 @@ class SsoController extends Controller
         ]);
     }
 
-    /**
-     * @param $config
-     * @return string
-     */
-    protected function generateAuthUrl($config)
-    {
-        if(!isset($config['host'])||!isset($config['route'])||!isset($config['secret'])) return false;
-        $code = $this->generateAuthCode($config['secret']);
-        $separator = strpos($config['route'],'?')!==false?'&':'?';
-        return rtrim($config['host'],'/').'/'.$config['route'].$separator.'code='.$code;
-        $uri = parse_url($redirect_uri);
-        if (!isset($uri['scheme'])) $uri['scheme'] = 'http';
-        if (isset($uri['port']) && $uri['port'] != '80') {
-            $callbackUrl = $uri['scheme'] . '://' . $uri['host'] . ':' . $uri['port'] . '/login/?code=' . StringHelper::base64url_encode($code) . '&redirect_uri=' . urlencode($redirect_uri);
-        } else {
-            $callbackUrl = $uri['scheme'] . '://' . $uri['host'] . '/login/?code=' . StringHelper::base64url_encode($code) . '&redirect_uri=' . urlencode($redirect_uri);
-        }
-        return $callbackUrl;
-    }
-
-    /**
-     * 生成授权代码
-     * @param $secret
-     * @return string
-     */
-    protected function generateAuthCode($secret)
-    {
-        /** @var User $user */
-        $user = Yii::$app->user->identity;
-        $authKey = $user->getAuthKey();
-        if (!$secret) {
-            $secret = Yii::$app->security->generateRandomString();
-        }
-        $data = [
-            'id'=>$user->id,
-            'username'=>$user->username,
-            'email'=>$user->email,
-            'phone'=>$user->phone,
-            'token'=>$authKey,
-            'ip'=>Yii::$app->request->getUserIP(),
-            'time'=>time(),
-        ];
-        return StringHelper::base64url_encode(Yii::$app->security->encryptByPassword(http_build_query($data), $secret));
-    }
 }

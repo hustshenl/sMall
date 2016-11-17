@@ -5,7 +5,7 @@
  * @Description:
  */
 
-namespace admin\models\configs;
+namespace admin\models\system\configs;
 
 use Yii;
 use yii\base\Model;

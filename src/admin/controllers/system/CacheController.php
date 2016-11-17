@@ -5,7 +5,7 @@
  * @Description:
  */
 
-namespace admin\controllers;
+namespace admin\controllers\system;
 
 
 
