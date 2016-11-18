@@ -1,6 +1,7 @@
 <?php
-namespace frontend\controllers;
+namespace main\controllers;
 
+use common\components\access\Sso;
 use common\helpers\StringHelper;
 use common\models\access\User;
 use yii;
@@ -12,10 +13,10 @@ use common\components\base\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\access\LoginForm;
-use frontend\models\PasswordResetRequestForm;
-use frontend\models\ResetPasswordForm;
-use frontend\models\SignupForm;
-use frontend\models\ContactForm;
+use main\models\PasswordResetRequestForm;
+use main\models\ResetPasswordForm;
+use main\models\SignupForm;
+use main\models\ContactForm;
 
 /**
  * Site controller
@@ -79,37 +80,25 @@ class SsoController extends Controller
         return $this->render('index');
     }
 
-    public function actionLogin($code)
+    public function actionSign($code)
     {
-        // TODO 获取密钥，将加密解密等写到组件里面
-        $secret = '123456';
-        // 解码code，如果含有
-        if (!Yii::$app->user->isGuest) {
-            return $this->error('Error');
-        }
-        $params = Yii::$app->security->decryptByPassword(StringHelper::base64url_decode($code),$secret);
-        parse_str($params,$auth);
-        if(!isset($auth['time'])||time()-$auth['time']>60*10) return $this->error('登陆超时');
-        if(!isset($auth['ip'])||$auth['ip']!=Yii::$app->request->getUserIP()) return $this->error('IP地址发生变化，授权失败。',100001);
-        var_dump($auth);
-        $user = User::findIdentity($auth['id']);
-        if(empty($user)||$user->getAuthKey() != $auth['token']) return $this->error('授权失效或者用户不存在！');
-        if(Yii::$app->user->login($user,3600 * 24 * 30)){
-            Yii::$app->response->cookies->add(
-                new Cookie(['name'=>'access_token', 'value'=>Yii::$app->user->identity->getAuthKey(), 'expire'=>time()+3600 * 24 * 30, 'httpOnly'=>false])
-            );
+        $sso = new Sso();
+        if($sso->sign($code)){
             return $this->success('Success');
         }
-        return $this->error('登录失败，请检查Cookie设置！');
-        return $this->success('Success');
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        } else {
-            return $this->render('login', [
-                'model' => $model,
-            ]);
+        $error = $sso->error;
+        return $this->error(isset($error['data'])?$error['data']:'Error',isset($error['status'])?$error['status']:1);
+    }
+
+    public function actionExit()
+    {
+
+        $sso = new Sso();
+        if($sso->clean()){
+            return $this->success('Success');
         }
+        $error = $sso->error;
+        return $this->error(isset($error['data'])?$error['data']:'Error',isset($error['status'])?$error['status']:1);
     }
 
     /**

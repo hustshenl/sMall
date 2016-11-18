@@ -10,6 +10,7 @@ $this->title = 'My Yii Application';
         <h1>Congratulations!</h1>
         <p class="lead">You have successfully created your Yii-powered application.</p>
         <p><a class="btn btn-success" href="javascript:sso.initUser(function(res) {console.log(res)}).done(function (res) {console.log(res);});">初始化用户信息</a></p>
+        <p><a class="btn btn-success" href="javascript:sso.exit().done(function(res) {console.log(res);window.location.href='/';}).fail(function (res) {console.log(res);});">退出登陆</a></p>
 
         <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
     </div>
