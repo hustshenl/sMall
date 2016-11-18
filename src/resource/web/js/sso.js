@@ -13,23 +13,23 @@ var config = {
 
 var sso = function ($) {
     var store = function () {
-            return {
-                get: function (key) {
-                    if (window.localStorage.getItem(key)) {
-                        return JSON.parse(window.localStorage.getItem(key));
-                    }
-                    return null;
-                },
-                set: function (key, value) {
-                    if (value === undefined) {
-                        window.localStorage.removeItem(key);
-                    } else {
-                        window.localStorage.setItem(key, JSON.stringify(value));
-                    }
-                    return window.localStorage.getItem(key);
-                },
-            }
-        }();
+        return {
+            get: function (key) {
+                if (window.localStorage.getItem(key)) {
+                    return JSON.parse(window.localStorage.getItem(key));
+                }
+                return null;
+            },
+            set: function (key, value) {
+                if (value === undefined) {
+                    window.localStorage.removeItem(key);
+                } else {
+                    window.localStorage.setItem(key, JSON.stringify(value));
+                }
+                return window.localStorage.getItem(key);
+            },
+        }
+    }();
 
     var modal = function () {
         var ossModal = $('<div style="left: 0;right: 0;top: 0;bottom:0;position: fixed;background-color: rgba(0,0,0,.5);z-index: 9999; display: none;"><div style="margin: 0 auto; text-align: center;display:table;height:100%;"><div style="display: table-cell;vertical-align:middle;"><div style="background: #FFF;position: relative;"><div id="oss-close" style="position: absolute;top: 0;right: 0; font-size: 24px; cursor: pointer;width: 32px;height: 32px">×</div><div id="oss-body" style="height: auto;"><div id="oss-container"></div></div></div></div></div></div>');
@@ -47,6 +47,11 @@ var sso = function ($) {
                 ossModal.fadeIn(900);
                 ossContainer.load(undefined === url ? config.sso.host + '/sso' : url, function (res) {
                 });
+            },
+            loading:function (message) {
+                $body.addClass('oss-modal');
+                ossContainer.html('<div style="line-height: 64px;font-size: 20px; width: 320px;">'+message+'</div>');
+                ossModal.fadeIn(100);
             },
             hide: function () {
                 $body.removeClass('oss-modal');
@@ -88,6 +93,19 @@ var sso = function ($) {
         }
         return defer.promise();
     };
+    var exit = function () {
+        modal.loading('正在退出...');
+        var defer = $.Deferred();
+        store.set('ssoUser'); // 清除本地用户信息
+        syncLogout().done(function (res) {
+            modal.hide();
+            defer.resolve(res);
+        }).fail(function (res) {
+            modal.hide();
+            defer.reject(res);
+        });
+        return defer.promise();
+    };
     /**
      *
      * @returns {*}|null
@@ -109,10 +127,8 @@ var sso = function ($) {
                 } else {
                     store.set('ssoUser', res.data);
                     syncLogin().done(function (res) {
-                        console.log(res);
                         typeof ssoCallback === 'function' && ssoCallback(res);
                     }).fail(function (res) {
-                        console.log(res);
                         typeof ssoCallback === 'function' && ssoCallback(res);
                     });
                     defer.resolve(res.data);
@@ -132,27 +148,26 @@ var sso = function ($) {
         var busy = false;
         var loginButton = $('#login-button');
         $("#sso-form").submit(function (e) {
-            if(busy)return false;
+            if (busy)return false;
             busy = true;
-            loginButton.text('正在登陆').attr('type','button').addClass('disabled');
+            loginButton.text('正在登陆').attr('type', 'button').addClass('disabled');
             var $form = $(this);
             var data = getData($form);
             // 判断数据情况
             if ('' == data.username || '' == data.password) {
                 showMessage('请填写账户名或者密码');
                 busy = false;
-                loginButton.html('登 &nbsp; 陆').attr('type','submit').removeClass('disabled');
+                loginButton.html('登 &nbsp; 陆').attr('type', 'submit').removeClass('disabled');
                 return false;
             }
             $.getJSON(config.sso.host + '/sso/salt?t=' + (new Date().getTime()) + '&callback=?').done(function (res) {
                 if (res.status != 0) {
                     showMessage('请求失败');
                     busy = false;
-                    loginButton.html('登 &nbsp; 陆').attr('type','submit').removeClass('disabled');
+                    loginButton.html('登 &nbsp; 陆').attr('type', 'submit').removeClass('disabled');
                     return false;
                 }
                 var salt = res.data;
-                console.log(salt);
                 data.password = security.encrypt(data.password, salt);
                 $.getJSON(
                     config.sso.host + '/sso/login?t=' + (new Date().getTime()) + '&callback=?',
@@ -162,7 +177,7 @@ var sso = function ($) {
                         if (res.status > 0) {
                             showMessage(res.msg);
                             busy = false;
-                            loginButton.html('登 &nbsp; 陆').attr('type','submit').removeClass('disabled');
+                            loginButton.html('登 &nbsp; 陆').attr('type', 'submit').removeClass('disabled');
                             return false;
                         }
                         store.set('ssoUser', res.data);
@@ -183,14 +198,13 @@ var sso = function ($) {
                     .fail(function (res) {
                         showMessage('登陆失败');
                         busy = false;
-                        loginButton.html('登 &nbsp; 陆').attr('type','submit').removeClass('disabled');
-                        console.log(res);
+                        loginButton.html('登 &nbsp; 陆').attr('type', 'submit').removeClass('disabled');
                     });
 
             }).fail(function (res) {
                 showMessage('请求失败');
                 busy = false;
-                loginButton.html('登 &nbsp; 陆').attr('type','submit').removeClass('disabled');
+                loginButton.html('登 &nbsp; 陆').attr('type', 'submit').removeClass('disabled');
             });
             return false;
         });
@@ -204,40 +218,72 @@ var sso = function ($) {
     var syncLogin = function () {
         var defer = $.Deferred();
         $.getJSON(
-            config.sso.host + '/sso/sync-login?t=' + (new Date().getTime()) + '&callback=?'
-        ).done(function (res) {
-            if (res.status > 0) {
-                showMessage(res.msg);
-                return false;
-            }
-            if (typeof res.data !== 'object') {
-                return defer.reject('同步登录返回数据错误！');
-            }
-            var domain = document.domain;
-            $.each(res.data, function (index, item) {
-                var match = item.match(/(http:|https:|ftp:|^)\/\/([\w\._-]+)/i);
-                console.log(match);
-                var isCurrent = false;
-                if (null !== match && match.length >= 3) {
-                    isCurrent = domain == match[2];
+            config.sso.host + '/sso/sign-links?t=' + (new Date().getTime()) + '&callback=?'
+        )
+            .done(function (res) {
+                if (res.status > 0) {
+                    showMessage(res.msg);
+                    return false;
                 }
-                console.log(isCurrent);
-                $.getJSON(item + '&t=' + (new Date().getTime()) + '&callback=?').done(function (res) {
-                    if (isCurrent) {
-                        return defer.resolve('本站同步登录成功。');
+                if (typeof res.data !== 'object') {
+                    return defer.reject('同步登录返回数据错误！');
+                }
+                var domain = document.domain;
+                $.each(res.data, function (index, item) {
+                    var match = item.match(/(http:|https:|ftp:|^)\/\/([\w\._-]+)/i),
+                        isCurrent = false;
+                    if (null !== match && match.length >= 3) {
+                        isCurrent = domain == match[2];
                     }
-                }).fail(function (res) {
-                    console.log(res);
-                    if (isCurrent) {
-                        console.log(isCurrent);
-                        return defer.reject('本站同步登录失败。');
-                    }
-                });
-                return false;
+                    $.getJSON(item + '&t=' + (new Date().getTime()) + '&callback=?').done(function (res) {
+                        if (isCurrent) {
+                            return defer.resolve('本站同步登录成功。');
+                        }
+                    }).fail(function (res) {
+                        if (isCurrent) {
+                            return defer.reject('本站同步登录失败。');
+                        }
+                    });
+                    return true;
+                })
             })
-        }).fail(function (res) {
-            console.log(res);
-        });
+            .fail(function (res) {
+                return defer.reject('读取同步登陆链接失败。');
+            });
+        return defer.promise();
+
+    };
+    var syncLogout = function () {
+        var defer = $.Deferred();
+        $.getJSON(
+            config.sso.host + '/sso/exit-links?t=' + (new Date().getTime()) + '&callback=?'
+        )
+            .done(function (res) {
+                if (res.status > 0) {
+                    return defer.reject(res.data);
+                }
+                if (typeof res.data !== 'object') {
+                    return defer.reject('同步退出返回数据错误！');
+                }
+                var count = 0, len = res.data.length;
+                $.each(res.data, function (index, item) {
+                    $.getJSON(item + '&t=' + (new Date().getTime()) + '&callback=?').done(function (res) {
+                        count++;
+                        if (count>=len) {
+                            return defer.resolve('同步退出完毕。');
+                        }
+                    }).fail(function (res) {
+                        count++;
+                        if (count>=len) {
+                            return defer.resolve('同步退出完毕。');
+                        }
+                    });
+                    return true;
+                })
+            })
+            .fail(function (res) {
+                return defer.reject('读取同步退出链接失败。');
+            });
         return defer.promise();
 
     };
@@ -265,6 +311,7 @@ var sso = function ($) {
 
     return {
         initUser: initUser,
+        exit: exit,
         getUser: getUser,
         modal: modal,
         initSsoForm: initSsoForm,

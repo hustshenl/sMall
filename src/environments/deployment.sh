@@ -3,7 +3,7 @@
 # 请将本文件放在项目根目录！！！
 # BasePath=$(cd `dirname $0`; pwd)
 RootPath=$(cd `dirname $0`; pwd)
-Apps=(admin backend frontend member api)
+Apps=(admin backend main member api)
 Environment=
 EnvConf=env.conf
 

@@ -5,9 +5,11 @@ namespace admin\controllers\system;
 use Yii;
 use common\models\system\Application;
 use admin\models\system\Application as ApplicationSearch;
-use yii\web\Controller;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\components\base\Controller;
+
 
 /**
  * ApplicationController implements the CRUD actions for Application model.
@@ -19,14 +21,14 @@ class ApplicationController extends Controller
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
+        $behaviors = parent::behaviors();
+        $behaviors['verbs'] = [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'delete' => ['POST'],
             ],
         ];
+        return $behaviors;
     }
 
     /**
@@ -35,6 +37,7 @@ class ApplicationController extends Controller
      */
     public function actionIndex()
     {
+        // 内置数据也写入数据库，初始化时进行设置，可以编辑删除，但是可能会造成错误
         $searchModel = new ApplicationSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -90,6 +93,45 @@ class ApplicationController extends Controller
             return $this->render('update', [
                 'model' => $model,
             ]);
+        }
+    }
+
+
+    public function actionAjaxUpdate()
+    {
+        if(!Yii::$app->request->isAjax)
+            throw new BadRequestHttpException('非法请求');
+        if (Yii::$app->request->post('hasEditable')) {
+            return $this->ajax($this->editableUpdate());
+        }
+        return $this->ajax($this->editableUpdate());
+
+    }
+    public function editableUpdate()
+    {
+        if (Yii::$app->request->post('hasEditable')) {
+            $id = Yii::$app->request->post('editableKey');
+            $model = $this->findModel($id);
+            $post = [];
+            $posted = current(Yii::$app->request->post($model->formName()));
+            $post[$model->formName()] = $posted;
+            $output = '';$message='';
+            if ($model->load($post)) {
+                if($model->save() === false){
+                    //if(isset($posted['name'])) $message = '修改失败！';
+                    if(isset($posted['name'])) $message = $model->getFirstError('name');
+                    if(isset($posted['slug'])) $message = $model->getFirstError('slug');
+                    if(isset($posted['host'])) $message = $model->getFirstError('host');
+                    if(isset($posted['ip'])) $message = $model->getFirstError('ip');
+                }
+
+                if (isset($posted['status'])) {
+                    $output =  Yii::$app->formatter->asLookup($model->status, 'status');
+                }
+            }
+            $res = ['output'=>$output, 'message'=>$message];
+
+            return $res;
         }
     }
 

@@ -27,7 +27,7 @@ class SsoController extends Controller
         $behaviors = parent::behaviors();
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'except' => ['user', 'login', 'register', 'index','salt', 'error'],
+            'except' => ['user', 'login', 'register', 'index','salt', 'error', 'exit-links'],
             'rules' => [
                 [
                     'allow' => true,
@@ -89,10 +89,7 @@ class SsoController extends Controller
         }
         return $this->error('Error.');
     }
-    public function actionTime()
-    {
-        return $this->success(time());
-    }
+
     public function actionSalt()
     {
         $salt = time();
@@ -118,12 +115,12 @@ class SsoController extends Controller
         }
     }
 
-    public function actionSyncLogin()
+    public function actionSignLinks()
     {
         if (Yii::$app->user->isGuest) {
             return $this->error('用户未登陆');
         }
-        return $this->success(['data'=>(new Sso())->generateSyncLinks()]);
+        return $this->success(['data'=>(new Sso())->generateSignLinks()]);
     }
 
 
@@ -138,6 +135,17 @@ class SsoController extends Controller
 
         return $this->goHome();
     }
+
+    public function actionExitLinks()
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->error('用户未登陆');
+        }
+        Yii::$app->user->logout();
+        //Yii::$app->response->cookies->remove();
+        return $this->success(['data'=>(new Sso())->generateExitLinks()]);
+    }
+
 
 
     /**

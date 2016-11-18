@@ -7,7 +7,6 @@
 
 namespace common\behaviors;
 
-use common\models\base\Tag;
 use creocoder\flysystem\NullFilesystem;
 use yii\db\BaseActiveRecord;
 use yii\behaviors\AttributeBehavior;

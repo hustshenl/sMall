@@ -12,6 +12,11 @@ use common\models\system\Application as ApplicationModel;
  */
 class Application extends ApplicationModel
 {
+    public function behaviors()
+    {
+        return [];
+    }
+
     /**
      * @inheritdoc
      */
@@ -19,7 +24,7 @@ class Application extends ApplicationModel
     {
         return [
             [['id', 'status', 'type', 'expires', 'encrypt', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'description', 'host', 'ip', 'secret', 'token', 'access_token', 'aes_key', 'sso', 'remark'], 'safe'],
+            [['name', 'slug', 'description', 'host', 'ip', 'secret', 'token', 'access_token', 'aes_key', 'sso', 'remark'], 'safe'],
         ];
     }
 
@@ -69,6 +74,7 @@ class Application extends ApplicationModel
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'slug', $this->slug])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'host', $this->host])
             ->andFilterWhere(['like', 'ip', $this->ip])

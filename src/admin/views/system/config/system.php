@@ -9,7 +9,7 @@ use kartik\form\ActiveForm;
 use kartik\builder\Form;
 
 /* @var $this \yii\web\View */
-/** @var \admin\models\configs\SystemConfig $model */
+/** @var \admin\models\system\configs\SystemConfig $model */
 
 $this->title = \Yii::t('admin', 'System Config');
 $this->params['subTitle'] = \Yii::t('admin', 'Base Config');
