@@ -37,7 +37,9 @@ var config = {
 使用：
 
 ```
-<p><a href="javascript:sso.verify(function(res) {console.log(res)}).done(function (res) {console.log(res);});">验证用户信息</a></p>
+<p><a href="javascript:sso.verify(function(res) {console.log(res)}).done(function (res) {console.log(res);});">验证用户信息(弹窗)</a></p>
+<p><a href="javascript:sso.verify('redirect').done(function (res) {console.log(res);});">验证用户信息（跳转）</a></p>
+<p><a href="javascript:sso.verify('').done(function (res) {console.log(res);});">验证用户信息（静默）</a></p>
 <p><a href="javascript:console.log(sso.getUser());">打印本地用户信息</a></p>
 <p><a href="javascript:sso.exit().done(function(res) {console.log(res);window.location.href='/';}).fail(function (res) {console.log(res);});">退出登陆</a></p>
 ```

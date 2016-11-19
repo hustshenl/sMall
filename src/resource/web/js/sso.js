@@ -44,7 +44,7 @@ var sso = function ($) {
         return {
             show: function (url) {
                 $body.addClass('oss-modal');
-                ossContainer.html('<span style="line-height: 64px;font-size: 20px;">Loading...</span>');
+                ossContainer.html('<span style="line-height: 64px;font-size: 20px;width: 320px;">Loading...</span>');
                 ossModal.fadeIn(900);
                 ossContainer.load(undefined === url ? config.sso.host + '/sso' : url, function (res) {
                 });
@@ -65,24 +65,28 @@ var sso = function ($) {
 
     /**
      * 验证用用户信息
-     * @param mode string blank|modal|空字符串
+     * @param mode string|undefined redirect|modal
      */
     var verify = function (mode) {
         var defer = $.Deferred(),
             user = store.get('ssoUser');
-        mode = undefined == mode ? 'blank' : mode;
+        //mode = undefined == mode ? 'redirect' : mode;
         if (typeof mode === 'function') {
             ssoCallback = mode;
             mode = 'modal';
         }
         //  从localStrong读取用户，若用户为空则从通行证中心读取，若仍然为空则跳转到登陆页面
+        if(user !== null&&mode==undefined){
+            defer.resolve(user);
+            return defer.promise();
+        }
         getSsoUser()
             .done(function (res) {
                 defer.resolve(res);
             })
             .fail(function (res) {
-                if (mode == 'blank') {
-                    window.location.href = config.sso.host + '/login';
+                if (mode == 'redirect') {
+                    window.location.href = config.sso.host + '/login?redirect='+encodeURIComponent(window.location.href);
                 } else if (mode == 'modal') {
                     modal.show(); // 弹出登陆框，登陆完成后执行callback操作（若存在）
                 }
