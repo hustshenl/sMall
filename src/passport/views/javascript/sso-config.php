@@ -17,12 +17,15 @@ $rsaPublicKey = base64_encode($config->get('rsa','publicKey'));
 $passportHost = \common\helpers\SMall::getPassportHost();
 ob_start();
 echo <<<JS
-var config = {
-    version:'1.0.0',
-    sso:{
-        host:'$passportHost',
-    }
-};
+var ssoConfig = function () {
+    return {
+        version:'1.0.0',
+        security:{
+            rasStatus:$rsaStatus,
+            publicKey:'$rsaPublicKey'
+        },
+    };
+}();
 JS;
 //$temp = ob_get_contents();
 ob_end_flush();

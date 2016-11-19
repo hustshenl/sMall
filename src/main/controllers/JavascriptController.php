@@ -37,7 +37,9 @@ class JavascriptController extends Controller
             'class' => 'yii\filters\PageCache',
             //'only' => ['index','search','update','rank','search','search'],
             'duration' => 3600,
-            'variations' => [],
+            'variations' => [
+                Yii::$app->request->hostInfo,
+            ],
             'enabled'=>Yii::$app->request->isGet,
             'dependency'=>[
                 'class'=>TagDependency::className(),

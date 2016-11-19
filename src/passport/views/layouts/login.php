@@ -15,6 +15,7 @@ AppAsset::register($this);
 \kartik\icons\Icon::map($this,\kartik\icons\Icon::FA);
 $this->registerCssFile('@web/css/login.css',['depends'=>'passport\assets\AppAsset']);
 $this->registerJsFile('@web/javascript/config');
+$this->registerJsFile('@web/javascript/sso-config');
 $this->registerJsFile(SMall::getResourceHost().'/js/lib/jsencrypt.js',['depends'=>'passport\assets\AppAsset']);
 $this->registerJsFile(SMall::getResourceHost().'/js/lib/security.js',['depends'=>'passport\assets\AppAsset']);
 $this->registerJsFile(SMall::getResourceHost().'/js/sso.js',['depends'=>'passport\assets\AppAsset']);
