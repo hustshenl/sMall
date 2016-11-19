@@ -120,7 +120,7 @@ class ApplicationController extends Controller
                 if($model->save() === false){
                     //if(isset($posted['name'])) $message = '修改失败！';
                     if(isset($posted['name'])) $message = $model->getFirstError('name');
-                    if(isset($posted['slug'])) $message = $model->getFirstError('slug');
+                    if(isset($posted['identifier'])) $message = $model->getFirstError('identifier');
                     if(isset($posted['host'])) $message = $model->getFirstError('host');
                     if(isset($posted['ip'])) $message = $model->getFirstError('ip');
                 }

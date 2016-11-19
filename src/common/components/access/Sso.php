@@ -48,10 +48,10 @@ class Sso extends yii\base\Object
         return $configs;
     }
 
-    public static function getConfig($slug=null)
+    public static function getConfig($identifier=null)
     {
-        if($slug === null) $slug = Yii::$app->id;
-        $app = Application::findOne(['slug'=>$slug]);
+        if($identifier === null) $identifier = Yii::$app->id;
+        $app = Application::findOne(['identifier'=>$identifier]);
         if($app === null) return null;
         return [
             'host'=>$app->host,

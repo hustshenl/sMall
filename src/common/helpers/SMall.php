@@ -8,6 +8,7 @@
 namespace common\helpers;
 
 
+use common\models\system\Application;
 use yii\base\Component;
 use yii;
 
@@ -23,23 +24,25 @@ class SMall extends Component
     }
 
     /**
-     * @param $app
+     * @param $identifier
      * @return string
      */
-    public static function getHost($app)
+    public static function getHost($identifier)
     {
-        if(in_array($app,['resource','passport'])){
-            return call_user_func([static::className(),'get'.ucfirst($app).'Host']);
+        $apps = Application::findAll(['status'=>Application::STATUS_APPROVED]);
+        foreach ($apps as $app){
+            if($app->identifier !== $identifier) continue;
+            return $app->host;
         }
         return null;
     }
     public static function getResourceHost()
     {
-        return '//res.small.dev.com';
+        return static::getHost('app-resource');
     }
     public static function getPassportHost()
     {
-        return '//passport.small.dev.com';
+        return static::getHost('app-passport');
     }
 
 }

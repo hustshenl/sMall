@@ -24,7 +24,7 @@ class Application extends ApplicationModel
     {
         return [
             [['id', 'status', 'type', 'expires', 'encrypt', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'slug', 'description', 'host', 'ip', 'secret', 'token', 'access_token', 'aes_key', 'sso', 'remark'], 'safe'],
+            [['name', 'identifier', 'description', 'host', 'ip', 'secret', 'token', 'access_token', 'aes_key', 'sso', 'remark'], 'safe'],
         ];
     }
 
@@ -74,7 +74,7 @@ class Application extends ApplicationModel
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'slug', $this->slug])
+            ->andFilterWhere(['like', 'identifier', $this->identifier])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'host', $this->host])
             ->andFilterWhere(['like', 'ip', $this->ip])

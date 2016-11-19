@@ -55,8 +55,8 @@ JS
             ],
             [
                 'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'slug',
-                'value' => 'slug',
+                'attribute' => 'identifier',
+                'value' => 'identifier',
 
                 'editableOptions' => [
                     'inputType' => \kartik\editable\Editable::INPUT_TEXT,

@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'displayOnly'=>true
                     ],
                     [
-                        'attribute'=>'slug',
+                        'attribute'=>'identifier',
                         'valueColOptions'=>['style'=>'width:30%'],
                         'labelColOptions'=>['style'=>'width: 20%; text-align: right; vertical-align: middle;'],
                         'displayOnly'=>true

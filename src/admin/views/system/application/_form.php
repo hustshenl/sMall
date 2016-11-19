@@ -23,7 +23,7 @@ use kartik\builder\Form;
         'columns' => 1,
         'attributes' => [
             'name' => ['options' => ['placeholder' => '请输入应用名称...']],
-            'slug' => ['options' => ['placeholder' => '请输入应用唯一标识，建议使用小写字母，内置应用请填写appid...']],
+            'identifier' => ['options' => ['placeholder' => '请输入应用唯一标识，建议使用小写字母，内置应用请填写appid...']],
             'description' => ['type'=>Form::INPUT_TEXTAREA,'options' => ['placeholder' => '请输入应用描述...','rows'=>3]],
             'status' => [
                 'type' => Form::INPUT_WIDGET,

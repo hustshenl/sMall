@@ -14,7 +14,7 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $status
  * @property integer $type
  * @property string $name
- * @property string $slug
+ * @property string $identifier
  * @property string $description
  * @property string $host
  * @property string $ip
@@ -67,10 +67,10 @@ class Application extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name','slug', 'host'], 'required'],
-            [['slug'],'unique'],
+            [['name','identifier', 'host'], 'required'],
+            [['identifier'],'unique'],
             [['status', 'type', 'expires', 'encrypt', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'slug', 'description', 'host', 'ip', 'secret', 'token', 'access_token', 'aes_key'], 'string', 'max' => 255],
+            [['name', 'identifier', 'description', 'host', 'ip', 'secret', 'token', 'access_token', 'aes_key'], 'string', 'max' => 255],
             [['remark'], 'string', 'max' => 2048],
             [['ssoConfig'], 'safe'],
             [['type'], 'default','value'=>self::TYPE_PRESET],
@@ -100,7 +100,7 @@ class Application extends \yii\db\ActiveRecord
             'status' => Yii::t('common', '状态'),
             'type' => Yii::t('common', '类型'),
             'name' => Yii::t('common', '名称'),
-            'slug' => Yii::t('common', '唯一标识'),
+            'identifier' => Yii::t('common', '唯一标识'),
             'description' => Yii::t('common', '应用描述'),
             'host' => Yii::t('common', 'Host'),
             'ip' => Yii::t('common', 'Ip'),
@@ -122,7 +122,7 @@ class Application extends \yii\db\ActiveRecord
     {
         $config = $this->_ssoConfig;
         if ($this->type == self::TYPE_PRESET) {
-            $config = in_array($this->slug, ['passport']) ? ['status' => 0] : ['status' => 1];
+            $config = in_array($this->identifier, ['passport']) ? ['status' => 0] : ['status' => 1];
         }
         if(!isset($config['sign'])||empty($config['sign'])) $config['sign'] = '/sso/sign';
         if(!isset($config['exit'])||empty($config['exit'])) $config['exit'] = '/sso/exit';
@@ -142,7 +142,7 @@ class Application extends \yii\db\ActiveRecord
     {
         $config = is_array($this->sso)?$this->sso:json_decode($this->sso,true);
         if ($this->type == self::TYPE_PRESET) {
-            $config = in_array($this->slug, ['passport']) ? ['status' => 0] : ['status' => 1];
+            $config = in_array($this->identifier, ['app-passport','app-resource']) ? ['status' => 0] : ['status' => 1];
         }
         if(!isset($config['sign'])||empty($config['sign'])) $config['sign'] = '/sso/sign';
         if(!isset($config['exit'])||empty($config['exit'])) $config['exit'] = '/sso/exit';
