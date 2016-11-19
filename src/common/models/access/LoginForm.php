@@ -58,6 +58,7 @@ class LoginForm extends Model
             $this->password = $decrypted;
         } else {
             $salt = Yii::$app->session->get('sso.salt');
+            Yii::$app->session->remove('sso.salt');
             if ($salt != $matches['salt']) {
                 $this->addError('password', '登陆超时，请刷新页面！');
                 return false;

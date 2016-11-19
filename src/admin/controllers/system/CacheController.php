@@ -29,6 +29,7 @@ class CacheController extends Controller
             // 在此清理缓存
             if($model->all) $model->parts = [
                 'hust.shenl.small.passport.page.javascript',
+                'hust.shenl.small.main.page.javascript',
             ];
             if(is_array($model->parts)&&count($model->parts)>0){
                 foreach ($model->parts as $part){

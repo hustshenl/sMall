@@ -9,8 +9,12 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use passport\assets\AppAsset;
 use common\widgets\Alert;
+use common\helpers\SMall;
 
 AppAsset::register($this);
+
+$this->registerJsFile('@web/javascript/config');
+$this->registerJsFile(SMall::getResourceHost().'/js/sso.js',['depends'=>'passport\assets\AppAsset']);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

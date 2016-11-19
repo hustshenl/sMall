@@ -9,7 +9,7 @@ use yii\bootstrap\ActiveForm;
 
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
-$this->registerJs(';login.init();');
+$this->registerJs(';sso.initSsoForm();');
 // TODO 调整通过JS提交表单，并依据情况对密码字段加密
 ?>
 <div class="login-wrap" style="background-color: #e93854;">
@@ -18,12 +18,12 @@ $this->registerJs(';login.init();');
         <a href="#" class="login-ad"></a>
         <div class="form form-group-lg">
             <h3 class="margin-bottom">用户登陆</h3>
-            <?php $form = ActiveForm::begin(['id' => 'login-form','enableClientScript'=>false]); ?>
-            <div id="login-message"
+            <?php $form = ActiveForm::begin(['id' => 'sso-form','enableClientScript'=>false]); ?>
+            <div id="sso-message"
                  style="display:none;"
                  class="login-message error">
                 <i class="icon-font">&#xe604;</i>
-                <p class="login-error" id="login-error"></p>
+                <p class="login-error" id="sso-error"></p>
 
             </div>
 

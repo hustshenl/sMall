@@ -1,15 +1,16 @@
 /**
  * 单点登陆JS，
- * 引入本JS之前请务必引入jQuery，以及配置文件（无比包含域名），否则报错
+ * 引入本JS之前请务必引入jQuery，以及配置文件（务必包含域名），否则报错
  * Created by Shen.L on 2016/11/13.
  * version 1.0.0
  */
-
+/**
 var config = {
     sso: {
         host: '//passport.small.dev.com',
     }
 };
+ **/
 
 var sso = function ($) {
     var store = function () {
@@ -48,9 +49,9 @@ var sso = function ($) {
                 ossContainer.load(undefined === url ? config.sso.host + '/sso' : url, function (res) {
                 });
             },
-            loading:function (message) {
+            loading: function (message) {
                 $body.addClass('oss-modal');
-                ossContainer.html('<div style="line-height: 64px;font-size: 20px; width: 320px;">'+message+'</div>');
+                ossContainer.html('<div style="line-height: 64px;font-size: 20px; width: 320px;">' + message + '</div>');
                 ossModal.fadeIn(100);
             },
             hide: function () {
@@ -63,10 +64,10 @@ var sso = function ($) {
     var ssoCallback;
 
     /**
-     * 初始化用户信息
+     * 验证用用户信息
      * @param mode string blank|modal|空字符串
      */
-    var initUser = function (mode) {
+    var verify = function (mode) {
         var defer = $.Deferred(),
             user = store.get('ssoUser');
         mode = undefined == mode ? 'blank' : mode;
@@ -75,22 +76,18 @@ var sso = function ($) {
             mode = 'modal';
         }
         //  从localStrong读取用户，若用户为空则从通行证中心读取，若仍然为空则跳转到登陆页面
-        if (null !== user) {
-            defer.resolve(user);
-        } else {
-            getSsoUser()
-                .done(function (res) {
-                    defer.resolve(res);
-                })
-                .fail(function (res) {
-                    if (mode == 'blank') {
-                        window.location.href = config.sso.host + '/login';
-                    } else if (mode == 'modal') {
-                        modal.show(); // 弹出登陆框，登陆完成后执行callback操作（若存在）
-                    }
-                    defer.reject(res);
-                })
-        }
+        getSsoUser()
+            .done(function (res) {
+                defer.resolve(res);
+            })
+            .fail(function (res) {
+                if (mode == 'blank') {
+                    window.location.href = config.sso.host + '/login';
+                } else if (mode == 'modal') {
+                    modal.show(); // 弹出登陆框，登陆完成后执行callback操作（若存在）
+                }
+                defer.reject(res);
+            });
         return defer.promise();
     };
     var exit = function () {
@@ -180,8 +177,8 @@ var sso = function ($) {
                             loginButton.html('登 &nbsp; 陆').attr('type', 'submit').removeClass('disabled');
                             return false;
                         }
-                        store.set('ssoUser', res.data);
                         if (typeof ssoCallback === 'function') {
+                            store.set('ssoUser', res.data);
                             // 登录成功，执行回调
                             syncLogin().done(function (res) {
                                 modal.hide();
@@ -190,7 +187,8 @@ var sso = function ($) {
                                 modal.hide();
                                 ssoCallback(res);
                             });
-                        } else {
+                        }
+                        else {
                             //  登录成功，刷新页面
                             window.location.reload();
                         }
@@ -269,12 +267,12 @@ var sso = function ($) {
                 $.each(res.data, function (index, item) {
                     $.getJSON(item + '&t=' + (new Date().getTime()) + '&callback=?').done(function (res) {
                         count++;
-                        if (count>=len) {
+                        if (count >= len) {
                             return defer.resolve('同步退出完毕。');
                         }
                     }).fail(function (res) {
                         count++;
-                        if (count>=len) {
+                        if (count >= len) {
                             return defer.resolve('同步退出完毕。');
                         }
                     });
@@ -310,7 +308,7 @@ var sso = function ($) {
     };
 
     return {
-        initUser: initUser,
+        verify: verify,
         exit: exit,
         getUser: getUser,
         modal: modal,

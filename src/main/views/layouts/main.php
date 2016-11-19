@@ -11,7 +11,8 @@ use main\assets\AppAsset;
 use common\widgets\Alert;
 
 AppAsset::register($this);
-$this->registerJsFile('http://res.small.dev.com/js/sso.js',['depends'=>'passport\assets\AppAsset']);
+$this->registerJsFile('@web/javascript/config');
+$this->registerJsFile(\common\helpers\SMall::getResourceHost().'/js/sso.js',['depends'=>'passport\assets\AppAsset']);
 
 ?>
 <?php $this->beginPage() ?>
