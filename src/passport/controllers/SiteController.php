@@ -10,7 +10,7 @@ use yii\filters\AccessControl;
 use common\models\access\LoginForm;
 use passport\models\PasswordResetRequestForm;
 use passport\models\ResetPasswordForm;
-use passport\models\SignupForm;
+use passport\models\RegisterForm;
 use passport\models\ContactForm;
 
 /**
@@ -148,9 +148,9 @@ class SiteController extends Controller
      */
     public function actionSignup()
     {
-        $model = new SignupForm();
+        $model = new RegisterForm();
         if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
+            if ($user = $model->register()) {
                 if (Yii::$app->getUser()->login($user)) {
                     return $this->goHome();
                 }

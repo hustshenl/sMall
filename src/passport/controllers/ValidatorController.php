@@ -1,6 +1,7 @@
 <?php
 namespace passport\controllers;
 
+use common\components\access\Sso;
 use yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -16,10 +17,7 @@ use common\helpers\StringHelper;
 use yii\web\Response;
 
 
-/**
- * Site controller
- */
-class PassportController extends Controller
+class ValidatorController extends Controller
 {
     /**
      * @inheritdoc
@@ -29,7 +27,7 @@ class PassportController extends Controller
         $behaviors = parent::behaviors();
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'except' => ['user', 'login', 'register', 'error', 'captcha'],
+            'except' => ['username', 'email', 'phone', 'index','code', 'error', 'exit-links'],
             'rules' => [
                 [
                     'allow' => true,
@@ -80,37 +78,74 @@ class PassportController extends Controller
      */
     public function actionIndex()
     {
+        $this->layout = false;
         return $this->render('index');
     }
 
-    public function actionUser()
+    public function actionUsername()
     {
-        Yii::$app->response->format = Response::FORMAT_JSONP;
-        if (!Yii::$app->user->isGuest) {
-            return $this->success(['data' => Yii::$app->user->identity]);
-        }
-        return $this->error('Error.');
+        //sleep(2);
+        $username = trim(Yii::$app->request->post('username'));
+        $len = StringHelper::length($username);
+        if($len>20||$len<4) return $this->error('用户名长度必须大于4并且小于20字符（一个汉字占2字符）');
+        $res = preg_match('/^[A-Za-z0-9_\-\p{Han}]+$/u',$username);
+        if(!$res) return $this->error('仅支持汉字、字母、数字、“-”“_”的组合');
+        $user = User::findOne(['username'=>$username]);
+        if(!empty($user)) return $this->error('该用户名已被使用，请重新输入');
+        return $this->success('SUCCESS');
+    }
+    public function actionPhone()
+    {
+        //sleep(2);
+        $phone = trim(Yii::$app->request->post('phone'));
+        if(!preg_match('/^1[345678]\d{9}$/i',$phone)) return $this->error('仅支持中国大陆手机号码');
+        $user = User::findOne(['phone'=>$phone]);
+        if(!empty($user)) return $this->error('手机号已注册，继续注册将与原账号解绑',2);
+        return $this->success('SUCCESS');
     }
 
     /**
-     * @param string $redirect
-     * @return string|yii\web\Response
+     * 验证密码强度
+     * $res = preg_replace('/^(?:([a-z])|([A-Z])|([0-9])|(.)){6,}|(.)+$/','$1$2$3$4$5','aA.2');
      */
+    public function actionCode()
+    {
+        $validator = new yii\captcha\CaptchaValidator();
+        if(!$validator->validate(Yii::$app->request->post('captcha'),$res))
+            return $this->error('图形验证码不正确',1);
+        $phone=Yii::$app->request->post('phone');
+        if(!preg_match('/^1[345678]\d{9}$/i',$phone)) return $this->error('手机号码不正确，仅支持中国大陆手机号码',2);
+        $code = '1234';
+        // TODO 发送手机验证码(发送次数在发送处控制)
+        $verification = ['phone'=>$phone,'code'=>$code,'send_at'=>time()];
+        Yii::$app->session->set('verification.phone',$verification);
+        return $this->success('验证码已经成发送成功');
+    }
+
     public function actionLogin($redirect = '/')
     {
-        $this->layout = 'login';
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect($redirect);
+            return $this->success('Success');
         }
-
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
-            return $this->goBack();
+        if ($model->load(Yii::$app->request->get(), '') && $model->login()) {
+            return $this->success(['data' => Yii::$app->user->identity]);
         } else {
-            return $this->render('login', [
-                'model' => $model,
-            ]);
+            // TODO 根据错误信息，输出明确错误提示
+            $message = '未知错误';
+            foreach ($model->errors as $attribute => $error) {
+                $message = reset($error);
+            }
+            return $this->error(['msg' => $message]);
         }
+    }
+
+    public function actionSignLinks()
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->error('用户未登陆');
+        }
+        return $this->success(['data'=>(new Sso())->generateSignLinks()]);
     }
 
 
@@ -126,6 +161,17 @@ class PassportController extends Controller
         return $this->goHome();
     }
 
+    public function actionExitLinks()
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->error('用户未登陆');
+        }
+        Yii::$app->user->logout();
+        //Yii::$app->response->cookies->remove();
+        return $this->success(['data'=>(new Sso())->generateExitLinks()]);
+    }
+
+
 
     /**
      * Signs user up.
@@ -134,16 +180,16 @@ class PassportController extends Controller
      */
     public function actionRegister()
     {
-        // TODO 判断短信验证码
-        $this->layout = 'register';
         $model = new RegisterForm();
-        $formName = Yii::$app->request->isAjax ? '' : $model->formName();
-        if ($model->load(Yii::$app->request->post(), $formName) && $user = $model->register()) {
-            if (Yii::$app->getUser()->login($user)) {
-                return Yii::$app->request->isAjax ? $this->success('Success') : $this->goHome();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($user = $model->register()) {
+                if (Yii::$app->getUser()->login($user)) {
+                    return $this->goHome();
+                }
             }
         }
-        return Yii::$app->request->isAjax ? $this->error(['data'=>$model->errors]) : $this->render('register', [
+
+        return $this->render('signup', [
             'model' => $model,
         ]);
     }
@@ -197,28 +243,4 @@ class PassportController extends Controller
         ]);
     }
 
-    /**
-     * @param $user User
-     * @param $redirect_uri string
-     * @return string
-     */
-    protected function generateCallbackUrl($user, $redirect_uri)
-    {
-        $auth = $user->getAuthKey();
-        // TODO 获取各应用对应的单点登陆密钥
-        $ssoSecret = Yii::$app->cache->get(static::CACHE_TAG_SSO_SECRET);
-        if (!$ssoSecret) {
-            $ssoSecret = Yii::$app->security->generateRandomString();
-            Yii::$app->cache->set(static::CACHE_TAG_SSO_SECRET, $ssoSecret);
-        }
-        $code = Yii::$app->security->encryptByPassword($user->id . '__' . $auth . '__' . time(), $ssoSecret);
-        $uri = parse_url($redirect_uri);
-        if (!isset($uri['scheme'])) $uri['scheme'] = 'http';
-        if (isset($uri['port']) && $uri['port'] != '80') {
-            $callbackUrl = $uri['scheme'] . '://' . $uri['host'] . ':' . $uri['port'] . '/login/?code=' . StringHelper::base64url_encode($code) . '&redirect_uri=' . urlencode($redirect_uri);
-        } else {
-            $callbackUrl = $uri['scheme'] . '://' . $uri['host'] . '/login/?code=' . StringHelper::base64url_encode($code) . '&redirect_uri=' . urlencode($redirect_uri);
-        }
-        return $callbackUrl;
-    }
 }

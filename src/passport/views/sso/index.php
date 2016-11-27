@@ -66,7 +66,7 @@ $this->registerJs(';sso.initSsoForm();');
         <?php ActiveForm::end(); ?>
     </div>
 </div>
-<script src="<?=SMall::getPassportHost();?>/javascript/sso-config"></script>
+<script src="<?=SMall::getPassportHost();?>/javascript/security"></script>
 <script src="<?=SMall::getResourceHost();?>/js/lib/jsencrypt.js"></script>
 <script src="<?=SMall::getResourceHost();?>/js/lib/security.js"></script>
 <script type="text/javascript">jQuery(document).ready(function () {sso.initSsoForm();});</script>

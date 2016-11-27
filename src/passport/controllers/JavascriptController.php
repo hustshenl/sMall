@@ -78,9 +78,9 @@ class JavascriptController extends Controller
     {
         return $this->render('config');
     }
-    public function actionSsoConfig()
+    public function actionSecurity()
     {
-        return $this->render('sso-config');
+        return $this->render('security');
     }
 
 }

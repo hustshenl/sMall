@@ -13,12 +13,13 @@ use common\helpers\SMall;
 
 AppAsset::register($this);
 \kartik\icons\Icon::map($this,\kartik\icons\Icon::FA);
-$this->registerCssFile('@web/css/login.css',['depends'=>'passport\assets\AppAsset']);
+$this->registerCssFile('@web/css/register.css',['depends'=>'passport\assets\AppAsset']);
 $this->registerJsFile('@web/javascript/config');
 $this->registerJsFile('@web/javascript/security');
 $this->registerJsFile(SMall::getResourceHost().'/js/lib/jsencrypt.js',['depends'=>'passport\assets\AppAsset']);
 $this->registerJsFile(SMall::getResourceHost().'/js/lib/security.js',['depends'=>'passport\assets\AppAsset']);
 $this->registerJsFile(SMall::getResourceHost().'/js/sso.js',['depends'=>'passport\assets\AppAsset']);
+$this->registerJsFile('@web/js/register.js',['depends'=>'passport\assets\AppAsset']);
 //$this->registerJsFile('@web/js/login.js',['depends'=>'passport\assets\AppAsset']);
 ?>
 <?php $this->beginPage() ?>
@@ -38,10 +39,10 @@ $this->registerJsFile(SMall::getResourceHost().'/js/sso.js',['depends'=>'passpor
     <nav class="navbar" role="navigation">
         <div class="container">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/">My Company</a></div>
+                <a class="navbar-brand" href="/">My Company</a>欢迎注册</div>
             <div  class="navbar-collapse collapse">
                 <ul class="navbar-nav navbar-right nav">
-                    <li><a href="#">Link</a></li>
+                    <li><a href="/login">已有账号？请登录</a></li>
                 </ul>
             </div>
         </div>

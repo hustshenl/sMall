@@ -118,10 +118,10 @@ var security = function () {
 
     var jsEncrypt;
     var encrypt = function (string,salt) {
-        if(!ssoConfig.version) return string;
+        if(!securityConfig.version) return string;
         jsEncrypt =new JSEncrypt();
-        jsEncrypt.setKey(base64.decode(ssoConfig.security.publicKey));
-        if(!ssoConfig.security.rasStatus) return string;
+        jsEncrypt.setKey(base64.decode(securityConfig.rsa.publicKey));
+        if(!securityConfig.rsa.status) return string;
         return jsEncrypt.encrypt(salt+'___'+string);
     };
 

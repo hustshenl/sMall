@@ -72,7 +72,12 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             TimestampBehavior::className(),
-            IPBehavior::className(),
+            [
+                'class'=>IPBehavior::className(),
+                'attributes'=>[
+                    yii\db\BaseActiveRecord::EVENT_BEFORE_INSERT => ['register_ip'],
+                ]
+            ]
         ];
     }
 
@@ -222,9 +227,14 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function removePasswordResetToken()
     {
-        $this->password_reset_token = null;
+        $this->password_reset_token = '';
     }
 
+    public function removePhone()
+    {
+        $this->phone = '';
+        $this->save();
+    }
     public function getIsAdmin()
     {
         return $this->role == User::ROLE_ADMIN;

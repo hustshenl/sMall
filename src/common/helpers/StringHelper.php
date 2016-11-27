@@ -18,4 +18,12 @@ class StringHelper extends \yii\helpers\StringHelper
         return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
     }
 
+    /**
+     * @param $string
+     * @return float|int
+     */
+    public static function length($string)
+    {
+        return floor((strlen($string) + mb_strlen($string,'UTF8')) / 2);
+    }
 }

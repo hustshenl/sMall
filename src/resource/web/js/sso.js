@@ -152,8 +152,7 @@ var sso = function ($) {
             if (busy)return false;
             busy = true;
             loginButton.text('正在登陆').attr('type', 'button').addClass('disabled');
-            var $form = $(this);
-            var data = getData($form);
+            var $form = $(this),data = getData($form);
             // 判断数据情况
             if ('' == data.username || '' == data.password) {
                 showMessage('请填写账户名或者密码');
@@ -176,7 +175,7 @@ var sso = function ($) {
                 )
                     .done(function (res) {
                         if (res.status > 0) {
-                            showMessage(res.msg);
+                            showMessage(res.data);
                             busy = false;
                             loginButton.html('登 &nbsp; 陆').attr('type', 'submit').removeClass('disabled');
                             return false;
@@ -224,7 +223,7 @@ var sso = function ($) {
         )
             .done(function (res) {
                 if (res.status > 0) {
-                    showMessage(res.msg);
+                    showMessage(res.data);
                     return false;
                 }
                 if (typeof res.data !== 'object') {
@@ -312,6 +311,7 @@ var sso = function ($) {
     };
 
     return {
+        store:store,
         verify: verify,
         exit: exit,
         getUser: getUser,

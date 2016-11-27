@@ -64,7 +64,6 @@ class LoginForm extends Model
                 return false;
             }
             $this->password = $matches['password'];
-
         }
         return true;
     }

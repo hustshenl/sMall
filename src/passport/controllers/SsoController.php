@@ -11,7 +11,7 @@ use yii\filters\AccessControl;
 use common\models\access\LoginForm;
 use passport\models\PasswordResetRequestForm;
 use passport\models\ResetPasswordForm;
-use passport\models\SignupForm;
+use passport\models\RegisterForm;
 use common\models\access\User;
 use common\helpers\StringHelper;
 use yii\web\Response;
@@ -111,7 +111,7 @@ class SsoController extends Controller
             foreach ($model->errors as $attribute => $error) {
                 $message = reset($error);
             }
-            return $this->error(['msg' => $message]);
+            return $this->error($message);
         }
     }
 
@@ -155,9 +155,9 @@ class SsoController extends Controller
      */
     public function actionRegister()
     {
-        $model = new SignupForm();
+        $model = new RegisterForm();
         if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
+            if ($user = $model->register()) {
                 if (Yii::$app->getUser()->login($user)) {
                     return $this->goHome();
                 }
