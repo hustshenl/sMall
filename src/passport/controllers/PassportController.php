@@ -134,8 +134,11 @@ class PassportController extends Controller
      */
     public function actionRegister()
     {
-        // TODO 判断短信验证码
+
         $this->layout = 'register';
+        if (!Yii::$app->user->isGuest) {
+            return $this->render('register-success');
+        }
         $model = new RegisterForm();
         $formName = Yii::$app->request->isAjax ? '' : $model->formName();
         if ($model->load(Yii::$app->request->post(), $formName) && $user = $model->register()) {

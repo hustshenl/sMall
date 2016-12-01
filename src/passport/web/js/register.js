@@ -426,8 +426,8 @@ var register = function ($) {
                 })
                     .done(function (res) {
                         if (res.status != 0)return registerError(res.data);
-                        // TODO 注册成功跳转
-                        alert('注册成功');
+                        window.location.reload();
+                        //alert('注册成功');
                     })
                     .fail(function (reason) {
                         return registerError(reason.responseText);

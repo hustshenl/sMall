@@ -106,7 +106,6 @@ class SsoController extends Controller
         if ($model->load(Yii::$app->request->get(), '') && $model->login()) {
             return $this->success(['data' => Yii::$app->user->identity]);
         } else {
-            // TODO 根据错误信息，输出明确错误提示
             $message = '未知错误';
             foreach ($model->errors as $attribute => $error) {
                 $message = reset($error);

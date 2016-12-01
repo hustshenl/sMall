@@ -86,7 +86,6 @@ class RegisterForm extends Model
         if (!$this->validate()) {
             return null;
         }
-        // TODO 判断手机号是否注册，若已经注册，则接触绑定
         $phoneUser = User::findOne(['phone'=>$this->phone]);
         if(!empty($phoneUser)) $phoneUser->removePhone();
         $user = new User();
