@@ -180,6 +180,9 @@ var sso = function ($) {
                             loginButton.html('登 &nbsp; 陆').attr('type', 'submit').removeClass('disabled');
                             return false;
                         }
+                        if(typeof res.data.redirect == 'string'){// 若强制跳转则进行强制跳转
+                            return window.location.href = res.data;
+                        }
                         if (typeof ssoCallback === 'function') {
                             store.set('ssoUser', res.data);
                             // 登录成功，执行回调
@@ -191,8 +194,7 @@ var sso = function ($) {
                                 ssoCallback(res);
                             });
                         }
-                        else {
-                            //  登录成功，刷新页面
+                        else { //  登录成功，刷新页面
                             window.location.reload();
                         }
                     })
@@ -231,7 +233,7 @@ var sso = function ($) {
                 }
                 var domain = document.domain;
                 $.each(res.data, function (index, item) {
-                    var match = item.match(/(http:|https:|ftp:|^)\/\/([\w\._-]+)/i),
+                    var match = item.match(/^(http:|https:|ftp:|^)\/\/([\w\._-]+)/i),
                         isCurrent = false;
                     if (null !== match && match.length >= 3) {
                         isCurrent = domain == match[2];

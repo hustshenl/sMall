@@ -9,53 +9,35 @@ use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
- * User model
+ * Seller model
  *
  * @property integer $id
  * @property integer $status
+ * @property integer $type
  * @property string $username
- * @property string $nickname
+ * @property integer $user_id
+ * @property integer $store_id
  * @property string $auth_key
- * @property string $password_reset_token
- * @property string $access_token
- * @property string $identity
- * @property string $identity_sn
- * @property string $email
- * @property string $phone
- * @property integer $credit
- * @property integer $point
- * @property integer $coin
- * @property integer $scores
- * @property integer $grade
- * @property integer $role
- * @property string $qq
- * @property string $weibo
- * @property integer $gender
+ * @property string $password_hash
+ * @property string $name
  * @property string $avatar
  * @property string $signature
- * @property string $address
- * @property integer $postcode
- * @property string $district
- * @property string $city
- * @property string $province
- * @property string $country
- * @property string $language
+ * @property string $phone
+ * @property string $department
+ * @property string $position
+ * @property string $permission
  * @property string $remark
- * @property integer $register_ip
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
- * @property string $password_hash write-only password
  */
-class User extends ActiveRecord implements IdentityInterface
+class Seller extends ActiveRecord implements IdentityInterface
 {
     const STATUS_FORBIDDEN = 0;
     const STATUS_ACTIVE = 1;
 
-    const ROLE_USER = 0x1;
-    const ROLE_SELLER = 0x10;
-    const ROLE_ADMIN = 0x1000;
-    const ROLE_SYSTEM = 0x10000;
+    const TYPE_MASTER = 0x1;
+    const TYPE_SLAVE = 0x1;
 
 
     /**
@@ -63,7 +45,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function tableName()
     {
-        return '{{%user}}';
+        return '{{%seller}}';
     }
 
     /**
@@ -73,12 +55,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             TimestampBehavior::className(),
-            [
-                'class'=>IPBehavior::className(),
-                'attributes'=>[
-                    yii\db\BaseActiveRecord::EVENT_BEFORE_INSERT => ['register_ip'],
-                ]
-            ]
         ];
     }
 
@@ -90,14 +66,11 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_FORBIDDEN]],
-            [['nickname','identity','identity_sn','qq','weibo','phone','remark','signature','address','postcode','gender','province','city','district'], 'safe', 'on'=>'edit_profile'],
-
+            [['status', 'user_id', 'store_id', 'type', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'password_hash', 'name', 'avatar', 'signature', 'department', 'position'], 'string', 'max' => 255],
+            [['auth_key', 'phone'], 'string', 'max' => 64],
+            [['permission', 'remark'], 'string', 'max' => 2048],
         ];
-    }
-
-    public function fields()
-    {
-        return ['id','status','username','nickname','email','phone','credit','point','coin','scores','grade','role','qq','weibo','gender','avatar','signature','address','postcode','district','city','province','country','language','remark','register_ip','created_at'];
     }
 
     /**
@@ -215,30 +188,9 @@ class User extends ActiveRecord implements IdentityInterface
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
-    /**
-     * Generates new password reset token
-     */
-    public function generatePasswordResetToken()
-    {
-        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
-    }
-
-    /**
-     * Removes password reset token
-     */
-    public function removePasswordResetToken()
-    {
-        $this->password_reset_token = '';
-    }
-
     public function removePhone()
     {
         $this->phone = '';
         $this->save();
     }
-    public function getIsAdmin()
-    {
-        return $this->role == User::ROLE_ADMIN;
-    }
-
 }

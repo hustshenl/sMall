@@ -104,7 +104,7 @@ class SsoController extends Controller
         }
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->get(), '') && $model->login()) {
-            return $this->success(['data' => Yii::$app->user->identity]);
+            return $this->success($model->success());
         } else {
             $message = '未知错误';
             foreach ($model->errors as $attribute => $error) {

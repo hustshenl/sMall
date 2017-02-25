@@ -7,6 +7,9 @@ use yii\base\Model;
 
 /**
  * Login form
+ * @package common\models\access
+ *
+ * @property string $accountType
  */
 class LoginForm extends Model
 {
@@ -15,6 +18,7 @@ class LoginForm extends Model
     public $rememberMe = true;
 
     private $_user = false;
+    private $_accountType = false;
 
 
     /**
@@ -68,6 +72,17 @@ class LoginForm extends Model
         return true;
     }
 
+
+    public function success()
+    {
+        if ($this->accountType == 'master') {
+            return ['data' => Yii::$app->user->identity];
+        }
+        //  TODO 获取子帐号跳转登录连接
+        $redirect = '';
+        return ['redirect' => $redirect];
+    }
+
     /**
      * Logs in a user using the provided username and password.
      *
@@ -75,8 +90,8 @@ class LoginForm extends Model
      */
     public function login()
     {
+        $user = $this->getUser();
         if ($this->validate()) {
-            $user = $this->getUser();
             $user->generateAuthKey();
             $user->save();
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
@@ -93,8 +108,24 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
+            if ($this->accountType == 'master') {
+                $this->_user = User::findByUsername($this->username);
+            } else {
+                $this->_user = Seller::findByUsername($this->username);
+            }
         }
         return $this->_user;
+    }
+
+    public function getAccountType()
+    {
+        if ($this->_accountType === false) {
+            if (strpos($this->username, ':') === false) {
+                $this->_accountType = 'master';
+            } else {
+                $this->_accountType = 'slave';
+            }
+        }
+        return $this->_accountType;
     }
 }
