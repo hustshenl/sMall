@@ -53,9 +53,30 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 1;
 
     const ROLE_USER = 0x1;
-    const ROLE_SELLER = 0x10;
+    const ROLE_SELLER = 0x100;
+    const ROLE_SELLER_SUB = 0x101;
     const ROLE_ADMIN = 0x1000;
     const ROLE_SYSTEM = 0x10000;
+
+
+    const CLIENT_DESKTOP = 0;
+    const CLIENT_WAP = 1;
+    const CLIENT_ANDROID = 2;
+    const CLIENT_IOS = 3;
+
+    public static $clients = [
+        self::CLIENT_DESKTOP=>'desktop',
+        self::CLIENT_WAP=>'wap',
+        self::CLIENT_ANDROID=>'android',
+        self::CLIENT_IOS=>'ios',
+    ];
+    public static $clientsName = [
+        self::CLIENT_DESKTOP=>'桌面网页',
+        self::CLIENT_WAP=>'移动网页',
+        self::CLIENT_ANDROID=>'安卓客户端',
+        self::CLIENT_IOS=>'iOS客户端',
+    ];
+
 
 
     /**
@@ -175,7 +196,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->auth_key;
+        return UserToken::getToken($this);
     }
 
     /**
@@ -212,7 +233,12 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        $this->auth_key = Yii::$app->security->generateRandomString();
+        UserToken::generate($this);
+        /*do{
+            $authKey = Yii::$app->security->generateRandomString();
+        }while(UserToken::findOne(['token'=>$authKey]) === null);
+        // TODO 创建User Token
+        $this->auth_key = Yii::$app->security->generateRandomString();*/
     }
 
     /**
@@ -239,6 +265,24 @@ class User extends ActiveRecord implements IdentityInterface
     public function getIsAdmin()
     {
         return $this->role == User::ROLE_ADMIN;
+    }
+
+    public function getClient()
+    {
+        // TODO 获取客户端信息
+        return static::CLIENT_DESKTOP;
+    }
+
+    public function getExpiresAt()
+    {
+        // TODO 获取过期信息
+        return 0;
+    }
+
+    public function getRedirect()
+    {
+        //  TODO 获取子帐号跳转登录连接
+        return false;
     }
 
 }

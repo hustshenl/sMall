@@ -137,13 +137,13 @@ class Sso extends yii\base\Object
         if(!isset($config['host'])||!isset($config['sign'])||!isset($config['secret'])) return false;
         $code = $this->_generateAuthCode($config['secret']);
         $separator = strpos($config['sign'],'?')!==false?'&':'?';
-        return rtrim($config['host'],'/').'/'.$config['sign'].$separator.'code='.$code;
+        return rtrim($config['host'],'/').'/'.ltrim($config['sign'],'/').$separator.'code='.$code;
     }
     private function _generateCleanUrl($config)
     {
         if(!isset($config['host'])||!isset($config['exit'])||!isset($config['secret'])) return false;
         $separator = strpos($config['exit'],'?')!==false?'&':'?';
-        return rtrim($config['host'],'/').'/'.$config['exit'].$separator.'code=exit';
+        return rtrim($config['host'],'/').'/'.ltrim($config['exit'],'/').$separator.'code=exit';
     }
 
     /**
@@ -164,6 +164,7 @@ class Sso extends yii\base\Object
             'username'=>$user->username,
             'email'=>$user->email,
             'phone'=>$user->phone,
+            'role'=>$user->role,
             'token'=>$authKey,
             'ip'=>Yii::$app->request->getUserIP(),
             'time'=>time(),

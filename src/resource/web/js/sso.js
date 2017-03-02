@@ -5,7 +5,7 @@
  * version 1.0.0
  */
 /**
-var config = {
+ var config = {
     sso: {
         host: '//passport.small.dev.com',
     }
@@ -31,6 +31,33 @@ var sso = function ($) {
             },
         }
     }();
+    var cookie = function (key, value, options) {
+        // Write
+        if (arguments.length > 1) {
+            if(typeof options == 'undefined') options = {expires:30};
+            if (typeof options.expires === 'number') {
+                var days = options.expires, t = options.expires = new Date();
+                t.setMilliseconds(t.getMilliseconds() + days * 864e+5);
+            }
+            return (document.cookie = [
+                encodeURIComponent(key), '=', encodeURIComponent(value),
+                options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+                '; path=/'
+            ].join(''));
+        }
+        // Read
+        var cookies = document.cookie ? document.cookie.split('; ') : [],
+            i = 0,
+            l = cookies.length;
+        for (; i < l; i++) {
+            var parts = cookies[i].split('=');
+            if (key === decodeURIComponent(parts.shift())) {
+                return parts.join('=');
+            }
+        }
+        return undefined;
+    };
+
 
     var modal = function () {
         var ossModal = $('<div style="left: 0;right: 0;top: 0;bottom:0;position: fixed;background-color: rgba(0,0,0,.5);z-index: 9999; display: none;"><div style="margin: 0 auto; text-align: center;display:table;height:100%;"><div style="display: table-cell;vertical-align:middle;"><div style="background: #FFF;position: relative;"><div id="oss-close" style="position: absolute;top: 0;right: 0; font-size: 24px; cursor: pointer;width: 32px;height: 32px">×</div><div id="oss-body" style="height: auto;"><div id="oss-container"></div></div></div></div></div></div>');
@@ -69,14 +96,14 @@ var sso = function ($) {
      */
     var verify = function (mode) {
         var defer = $.Deferred(),
-            user = store.get('ssoUser');
+            user = getUser();
         //mode = undefined == mode ? 'redirect' : mode;
         if (typeof mode === 'function') {
             ssoCallback = mode;
             mode = 'modal';
         }
         //  从localStrong读取用户，若用户为空则从通行证中心读取，若仍然为空则跳转到登陆页面
-        if(user !== null&&mode==undefined){
+        if (user !== null) {
             defer.resolve(user);
             return defer.promise();
         }
@@ -86,7 +113,7 @@ var sso = function ($) {
             })
             .fail(function (res) {
                 if (mode == 'redirect') {
-                    window.location.href = config.sso.host + '/login?redirect='+encodeURIComponent(window.location.href);
+                    window.location.href = config.sso.host + '/login?redirect=' + encodeURIComponent(window.location.href);
                 } else if (mode == 'modal') {
                     modal.show(); // 弹出登陆框，登陆完成后执行callback操作（若存在）
                 }
@@ -112,7 +139,9 @@ var sso = function ($) {
      * @returns {*}|null
      */
     var getUser = function () {
-        return store.get('ssoUser');
+        var token = cookie('access_token');
+        if(undefined!==token) return store.get('ssoUser');
+        return null;
     };
     /**
      * Ajax获取用户信息
@@ -152,7 +181,7 @@ var sso = function ($) {
             if (busy)return false;
             busy = true;
             loginButton.text('正在登陆').attr('type', 'button').addClass('disabled');
-            var $form = $(this),data = getData($form);
+            var $form = $(this), data = getData($form);
             // 判断数据情况
             if ('' == data.username || '' == data.password) {
                 showMessage('请填写账户名或者密码');
@@ -180,7 +209,7 @@ var sso = function ($) {
                             loginButton.html('登 &nbsp; 陆').attr('type', 'submit').removeClass('disabled');
                             return false;
                         }
-                        if(typeof res.data.redirect == 'string'){// 若强制跳转则进行强制跳转
+                        if (typeof res.data.redirect == 'string') {// 若强制跳转则进行强制跳转
                             return window.location.href = res.data;
                         }
                         if (typeof ssoCallback === 'function') {
@@ -313,7 +342,7 @@ var sso = function ($) {
     };
 
     return {
-        store:store,
+        store: store,
         verify: verify,
         exit: exit,
         getUser: getUser,

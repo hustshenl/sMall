@@ -5,12 +5,12 @@ use yii\helpers\Html;
 /* @var $content string */
 
 admin\widgets\AppAsset::register($this);
-\common\widgets\PluginAsset::register($this);
+\admin\assets\PluginAsset::register($this);
 dmstr\web\AdminLteAsset::register($this);
 
 $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 $directoryPluginsAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/plugins');
-$this->registerJsFile($directoryPluginsAsset.'/slimScroll/jquery.slimscroll.min.js',['depends'=>\common\widgets\PluginAsset::className()]);
+$this->registerJsFile($directoryPluginsAsset.'/slimScroll/jquery.slimscroll.min.js',['depends'=>\admin\assets\PluginAsset::className()]);
 
 ?>
 <?php $this->beginPage() ?>

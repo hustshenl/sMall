@@ -37,7 +37,7 @@ class Formatter extends \yii\i18n\Formatter
         return parent::asDate($value, $format);
     }
 
-    public function asDuration($value, $implodeString = ', ', $negativeSign = '-')
+    /*public function asRelativeTime($value, $referenceTime = null)
     {
         $minute = round((time() - $value) / 60);
         if ($minute < 60) {
@@ -48,14 +48,65 @@ class Formatter extends \yii\i18n\Formatter
             $res = round($minute / (60 * 24)) . '天前';
         }
         return $res;
+    }*/
+    public function asDurationValue($value)
+    {
+
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        $res = 0;
+        $seconds = [
+            1=>365*24*3600,
+            2=>30*24*3600,
+            3=>7*24*3600,
+            4=>24*3600,
+            5=>3600,
+            6=>60,
+            7=>1,
+        ];
+        preg_match('/(?:(\d+)?[^\d]{0,3}(?:年|year|y))?[^\d]{0,3}(?:(\d+)?[^\d]{0,3}(?:月|month|m))?[^\d]{0,3}(?:(\d+)?[^\d]{0,3}(?:周|星期|week|w))?[^\d]{0,3}(?:(\d+)?[^\d]{0,3}(?:日|天|day|d))?[^\d]{0,3}(?:(\d+)?[^\d]{0,3}(?:小时|时|hour|h))?[^\d]{0,3}(?:(\d+)?[^\d]{0,3}(?:分钟|分|minute|i))?[^\d]{0,3}(?:(\d+)?[^\d]{0,3}(?:秒钟|秒|second|s))?/i',$value,$matches);
+        foreach ($matches as $key =>$match){
+            if(empty($matches)) continue;
+            if(isset($seconds[$key])) $res+=$seconds[$key]*intval($match);
+        }
+        return $res;
+    }
+    public function asAbsoluteDuration($value)
+    {
+
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        $res = 'P';
+        $designators = ['Y','M','D'];
+        $mods = [365*24*3600,30*24*3600,7*24*3600];
+        foreach ($designators as $key => $designator){
+            $mod = $mods[$key];
+            $num = intval(floor($value/$mod));
+            if($num>0) $res .= $num.$designator;
+            $value %= $mod;
+        }
+        if($res == 'P') $res=0;
+        return parent::asDuration($res);
     }
 
-    public function asPrice($value, $decimals = 2, $unit = '元', $dec_point = '.', $thousands_sep = '')
+    public function asPrice($value, $decimals = 2, $unit = '元', $currency='',$dec_point = '.', $thousands_sep = '')
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return number_format($value / 100, $decimals, $dec_point, $thousands_sep) . $unit;
+        return $currency.number_format($value / 1000, $decimals, $dec_point, $thousands_sep) . $unit;
+    }
+    public function asPriceValue($value)
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        preg_match('/([,\d]+)(\.\d{0,3})?/i',$value,$matches);
+        if(!isset($matches[0])) return 'empty';
+        $value = str_replace(',','',$matches[0]);
+        return intval(floatval($value)*1000) ;
     }
 
     public function asLookup($value, $type)

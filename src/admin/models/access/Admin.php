@@ -76,7 +76,6 @@ class Admin extends User
         return $manager->getAssignments($this->id);
         return $this->hasMany(AuthItem::className(), ['name' => 'item_name'])->where(['type'=>1])
             ->viaTable('{{%auth_assignment}}', ['user_id' => 'id']);
-        return 'aa';
     }
 
 }

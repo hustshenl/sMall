@@ -1,0 +1,198 @@
+html,
+body {
+    height: 100%;
+}
+
+.wrap {
+    min-height: 100%;
+    height: auto;
+    margin: 0 auto -60px;
+    padding: 0 0 60px;
+}
+
+.wrap > .container {
+    padding: 70px 15px 20px;
+}
+
+.footer {
+    height: 60px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.jumbotron {
+    text-align: center;
+    background-color: transparent;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    padding-left: 5px;
+}
+
+a.asc:after {
+    content: /*"\e113"*/ "\e151";
+}
+
+a.desc:after {
+    content: /*"\e114"*/ "\e152";
+}
+
+.sort-numerical a.asc:after {
+    content: "\e153";
+}
+
+.sort-numerical a.desc:after {
+    content: "\e154";
+}
+
+.sort-ordinal a.asc:after {
+    content: "\e155";
+}
+
+.sort-ordinal a.desc:after {
+    content: "\e156";
+}
+
+.grid-view td {
+    white-space: nowrap;
+    vertical-align: middle!important;
+}
+
+.grid-view .filters input,
+.grid-view .filters select {
+    min-width: 50px;
+}
+
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/* align the logout "link" (button in form) of the navbar */
+.nav > li > form {
+    padding: 8px;
+}
+
+@media(max-width:768px) {
+	.nav li > form {
+	    padding: 3px;
+	}
+}
+
+.nav > li > form > button:hover {
+    text-decoration: none;
+}
+.breadcrumb {
+    background-color: rgba(60,141,188,0.2);
+    border-radius: 0;
+}
+.breadcrumb a{
+    color: black;
+}
+.breadcrumb > .active{
+    color: black;
+}
+.breadcrumb > li + li:before {
+    color: #777;
+}
+.btn {
+    border-radius: 0;
+}
+
+
+/**此段样式仅兼容google chrome**/
+.select-on-check-all,.kv-row-checkbox{
+    -webkit-appearance:none;
+    /*-moz-appearance:none;*/
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d2d6de;
+    text-align: center;
+    line-height: 14px!important;
+}
+.select-on-check-all:focus,.kv-row-checkbox:focus{
+    outline: none!important;
+}
+.select-on-check-all:checked:before,.kv-row-checkbox:checked:before{
+    content: '\2714';
+    color: #00c0ef;
+}
+
+
+/** 后台content-header样式调整 **/
+.content-header{
+    padding: 15px 15px 10px;
+    border-bottom: 1px solid #d2d6de;
+}
+.content-header .caption h1 {
+    font-size: 24px;
+    margin: 0;
+    line-height: 34px;
+}
+@media(max-width:480px){
+    .content-header .caption h1 {
+        display: none;
+    }
+}
+
+/** 后台表格样式 **/
+.table-bordered {
+    border: 1px solid #d2d6de;
+}
+.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td{
+    border: 1px solid #d2d6de;
+}
+/** 后台Select2样式 **/
+
+.select2-container.select2-container--krajee .select2-selection--single .select2-selection__rendered{
+    margin-top: 0;
+}
+
+
+
+
+
+
+
+/** 插件样式重写 **/
+.select2-container--krajee .select2-search--dropdown .select2-search__field,
+.select2-container--krajee .select2-selection,
+.bootstrap-switch,
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-label,
+.bootstrap-switch .bootstrap-switch-handle-on,
+.bootstrap-switch.bootstrap-switch-inverse.bootstrap-switch-on .bootstrap-switch-label,
+.bootstrap-dialog .modal-header{
+    border-radius: 0!important;
+}
+
+
+
+

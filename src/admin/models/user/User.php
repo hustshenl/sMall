@@ -19,7 +19,7 @@ class User extends UserModel
     {
         return [
             [['id', 'status', 'credit', 'point', 'coin', 'scores', 'grade', 'role', 'gender', 'postcode', 'register_ip', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'nickname', 'auth_key', 'password_hash', 'password_reset_token', 'access_token', 'identity', 'identity_sn', 'email', 'phone', 'qq', 'weibo', 'avatar', 'signature', 'address', 'district', 'city', 'province', 'country', 'language', 'remark'], 'safe'],
+            [['username', 'nickname', 'identity', 'identity_sn', 'email', 'phone', 'qq', 'weibo', 'avatar', 'signature', 'address', 'district', 'city', 'province', 'country', 'language', 'remark'], 'safe'],
         ];
     }
 
@@ -76,10 +76,6 @@ class User extends UserModel
 
         $query->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'nickname', $this->nickname])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'access_token', $this->access_token])
             ->andFilterWhere(['like', 'identity', $this->identity])
             ->andFilterWhere(['like', 'identity_sn', $this->identity_sn])
             ->andFilterWhere(['like', 'email', $this->email])

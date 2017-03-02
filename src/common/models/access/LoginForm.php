@@ -15,10 +15,10 @@ class LoginForm extends Model
 {
     public $username;
     public $password;
+    public $client;
     public $rememberMe = true;
 
     private $_user = false;
-    private $_accountType = false;
 
 
     /**
@@ -33,6 +33,7 @@ class LoginForm extends Model
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
+            ['client', 'default','value'=>User::CLIENT_DESKTOP],
         ];
     }
 
@@ -69,18 +70,17 @@ class LoginForm extends Model
             }
             $this->password = $matches['password'];
         }
+        if(empty($this->client))$this->client=User::CLIENT_DESKTOP;
         return true;
     }
 
 
     public function success()
     {
-        if ($this->accountType == 'master') {
-            return ['data' => Yii::$app->user->identity];
-        }
-        //  TODO 获取子帐号跳转登录连接
-        $redirect = '';
-        return ['redirect' => $redirect];
+        $user = $this->getUser();
+        if($redirect = $user->getRedirect())
+            return ['redirect' => $redirect];
+        return ['data' => Yii::$app->user->identity];
     }
 
     /**
@@ -108,16 +108,17 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            if ($this->accountType == 'master') {
+            $this->_user = User::findByUsername($this->username);
+            /*if ($this->accountType == 'master') {
                 $this->_user = User::findByUsername($this->username);
             } else {
                 $this->_user = Seller::findByUsername($this->username);
-            }
+            }*/
         }
         return $this->_user;
     }
 
-    public function getAccountType()
+    /*public function getAccountType()
     {
         if ($this->_accountType === false) {
             if (strpos($this->username, ':') === false) {
@@ -127,5 +128,5 @@ class LoginForm extends Model
             }
         }
         return $this->_accountType;
-    }
+    }*/
 }

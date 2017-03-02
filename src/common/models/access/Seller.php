@@ -17,8 +17,6 @@ use yii\web\IdentityInterface;
  * @property string $username
  * @property integer $user_id
  * @property integer $store_id
- * @property string $auth_key
- * @property string $password_hash
  * @property string $name
  * @property string $avatar
  * @property string $signature
@@ -67,8 +65,8 @@ class Seller extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_FORBIDDEN]],
             [['status', 'user_id', 'store_id', 'type', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'password_hash', 'name', 'avatar', 'signature', 'department', 'position'], 'string', 'max' => 255],
-            [['auth_key', 'phone'], 'string', 'max' => 64],
+            [['username', 'name', 'avatar', 'signature', 'department', 'position'], 'string', 'max' => 255],
+            [['phone'], 'string', 'max' => 64],
             [['permission', 'remark'], 'string', 'max' => 2048],
         ];
     }
@@ -143,13 +141,6 @@ class Seller extends ActiveRecord implements IdentityInterface
         return $this->getPrimaryKey();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getAuthKey()
-    {
-        return $this->auth_key;
-    }
 
     /**
      * @inheritdoc
@@ -180,13 +171,6 @@ class Seller extends ActiveRecord implements IdentityInterface
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
-    /**
-     * Generates "remember me" authentication key
-     */
-    public function generateAuthKey()
-    {
-        $this->auth_key = Yii::$app->security->generateRandomString();
-    }
 
     public function removePhone()
     {

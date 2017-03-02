@@ -5,7 +5,7 @@
 
 + 用户账户表（user）：用户（会员、商家、子帐号、管理员）基本登陆信息
 + 会员表（member）
-+ 会员评价表（member_review）：用户收到的评价
++ 会员评价表（member_evaluate）：用户收到的评价
 + 会员收货地址（address）
 + 会员定位记录（location）
 + 收藏表（favorites）：包括商家、商品
@@ -35,9 +35,8 @@
 
 + 卖家表（seller）：存储卖家信息。
 + 店铺等级表（store_grade）
-+ 申请入驻（store_join）
-+ 续签（store_renew）
-+ 店铺收支（store_balance）（购买促销工具、罚款、奖励等，正向为收入，负向为支持）
++ 店铺申请（store_apply）：各类申请提交，含开店/续签/关店申请，认证/退出认证申请
++ 店铺收支（store_balance）（购买促销工具、罚款、奖励等，正向为收入，负向为支出）
 + 店铺账户分组（store_account_group）
 + 店铺日志（store_log）
 + 店铺表（store）：存储店铺信息。
@@ -49,12 +48,18 @@
 + 店铺装修（store_decoration）：
 + 店铺水印（store_watermark）：
 + 店铺版式（store_template）：
-+ 店铺平均（store_review）：用户针对店铺的评价
++ 店铺评价（store_evaluate）：用户针对店铺的评价
 + 运费模板（transport）
 + 运费模板扩展（transport_extend）
 + 供应商（supplier）
 + 结算表（settlement）：系统根据订单、结算周期、商家收支自动给商家进行结算
 
+### 商家服务
++ 商家认证（store_certification）：商家认证情况（相关申请放到店铺申请表统一管理）
++ 商家认证详情（store_certification_data
+）：商家认证情况详情
++ 认证项目（certification）：认证项目（包括开店关店等各个阶段）
++ 认证记录（certification_log）：
 
 ### 订单系列
 + 订单表（order）
@@ -73,15 +78,10 @@
 + 团购（group_buy）
 + CPS推广（cps）
 
-### 商家服务
-+ 商家认证（certification）：商家认证情况
-+ 认证项目（certification_item）：认证项目
-+ 认证申请（certification_apply）：含加入和取消
-+ 认证记录（certification_log）：
 
 
 ### 商品评价与讨论
-+ 商品评价表（goods_review）：商品评价；
++ 商品评价表（goods_evaluate）：商品评价；
 + 商品评价回复表（goods_reply）：商品评价回复；
 + 商品印象（goods_impression）：买家对商品的印象
 + 商品讨论（discuss）：商品讨论；分为晒单、讨论、问答
