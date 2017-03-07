@@ -34,7 +34,7 @@ $this->endBlock();
 ?>
 <div class="model-index">
 
-    <?php Pjax::begin(); ?>
+    <?php Pjax::begin(['id'=>'pjax-content']); ?>
     <?= GridView::widget([
         'export' => false,
         'dataProvider' => $dataProvider,

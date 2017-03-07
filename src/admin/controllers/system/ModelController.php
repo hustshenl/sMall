@@ -5,9 +5,10 @@ namespace admin\controllers\system;
 use Yii;
 use common\models\system\Model;
 use admin\models\system\ModelSearch as ModelSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\components\base\Controller;
+
 
 /**
  * ModelController implements the CRUD actions for Model model.
@@ -20,14 +21,14 @@ class ModelController extends Controller
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
+        $behaviors = parent::behaviors();
+        $behaviors['verbs'] =  [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'delete' => ['post'],
             ],
         ];
+        return $behaviors;
     }
 
     public function init()
@@ -103,6 +104,13 @@ class ModelController extends Controller
                 'model' => $model,
             ]);*/
         }
+    }
+    public function actionValidate($id=0)
+    {
+        $model = new Model();
+        if($id>0) $model = $this->findModel($id);
+        $model->load(Yii::$app->request->post());
+        return $this->success(\yii\widgets\ActiveForm::validate($model));
     }
 
     /**
