@@ -83,6 +83,11 @@ class ActionColumn extends \yii\grid\ActionColumn
         parent::init();
         $view = $this->grid->getView();
         ActionColumnAsset::register($view);
+        echo \yii\bootstrap\Modal::widget([
+            'id' => 'action-column-modal',
+            'toggleButton' => false,
+            'clientOptions' => false,
+        ]);
     }
 
     /**
@@ -102,15 +107,20 @@ class ActionColumn extends \yii\grid\ActionColumn
                         //'data-pjax' => '0',
                         'class' => $this->btnViewClass,
                     ]);
-                return Html::tag('act','<span class="' . $this->viewButtonIcon . '"></span> ' .
-                    \Yii::t('common', $this->viewButtonText), [
+
+                $url = is_array($key) ? $key : ['id' => (string) $key];
+                $url[0] = $this->controller ? $this->controller . '/' . 'view' : 'view';
+                $url['mode']=empty($mode)?'modal':$mode;
+                $options = [
                     'title' => \Yii::t('yii', 'View'),
                     'data-method' => 'GET',
                     'data-href' => $url!==null?Url::to($url):'',
                     'data-action' => 'view',
                     'data-mode' => $mode,
                     'class' => $this->btnViewClass,
-                ]);
+                ];
+                return Html::tag('act','<span class="' . $this->viewButtonIcon . '"></span> ' .
+                    \Yii::t('common', $this->viewButtonText), $options);
             };
         }
         if (!isset($this->buttons['update'])) {
@@ -125,15 +135,24 @@ class ActionColumn extends \yii\grid\ActionColumn
                         'class' => $this->btnViewClass,
                     ]);
 
-                return Html::tag('act','<span class="' . $this->updateButtonIcon . '"></span> ' .
-                    \Yii::t('common', $this->updateButtonText), [
+                $url = is_array($key) ? $key : ['id' => (string) $key];
+                $url[0] = $this->controller ? $this->controller . '/' . 'update' : 'update';
+                $url['mode']=empty($mode)?'modal':$mode;
+                $options = [
                     'title' => \Yii::t('yii', 'Update'),
                     'data-title' => \Yii::t('yii', 'Update'),
                     'data-method' => 'get',
                     'data-href' => $url!==null?Url::to($url):'',
                     'data-action' => 'update',
                     'class' => $this->btnUpdateClass,
-                ]);
+                ];
+                if($url['mode'] == 'modal') {
+                    //$options['href'] = $url!==null?Url::to($url):'';
+                    //$options['data-toggle'] = 'modal';
+                    //$options['data-target'] = '#action-column-modal';
+                }
+                return Html::tag('act','<span class="' . $this->updateButtonIcon . '"></span> ' .
+                    \Yii::t('common', $this->updateButtonText), $options);
             };
         }
         if (!isset($this->buttons['delete'])) {

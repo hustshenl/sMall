@@ -24,9 +24,15 @@ $this->params['breadcrumbs'][] = $this->title;
     ]
 ); ?>
 
-<?php $this->endBlock(); ?>
+<?php $this->endBlock();
 
-<div class="application-view">
+$isModal = Yii::$app->request->get('mode', '') == 'modal'&&Yii::$app->request->isAjax;
+?>
+<?= $isModal ?
+    \common\widgets\Modal::renderViewHeader($this->title) .
+    Html::beginTag('div', ['class' => 'modal-body']) :
+    Html::beginTag('div', ['class' => 'application-view']);
+?>
 
     <?= DetailView::widget([
         'model' => $model,
@@ -190,5 +196,5 @@ $this->params['breadcrumbs'][] = $this->title;
             //'link',
         ],
     ]) ?>
+    <?= Html::endTag('div'); ?>
 
-</div>

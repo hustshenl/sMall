@@ -9,11 +9,16 @@ use yii\helpers\Html;
 $this->title = Yii::t('admin', 'Create Application');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'Applications'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+$isModal = Yii::$app->request->get('mode', '') == 'modal'&&Yii::$app->request->isAjax;
 ?>
-<div class="application-create">
+<?= $isModal ?
+    \common\widgets\Modal::renderViewHeader($this->title) .
+    Html::beginTag('div', ['class' => 'modal-body']) :
+    Html::beginTag('div', ['class' => 'application-create']);
+?>
 
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>
-
-</div>
+    <?= Html::endTag('div'); ?>

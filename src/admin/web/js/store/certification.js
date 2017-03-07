@@ -39,6 +39,7 @@ sMall.storeCertification = function ($) {
     }
     var pub = {
         init: function () {
+            return;
             console.log('storeCertification init');
             $itemAdd = $('#item-add');
             $itemContainer = $('#item-container');

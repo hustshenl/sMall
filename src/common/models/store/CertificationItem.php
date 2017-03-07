@@ -48,7 +48,7 @@ class CertificationItem extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['certification_id'], 'required'],
+            [['name','label','type'], 'required'],
             [['certification_id', 'status', 'type', 'required', 'sort'], 'integer'],
             [['name', 'label'], 'string', 'max' => 255],
             [['notice', 'items'], 'string', 'max' => 2048],

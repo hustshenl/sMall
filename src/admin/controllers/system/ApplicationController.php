@@ -16,6 +16,8 @@ use common\components\base\Controller;
  */
 class ApplicationController extends Controller
 {
+    public $renderer = 'render';
+
     /**
      * @inheritdoc
      */
@@ -29,6 +31,13 @@ class ApplicationController extends Controller
             ],
         ];
         return $behaviors;
+    }
+
+    public function init()
+    {
+        if(Yii::$app->request->isAjax)
+            $this->renderer = 'renderAjax';
+        parent::init();
     }
 
     /**
@@ -54,7 +63,7 @@ class ApplicationController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->{$this->renderer}('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -71,7 +80,7 @@ class ApplicationController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('create', [
+            return $this->{$this->renderer}('create', [
                 'model' => $model,
             ]);
         }
@@ -90,7 +99,7 @@ class ApplicationController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('update', [
+            return $this->{$this->renderer}('update', [
                 'model' => $model,
             ]);
         }

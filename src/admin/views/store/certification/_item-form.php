@@ -8,7 +8,6 @@ use kartik\builder\Form;
 /* @var $model common\models\store\CertificationItem */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
 <div class="certification-form">
 
     <?php $form = ActiveForm::begin();
@@ -27,7 +26,9 @@ use kartik\builder\Form;
                 'options' => [
                     'containerOptions' => ['class' => ''],
                     'pluginOptions' => [
-                        'onText' => '启用111111111',
+                        //'handleWidth'=>'90',
+                        //'labelWidth'=>'90',
+                        'onText' => '启用',
                         'offText' => '禁用',
                     ],
                 ]

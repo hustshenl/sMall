@@ -4,8 +4,7 @@
 
 
 yii.actionColumn = (function ($) {
-    var actionModal = '<div class="modal fade" id="action-modal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><h4 class="modal-title" id="actionModalLabel"></h4></div><div class="modal-body ajax-content-wrap"></div> </div> </div> </div>';
-    var bottomView = '<tr id="action-bottom-view"><td style="padding: 10px;" class="ajax-content-wrap"></td></tr>';
+    var bottomView = '<tr id="action-bottom-view"><td style="padding: 10px;" class="bottom-content"></td></tr>';
     var pub = {
         clickableSelector: 'act, a.action-view',
         isActive: true,
@@ -55,16 +54,14 @@ yii.actionColumn = (function ($) {
             toastr[data.type](data.content == undefined ? null : data.content, data.title);
         },
         handleModalAction: function ($e) {
-            var modal = $(document).find('#action-modal'),
-                title = $e.data('title')||'',
+            $('.modal-content').html('');
+            var modal = $(document).find('#action-column-modal'),
+                title = $e.data('title') || '',
                 url = $e.data('href');
-            if (modal.length <= 0) modal = $(actionModal);
-            modal.find('#actionModalLabel').text(title);
-            modal.find('.ajax-content-wrap').text('loading').load(url,
-                function (res,status) {
-                    if(status=='error'){
+            modal.find('.modal-content').load(url, function (res, status) {
+                    if (status == 'error') {
                         return pub.notify({type: 'error', title: res});
-                    }else if(status == 'timeout'){
+                    } else if (status == 'timeout') {
                         return pub.notify({type: 'error', title: '连接超时'});
                     }
                     modal.modal('show');
@@ -73,12 +70,14 @@ yii.actionColumn = (function ($) {
             );
         },
         handleUpdateModal: function ($e, modal) {
-            console.log(yii.actionColumn.onLoad);
+            var submitted = false;
             if (typeof yii.actionColumn.onLoad == 'function') {
                 yii.actionColumn.onLoad($e, modal);
             }
-            modal.find('form').submit(function (event) {
+            modal.find('form').on('submit', function (event) {
                 event.preventDefault();
+                if (submitted) return false;
+                submitted = true;
                 var $this = $(this);
                 $this.ajaxSubmit(function (res) {
                     if (typeof yii.actionColumn.onSuccess == 'function') {
@@ -100,26 +99,26 @@ yii.actionColumn = (function ($) {
             if (view.data('key') == tr.data('key')) {
                 return tr.parent().append(view.hide().data('key', 0));
             }
-            var content = view.find('.ajax-content-wrap');
-            content.load(url,function (res,status) {
-                if(status=='error'){
+            var content = view.find('.bottom-content');
+            content.load(url, function (res, status) {
+                if (status == 'error') {
                     //tr.parent().append(view.hide().data('key', 0));
                     return pub.notify({type: 'error', title: res});
-                }else if(status == 'timeout'){
+                } else if (status == 'timeout') {
                     return pub.notify({type: 'error', title: '连接超时'});
                 }
                 view.show().data('key', tr.data('key'));
                 if (typeof yii.actionColumn.onLoad == 'function') {
-                    yii.actionColumn.onLoad($e,view);
+                    yii.actionColumn.onLoad($e, view);
                 }
                 tr.after(view);
-                $("html,body").animate({scrollTop: $("#action-bottom-view").prev().offset().top-$('header').height()}, 800);
+                $("html,body").animate({scrollTop: $("#action-bottom-view").prev().offset().top - $('header').height()}, 800);
             });
         },
-        onLoad:function ($e,$obj) {
+        onLoad: function ($e, $obj) {
             console.log('do something.');
         },
-        onSuccess:function (res,$e,modal) {
+        onSuccess: function (res, $e, modal) {
             if (typeof (res.data) == 'string') {
                 pub.notify({type: res.status == 0 ? 'success' : 'error', title: res.data});
             } else {

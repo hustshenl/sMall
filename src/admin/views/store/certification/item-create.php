@@ -11,11 +11,13 @@ $this->title = Yii::t('admin', 'Create Certification Item');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'Certifications'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $certification->name, 'url' => ['view', 'id' => $certification->id]];
 $this->params['breadcrumbs'][] = $this->title;
+$isModal = Yii::$app->request->get('mode','') == 'modal';
 ?>
-<div class="certification-create">
-
+<?= $isModal?
+    \common\widgets\Modal::renderViewHeader($this->title).
+    Html::beginTag('div', ['class' => 'modal-body']):
+    Html::beginTag('div', ['class' => 'certification-create']);?>
     <?= $this->render('_item-form', [
         'model' => $model,
     ]) ?>
-
-</div>
+<?= Html::endTag('div');?>
