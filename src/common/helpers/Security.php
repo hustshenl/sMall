@@ -8,7 +8,7 @@
 
 namespace common\helpers;
 
-use common\components\base\Config;
+use common\components\system\Config;
 use yii;
 
 class Security

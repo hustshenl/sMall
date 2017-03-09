@@ -37,7 +37,7 @@
     "yiisoft/yii2-redis": "~2.0",
     "yiisoft/yii2-sphinx": "~2.0",
     "yiisoft/yii2-httpclient": "~2.0",
-    "creocoder/yii2-flysystem": "~0.8",
+    "weyii/yii2-filesystem": "~2.0",
     "dmstr/yii2-adminlte-asset": "~2.3",
     "mdmsoft/yii2-admin": "~2.0",
     "hustshenl/yii2-ucenter": "~0.1",

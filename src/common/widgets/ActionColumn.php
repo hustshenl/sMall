@@ -85,6 +85,7 @@ class ActionColumn extends \yii\grid\ActionColumn
         ActionColumnAsset::register($view);
         echo \yii\bootstrap\Modal::widget([
             'id' => 'action-column-modal',
+            'size'=>\yii\bootstrap\Modal::SIZE_LARGE,
             'toggleButton' => false,
             'clientOptions' => false,
         ]);
@@ -96,7 +97,7 @@ class ActionColumn extends \yii\grid\ActionColumn
     protected function initDefaultButtons()
     {
         if (!isset($this->buttons['view'])) {
-            $this->buttons['view'] = function ($url, $model, $key,$mode) {
+            $this->buttons['view'] = function ($url, $model, $key,$mode,$name) {
                 if(in_array($mode,['_blank','_parent','_self','_top']))
                     return Html::a('<span class="' . $this->viewButtonIcon . '"></span> ' .
                         \Yii::t('common', $this->viewButtonText), $url,[
@@ -109,7 +110,7 @@ class ActionColumn extends \yii\grid\ActionColumn
                     ]);
 
                 $url = is_array($key) ? $key : ['id' => (string) $key];
-                $url[0] = $this->controller ? $this->controller . '/' . 'view' : 'view';
+                $url[0] = $this->controller ? $this->controller . '/' . $name : $name;
                 $url['mode']=empty($mode)?'modal':$mode;
                 $options = [
                     'title' => \Yii::t('yii', 'View'),
@@ -124,7 +125,7 @@ class ActionColumn extends \yii\grid\ActionColumn
             };
         }
         if (!isset($this->buttons['update'])) {
-            $this->buttons['update'] = function ($url, $model, $key,$mode) {
+            $this->buttons['update'] = function ($url, $model, $key,$mode,$name) {
                 if(in_array($mode,['_blank','_parent','_self','_top']))
                     return Html::a('<span class="' . $this->updateButtonIcon . '"></span> ' .
                         \Yii::t('common', $this->updateButtonText), $url,[
@@ -136,7 +137,7 @@ class ActionColumn extends \yii\grid\ActionColumn
                     ]);
 
                 $url = is_array($key) ? $key : ['id' => (string) $key];
-                $url[0] = $this->controller ? $this->controller . '/' . 'update' : 'update';
+                $url[0] = $this->controller ? $this->controller . '/' . $name : $name;
                 $url['mode']=empty($mode)?'modal':$mode;
                 $options = [
                     'title' => \Yii::t('yii', 'Update'),
@@ -146,11 +147,6 @@ class ActionColumn extends \yii\grid\ActionColumn
                     'data-action' => 'update',
                     'class' => $this->btnUpdateClass,
                 ];
-                if($url['mode'] == 'modal') {
-                    //$options['href'] = $url!==null?Url::to($url):'';
-                    //$options['data-toggle'] = 'modal';
-                    //$options['data-target'] = '#action-column-modal';
-                }
                 return Html::tag('act','<span class="' . $this->updateButtonIcon . '"></span> ' .
                     \Yii::t('common', $this->updateButtonText), $options);
             };
@@ -232,7 +228,7 @@ class ActionColumn extends \yii\grid\ActionColumn
 
             $url = $this->createUrl($name, $model, $key, $index);
 
-            return call_user_func($this->buttons[$type], $url, $model, $key,$mode);
+            return call_user_func($this->buttons[$type], $url, $model, $key,$mode,$name);
         }, $this->template);
 
     }

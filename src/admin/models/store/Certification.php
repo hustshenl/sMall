@@ -18,8 +18,8 @@ class Certification extends CertificationModel
     public function rules()
     {
         return [
-            [['id', 'status', 'type', 'price', 'deposit', 'expires_in', 'sort', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'description', 'icon', 'content', 'reference'], 'safe'],
+            [['id', 'status', 'type', 'price', 'model_id', 'deposit', 'expires_in', 'sort', 'created_at', 'updated_at'], 'integer'],
+            [['name', 'description', 'icon', 'reference'], 'safe'],
         ];
     }
 
@@ -73,7 +73,6 @@ class Certification extends CertificationModel
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'icon', $this->icon])
-            ->andFilterWhere(['like', 'content', $this->content])
             ->andFilterWhere(['like', 'reference', $this->reference]);
 
         return $dataProvider;

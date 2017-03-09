@@ -76,13 +76,14 @@ yii.actionColumn = (function ($) {
             }
             modal.find('form').on('submit', function (event) {
                 event.preventDefault();
-                if (submitted) return false;
+                if (submitted) return true;
                 submitted = true;
                 var $this = $(this);
                 $this.ajaxSubmit(function (res) {
                     if (typeof yii.actionColumn.onSuccess == 'function') {
                         yii.actionColumn.onSuccess(res, $e, modal);
                     }
+                    submitted= true;
                 });
                 return false;
             })
@@ -119,13 +120,15 @@ yii.actionColumn = (function ($) {
             console.log('do something.');
         },
         onSuccess: function (res, $e, modal) {
+            modal.modal('hide');
+            modal.on('hidden.bs.modal', function (e) {
+                $.pjax.reload("#pjax-content");
+            });
             if (typeof (res.data) == 'string') {
                 pub.notify({type: res.status == 0 ? 'success' : 'error', title: res.data});
             } else {
                 pub.notify(res.data);
             }
-            modal.modal('hide');
-            $.pjax.reload("#pjax-content");
         },
     };
 

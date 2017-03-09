@@ -11,13 +11,15 @@ $this->title = Yii::t('admin', 'Update {modelClass}: ', [
 $this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'Model Attributes'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('admin', 'Update');
+$isModal = Yii::$app->request->get('mode', '') == 'modal'&&Yii::$app->request->isAjax;
 ?>
-<div class="model-attribute-update">
+<?= $isModal ?
+    \common\widgets\Modal::renderViewHeader($this->title) .
+    Html::beginTag('div', ['class' => 'modal-body']) :
+    Html::beginTag('div', ['class' => 'attribute-update']);
+?>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
-
-</div>
+<?= $this->render('_attribute-form', [
+    'model' => $model,
+]) ?>
+<?= Html::endTag('div'); ?>

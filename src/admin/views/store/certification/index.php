@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
+use yii\widgets\Pjax;
 
 
 /* @var $this yii\web\View */
@@ -18,12 +19,23 @@ JS
 
 
 $this->beginBlock('content-header-actions');
-echo Html::a(Yii::t('admin', 'Create Certification'), ['create'], ['class' => 'btn btn-success']);
+echo common\widgets\Modal::widget([
+    'id' => 'create-modal',
+    'toggleButton' => [
+        'label' => Yii::t('admin', 'Create Certification'),
+        'class' => 'btn btn-success',
+        'data-target' => '#create-modal',
+        'href' => \yii\helpers\Url::toRoute(['create','mode'=>'modal']),
+    ],
+    'clientOptions' => false,
+]);
+
 //echo ' '.Html::button(Yii::t('common', '多选'), ['class' => 'btn btn-info multi-select']);
 //echo ' '.Html::button(Yii::t('common', '高级筛选'), ['class' => 'btn btn-info advance-search-trigger']);
 $this->endBlock();
 ?>
 <div class="certification-index">
+    <?php Pjax::begin(['id'=>'pjax-content']); ?>
 
     <?= GridView::widget([
         'export' => false,
@@ -44,7 +56,6 @@ $this->endBlock();
             // 'price',
             // 'deposit',
             // 'expires_in',
-            // 'content:ntext',
             // 'sort',
             // 'reference',
             // 'created_at',
@@ -52,4 +63,6 @@ $this->endBlock();
 
         ],
     ]); ?>
+    <?php Pjax::end(); ?>
+
 </div>

@@ -49,19 +49,22 @@ yii.modal = (function ($) {
                     if (typeof yii.modal.onSuccess == 'function') {
                         yii.modal.onSuccess(res, modal);
                     }
+                    submitted= false;
                 });
                 return false;
             })
 
         },
         onSuccess: function (res, modal) {
+            modal.modal('hide');
+            modal.on('hidden.bs.modal', function (e) {
+                $.pjax.reload("#pjax-content");
+            });
             if (typeof (res.data) == 'string') {
                 pub.notify({type: res.status == 0 ? 'success' : 'error', title: res.data});
             } else {
                 pub.notify(res.data);
             }
-            modal.modal('hide');
-            $.pjax.reload("#pjax-content");
         },
     };
 

@@ -15,6 +15,7 @@ class Modal extends \yii\bootstrap\Modal
 {
 
     public $enableAjaxSubmit = true;
+    public $size=self::SIZE_LARGE;
 
     public function init()
     {

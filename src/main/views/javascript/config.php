@@ -10,7 +10,7 @@ use \yii\helpers\Json;
 
 /* @var $this yii\web\View */
 // TODO 获取公钥
-/** @var \common\components\base\Config $config */
+/** @var \common\components\system\Config $config */
 $config = Yii::$app->config;
 $passportHost = \common\helpers\SMall::getPassportHost();
 ob_start();

@@ -4,22 +4,21 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\store\Certification */
+/* @var $model common\models\system\ModelAttribute */
 
-$this->title = Yii::t('admin', 'Create Certification');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'Certifications'), 'url' => ['index']];
+$this->title = Yii::t('admin', 'Create Model Attribute');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'Model Attributes'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-$model->expires_in = 86400*365;
 
 $isModal = Yii::$app->request->get('mode','') == 'modal';
 ?>
 <?= $isModal?
     \common\widgets\Modal::renderViewHeader($this->title).
     Html::beginTag('div', ['class' => 'modal-body']):
-    Html::beginTag('div', ['class' => 'certification-create']);
+    Html::beginTag('div', ['class' => 'attribute-create']);
 ?>
 
-<?= $this->render('_form', [
+<?= $this->render('_attribute-form', [
     'model' => $model,
 ]) ?>
 <?= Html::endTag('div');?>

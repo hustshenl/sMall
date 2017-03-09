@@ -40,6 +40,7 @@ use kartik\builder\Form;
                 'type' => Form::INPUT_WIDGET,
                 'widgetClass' => '\kartik\widgets\Select2',
                 'options' => [
+                    'hideSearch' => true,
                     'data' => \common\models\system\Application::$types,
                     'options' => ['placeholder' => '应用类型'],
                     'pluginOptions' => [

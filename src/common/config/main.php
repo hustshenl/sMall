@@ -34,7 +34,7 @@ return [
             ],
         ],
         'config' => [
-            'class' => 'common\components\base\Config',
+            'class' => 'common\components\system\Config',
         ],
         'fs' => [
             'class' => 'creocoder\flysystem\LocalFilesystem',

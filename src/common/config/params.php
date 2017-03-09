@@ -6,7 +6,7 @@ return [
     'supportEmail' => 'support@example.com',
     'user.passwordResetTokenExpire' => 3600,
     'upload' => [
-        'maxImageSize' => 1024,//单位K
+        'maxSize' => 1024,//单位K
         'cover' => [
             'path' => 'images/cover/',//封面保存路径
             'crop' => true,

@@ -5,10 +5,8 @@
  * @Description:
  */
 
-namespace common\components;
+namespace common\components\base;
 
-use common\models\comic\Comic as ComicModel;
-use common\models\base\Image as ImageModel;
 use Imagine\Image\ManipulatorInterface;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Box;
@@ -18,10 +16,11 @@ use yii\web\BadRequestHttpException;
 use yii\imagine\Image as Imagine;
 use yii\imagine\BaseImage;
 use yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class Upload
- * 文件上传
+ * 负责文件上传
  * @package common\components
  * @property \yii\base\Model $model
  * @property string $fileExt
@@ -30,27 +29,29 @@ use yii;
  * @property array $errors
  * @property string $firstError
  * @property ImageInterface $imagine
- * @property yii\web\UploadedFile $file
+ * @property UploadedFile $instance
  */
 class Upload extends Component {
 
-    const CATEGORY_COVER = 'cover';
+    const CATEGORY_COMMON = 'common';
+    const CATEGORY_GOODS = 'goods';
+    const CATEGORY_MEMBER = 'member';
+    const CATEGORY_ARTICLE = 'article';
     const CATEGORY_BLOCK = 'block';
-    const CATEGORY_COMIC = 'comic';
-    const CATEGORY_AUTHOR = 'author';
+    const CATEGORY_STORE = 'store';
     const CATEGORY_TEMP = 'temp';
 
-    public $field='comic';
-    public $category = self::CATEGORY_COVER;
+    public $field='image';
+    public $category = self::CATEGORY_COMMON;
     public $cropImage;
 
     private $_model;
-    private $_file = false;
+    private $_instance = false;
     private $_path;
+    private $_fileName=false;
     private $_fileExt;
     private $_imagine;
     //public $fileName;
-    private $_fileName=false;
     private $_saveOriginal=-1;
     private $_imageExt='jpg|jpeg|png|gif|bmp';
     private $_errors=[];
@@ -61,18 +62,22 @@ class Upload extends Component {
         parent::init();
     }
 
-    public function getFile()
+    /**
+     * 获取上传文件实例
+     * @return bool|UploadedFile
+     */
+    public function getInstance()
     {
-        if($this->_file == false) $this->_file = UploadedFile::getInstance($this->model, $this->field);
-        return $this->_file;
+        if($this->_instance == false) $this->_instance = UploadedFile::getInstance($this->model, $this->field);
+        return $this->_instance;
     }
     public function isOutOfSize()
     {
-        if(!$this->file) return true;
-        $maxImageSize = isset(Yii::$app->params['upload']['maxImageSize'])?Yii::$app->params['upload']['maxImageSize']:2048;
-        if ($this->file->size > 1024 * $maxImageSize) {
-            $this->model->addError($this->field, sprintf('文件太大,请上传小于 %s K的图片', $maxImageSize));
-            $this->addError(sprintf('文件太大,请上传小于 %s K的图片', $maxImageSize));
+        if(!$this->instance) return true;
+        $maxSize = isset(Yii::$app->params['upload']['maxSize'])?Yii::$app->params['upload']['maxSize']:2048;
+        if ($this->instance->size > 1024 * $maxSize) {
+            $this->model->addError($this->field, sprintf('文件太大,请上传小于 %s K的图片', $maxSize));
+            $this->addError(sprintf('文件太大,请上传小于 %s K的图片', $maxSize));
             return true;
         }
         return false;
@@ -96,7 +101,7 @@ class Upload extends Component {
         Yii::trace($this->isCropable());
         if(!$this->isCropable()) return $this->imagine;
         $cropField = $this->field.'_crop';
-        $this->_imagine =  Imagine::crop($this->file->tempName, $this->model->{$cropField}['width'], $this->model->{$cropField}['height'], [$this->model->{$cropField}['x'],$this->model->{$cropField}['y']]);
+        $this->_imagine =  Imagine::crop($this->instance->tempName, $this->model->{$cropField}['width'], $this->model->{$cropField}['height'], [$this->model->{$cropField}['x'],$this->model->{$cropField}['y']]);
         return $this->_imagine;
     }
     public function isCropable()
@@ -130,13 +135,13 @@ class Upload extends Component {
     }
     public function getImagine()
     {
-        if(empty($this->_imagine)) $this->_imagine = Imagine::getImagine()->open($this->file->tempName);
+        if(empty($this->_imagine)) $this->_imagine = Imagine::getImagine()->open($this->instance->tempName);
         return $this->_imagine;
     }
     public function save($original=false)
     {
         if($original||$this->isSaveOriginal()){
-            return Yii::$app->fs->writeStream($this->path . $this->fileName, fopen($this->file->tempName, 'r+'));
+            return Yii::$app->fs->writeStream($this->path . $this->fileName, fopen($this->instance->tempName, 'r+'));
         }
         return Yii::$app->fs->write($this->path . $this->fileName,
             $this->imagine->get('jpeg', ['quality' => static::getQualityConfig($this->category)]));
@@ -163,7 +168,7 @@ class Upload extends Component {
         do {
             $_randName = time() .Yii::$app->security->generateRandomString(16);
             $fileName = $_randName . "." . $ext;
-        } while (Yii::$app->fs->has($path . $fileName));
+        } while (Yii::$app->fs->has(rtrim($path,'/'). '/' . $fileName));
         return $fileName;
     }
 
@@ -189,7 +194,7 @@ class Upload extends Component {
     public function isImage()
     {
         if(function_exists('exif_imagetype')){
-            $exifImageType = exif_imagetype($this->file->tempName);
+            $exifImageType = exif_imagetype($this->instance->tempName);
             if($exifImageType == IMAGETYPE_BMP||$exifImageType == IMAGETYPE_GIF||$exifImageType == IMAGETYPE_JPEG||$exifImageType == IMAGETYPE_PNG){
                 return true;
             }
@@ -204,7 +209,7 @@ class Upload extends Component {
 
     public function getFileExt()
     {
-        return $this->_fileExt ? $this->_fileExt : $this->_fileExt = $this->file->getExtension();
+        return $this->_fileExt ? $this->_fileExt : $this->_fileExt = $this->instance->getExtension();
     }
     public function getPath()
     {
@@ -212,7 +217,6 @@ class Upload extends Component {
             $this->_path = static::getBasePath($this->category);
             $this->_path .= date('Ym', time()).'/';
         }
-        Yii::trace($this->_path);
         return $this->_path;
     }
     public function setPath($path)
@@ -259,6 +263,21 @@ class Upload extends Component {
     public static function getQualityConfig($category)
     {
         return isset(Yii::$app->params['upload'][$category]['quality'])?Yii::$app->params['upload'][$category]['quality']:60;
+    }
+
+
+    public static function uploadImage($model,$field,$category)
+    {
+        $upload = new Upload(['model' => $model, 'field' => $field]);
+        if (!$upload->file||$upload->isOutOfSize()||!$upload->isImage()) {
+            return yii\helpers\ArrayHelper::getValue($model->oldAttributes,'image','');
+        }
+        $path = static::getBasePath($category).date('Ym', time());
+        $filename = static::generateFileName($path);
+        if(Yii::$app->fs->writeStream($path . $filename, fopen($upload->file->tempName, 'r+'))){
+            return $path . $filename;
+        }
+        return ArrayHelper::getValue($model->oldAttributes,'image','');
     }
 
 }

@@ -6,6 +6,8 @@ var sMall = function ($) {
     var pub = {
         init: function () {
             console.log('app init');
+            /* 修复 modal 中 Select2 下拉无法输入的 BUG */
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { };
         },
         getSelectedKeys:function (ok,message) {
             var selection = $("input[name='selection[]']:checked"),

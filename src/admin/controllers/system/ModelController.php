@@ -5,6 +5,8 @@ namespace admin\controllers\system;
 use Yii;
 use common\models\system\Model;
 use admin\models\system\ModelSearch as ModelSearch;
+use common\models\system\ModelAttribute;
+use admin\models\system\ModelAttribute as ModelAttributeSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\components\base\Controller;
@@ -45,9 +47,9 @@ class ModelController extends Controller
     public function actionIndex()
     {
         $searchModel = new ModelSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
+        $formName = Yii::$app->request->isAjax ? '' : $searchModel->formName();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$formName);
+        return Yii::$app->request->isAjax&&Yii::$app->request->get('_pjax',false) === false?$this->success($dataProvider, 'results') :$this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -60,8 +62,13 @@ class ModelController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $searchModel = new ModelAttributeSearch();
+        $dataProvider = $searchModel->search(['model_id'=>$id],'');
         return $this->{$this->renderer}('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
 
     }
@@ -113,6 +120,49 @@ class ModelController extends Controller
         return $this->success(\yii\widgets\ActiveForm::validate($model));
     }
 
+    public function actionAttributeView($id)
+    {
+        $model = $this->findAttribute($id);
+        return $this->{$this->renderer}('attribute-view', [
+            'model' => $model,
+        ]);
+
+    }
+    public function actionAttributeCreate($id)
+    {
+        $model = new ModelAttribute();
+        $model->model_id = $id;
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->model_id]);
+        } else {
+            return $this->{$this->renderer}('attribute-create', [
+                'model' => $model,
+            ]);
+        }
+    }
+    public function actionAttributeUpdate($id)
+    {
+        $model = $this->findAttribute($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->model_id]);
+        } else {
+            return $this->{$this->renderer}('attribute-update', [
+                'model' => $model,
+            ]);
+        }
+    }
+    public function actionAttributeValidate($id=0,$model_id)
+    {
+        $model = new ModelAttribute();
+        $model->model_id = $model_id;
+        if($id>0) $model = $this->findAttribute($id);
+        $model->load(Yii::$app->request->post());
+        return $this->success(\yii\widgets\ActiveForm::validate($model));
+    }
+
+
+
     /**
      * Deletes an existing Model model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -136,6 +186,15 @@ class ModelController extends Controller
     protected function findModel($id)
     {
         if (($model = Model::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    protected function findAttribute($id)
+    {
+        if (($model = ModelAttribute::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

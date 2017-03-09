@@ -43,7 +43,7 @@ $this->endBlock();
             ['class' => 'yii\grid\SerialColumn'],
             [
                 'class' => 'common\widgets\ActionColumn',
-                'template' => '{view} {update} {delete}'
+                'template' => '{view::_self} {update} {delete}'
             ],
 
             'id',

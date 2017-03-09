@@ -9,7 +9,7 @@ namespace admin\controllers\system;
 
 
 use admin\models\system\configs\MallConfig;
-use common\components\base\Config;
+use common\components\system\Config;
 use yii\web\Controller;
 use admin\models\system\configs\SystemConfig;
 use admin\models\system\configs\RsaConfig;

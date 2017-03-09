@@ -11,12 +11,15 @@ $this->title = Yii::t('admin', 'Update {modelClass}: ', [
 $this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'Certifications'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('admin', 'Update');
+$isModal = Yii::$app->request->get('mode', '') == 'modal'&&Yii::$app->request->isAjax;
 ?>
-<div class="certification-update">
+<?= $isModal ?
+    \common\widgets\Modal::renderViewHeader($this->title) .
+    Html::beginTag('div', ['class' => 'modal-body']) :
+    Html::beginTag('div', ['class' => 'certification-update']);
+?>
 
-
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
-
-</div>
+<?= $this->render('_form', [
+    'model' => $model,
+]) ?>
+<?= Html::endTag('div'); ?>

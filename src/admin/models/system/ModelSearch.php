@@ -35,10 +35,11 @@ class ModelSearch extends ModelModel
      * Creates data provider instance with search query applied
      *
      * @param array $params
+     * @param string $formName
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params,$formName=nul)
     {
         $query = ModelModel::find();
 
@@ -48,7 +49,7 @@ class ModelSearch extends ModelModel
             'query' => $query,
         ]);
 
-        $this->load($params);
+        $this->load($params,$formName);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails

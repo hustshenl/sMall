@@ -4,31 +4,38 @@ namespace admin\controllers\store;
 
 use Yii;
 use common\models\store\Certification;
-use common\models\store\CertificationItem;
 use admin\models\store\Certification as CertificationSearch;
-use yii\web\Controller;
+use common\components\base\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use admin\models\store\CertificationItem as CertificationItemSearch;
 
 /**
  * CertificationController implements the CRUD actions for Certification model.
  */
 class CertificationController extends Controller
 {
+    public $renderer = 'render';
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
+        $behaviors = parent::behaviors();
+        $behaviors['verbs'] =  [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'delete' => ['post'],
             ],
         ];
+        return $behaviors;
+    }
+
+    public function init()
+    {
+        if(Yii::$app->request->isAjax)
+            $this->renderer = 'renderAjax';
+        parent::init();
     }
 
     /**
@@ -53,7 +60,7 @@ class CertificationController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->{$this->renderer}('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -70,7 +77,7 @@ class CertificationController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('create', [
+            return $this->{$this->renderer}('create', [
                 'model' => $model,
             ]);
         }
@@ -89,7 +96,7 @@ class CertificationController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('update', [
+            return $this->{$this->renderer}('update', [
                 'model' => $model,
             ]);
         }
@@ -107,58 +114,13 @@ class CertificationController extends Controller
 
         return $this->redirect(['index']);
     }
-
-    public function actionItem($id)
+    public function actionValidate($id=0)
     {
-        $model = $this->findModel($id);
-        $searchModel = new CertificationItemSearch();
-        $dataProvider = $searchModel->search(['certification_id'=>$id]);
-        return $this->render('item', [
-            'model' => $model,
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        $model = new Certification();
+        if($id>0) $model = $this->findModel($id);
+        $model->load(Yii::$app->request->post());
+        return $this->success(\yii\widgets\ActiveForm::validate($model));
     }
-
-
-    public function actionItemCreate($id)
-    {
-        $certification = $this->findModel($id);
-        $model = new CertificationItem();
-        $model->certification_id = $id;
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['item', 'id' => $id]);
-        } else {
-            return Yii::$app->request->isAjax? $this->renderAjax('item-create', [
-                'certification'=>$certification,
-                'model' => $model,
-            ]):$this->render('item-create', [
-                'certification'=>$certification,
-                'model' => $model,
-            ]);
-        }
-    }
-
-    public function actionItemUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    public function actionItemDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
 
 
     /**
@@ -171,14 +133,6 @@ class CertificationController extends Controller
     protected function findModel($id)
     {
         if (($model = Certification::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-    protected function findItem($id)
-    {
-        if (($model = CertificationItem::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

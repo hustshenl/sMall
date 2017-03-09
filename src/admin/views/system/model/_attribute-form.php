@@ -5,15 +5,18 @@ use kartik\form\ActiveForm;
 use kartik\builder\Form;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\system\Model */
+/* @var $model common\models\system\ModelAttribute */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="model-form">
+
+<div class="model-attribute-form">
 
     <!-- BEGIN FORM-->
     <?php
-    $validationUrl = $model->isNewRecord?['validate']:['validate','id'=>$model->id];
+
+    $validationUrl = ['attribute-validate','model_id'=>$model->model_id];
+    $validationUrl['id'] = $model->isNewRecord?0:$model->id;
     $form = ActiveForm::begin([
         'type' => ActiveForm::TYPE_VERTICAL,
         'enableAjaxValidation' => true,
@@ -26,7 +29,8 @@ use kartik\builder\Form;
         'form' => $form,
         'columns' => 2,
         'attributes' => [
-            'name' => ['options' => ['placeholder' => '请输入模型名称...']],
+            'name' => ['options' => ['placeholder' => '字段名称，建议使用小写字母...']],
+            'label' => ['options' => ['placeholder' => '字段标签，中文...']],
             'status' => [
                 'type' => Form::INPUT_WIDGET,
                 'widgetClass' => '\kartik\widgets\SwitchInput',
@@ -38,14 +42,48 @@ use kartik\builder\Form;
                     ],
                 ]
             ],
-            'identifier' => ['options' => ['placeholder' => '建议使用小写字母...']],
-            'table' => ['options' => ['placeholder' => '建议使用小写字母...']],
-            'type' => [
+            'is_key' => [
+                'type' => Form::INPUT_WIDGET,
+                'widgetClass' => '\kartik\widgets\SwitchInput',
+                'options' => [
+                    'containerOptions' => ['class' => ''],
+                    'pluginOptions' => [
+                        'onText' => '是',
+                        'offText' => '否',
+                    ],
+                ]
+            ],
+            'required' => [
+                'type' => Form::INPUT_WIDGET,
+                'widgetClass' => '\kartik\widgets\SwitchInput',
+                'options' => [
+                    'containerOptions' => ['class' => ''],
+                    'pluginOptions' => [
+                        'onText' => '必填',
+                        'offText' => '选填',
+                    ],
+                ]
+            ],
+            'default_value' => ['options' => ['placeholder' => '默认值...']],
+            'length' => ['options' => ['placeholder' => '长度...']],
+            'data_type' => [
                 'type' => Form::INPUT_WIDGET,
                 'widgetClass' => '\kartik\widgets\Select2',
                 'options' => [
                     'hideSearch' => true,
-                    'data' => \common\models\system\Model::$types,
+                    'data' => \common\models\system\ModelAttribute::$dataTypes,
+                    'options' => ['placeholder' => '模型类型'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ]
+                ]
+            ],
+            'input_type' => [
+                'type' => Form::INPUT_WIDGET,
+                'widgetClass' => '\kartik\widgets\Select2',
+                'options' => [
+                    'hideSearch' => true,
+                    'data' => \common\models\system\ModelAttribute::$inputTypes,
                     'options' => ['placeholder' => '模型类型'],
                     'pluginOptions' => [
                         'allowClear' => true,
@@ -74,6 +112,7 @@ use kartik\builder\Form;
         'columns' => 1,
         'attributes' => [
             'description' => ['type'=>Form::INPUT_TEXTAREA,'options' => ['placeholder' => '请输入应用描述...','rows'=>3]],
+            'extra' => ['type'=>Form::INPUT_TEXTAREA,'options' => ['placeholder' => '选项内容使用英文逗号分隔...','rows'=>3]],
         ]
     ]);
 
@@ -93,6 +132,5 @@ use kartik\builder\Form;
     ActiveForm::end();
     ?>
     <!-- END FORM-->
-
 
 </div>

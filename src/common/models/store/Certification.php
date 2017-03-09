@@ -2,6 +2,7 @@
 
 namespace common\models\store;
 
+use common\models\system\Model;
 use Yii;
 
 /**
@@ -17,7 +18,7 @@ use Yii;
  * @property integer $price
  * @property integer $deposit
  * @property integer $expires_in
- * @property string $content
+ * @property integer $model_id
  * @property integer $sort
  * @property string $reference
  * @property string $created_at
@@ -51,9 +52,8 @@ class Certification extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status', 'type', 'category', 'price', 'deposit', 'expires_in', 'sort', 'created_at', 'updated_at'], 'integer'],
-            [['name'], 'required'],
-            [['content'], 'string'],
+            [['status', 'type', 'category', 'price', 'deposit', 'expires_in', 'sort', 'model_id', 'created_at', 'updated_at'], 'integer'],
+            [['name','model_id'], 'required'],
             [['name', 'icon', 'reference'], 'string', 'max' => 255],
             [['description'], 'string', 'max' => 2048],
             [['status', 'type', 'category', 'price', 'deposit', 'expires_in'], 'default','value'=>0],
@@ -79,12 +79,18 @@ class Certification extends \yii\db\ActiveRecord
             'price' => Yii::t('common', '认证价格'),
             'deposit' => Yii::t('common', '保证金'),
             'expires_in' => Yii::t('common', '有效期'),
-            'content' => Yii::t('common', '认证设置内容'),
+            'model_id' => Yii::t('common', '认证表单'),
             'sort' => Yii::t('common', '排序值'),
             'reference' => Yii::t('common', '引用页地址'),
             'created_at' => Yii::t('common', 'Created At'),
             'updated_at' => Yii::t('common', 'Updated At'),
         ];
+    }
+
+
+    public function getModel()
+    {
+        return $this->hasOne(Model::className(),['id'=>'model_id']);
     }
 
     public function getFormPrice()
