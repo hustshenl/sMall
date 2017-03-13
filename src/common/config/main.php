@@ -4,10 +4,6 @@ return [
     'language' => 'zh-CN',
     //'timeZone'=>'Asia/shanghai',
     'components' => [
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-            'cachePath' => '@common/runtime/cache',
-        ],
         'formatter' => [
             'class' => 'common\helpers\Formatter',
         ],
@@ -36,10 +32,11 @@ return [
         'config' => [
             'class' => 'common\components\system\Config',
         ],
-        'fs' => [
-            'class' => 'creocoder\flysystem\LocalFilesystem',
-            'path' => '@resource/web',
-        ],
+        /*
+            'fs' => [
+                'class' => 'creocoder\flysystem\LocalFilesystem',
+                'path' => '@resource/web',
+            ],*/
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,

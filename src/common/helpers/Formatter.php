@@ -37,6 +37,34 @@ class Formatter extends \yii\i18n\Formatter
         return parent::asDate($value, $format);
     }
 
+    /**
+     * 将GB/MB等数值转化为字节数
+     * @param $value
+     * @return int
+     */
+    public function asSizeValue($value)
+    {
+
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        $res = 0;
+        $bytes = [
+            'p'=>1024*1024*1024*1024*1024, // P
+            't'=>1024*1024*1024*1024, // T
+            'g'=>1024*1024*1024, // G
+            'm'=>1024*1024,// M
+            'k'=>1024,//K
+            'b'=>1,
+        ];
+        preg_match('/(\d{0,10}\.{0,1}\d{0,10})\s{0,3}(b|k|m|g|t|p){0,1}/i',(string)$value,$matches);
+        if(isset($matches[1])){
+            $unit = isset($matches[2])?strtolower($matches[2]):'b';
+            $res = isset($bytes[$unit])?floatval($matches[1])*$bytes[$unit]:0;
+        }
+        return intval($res);
+    }
+
     /*public function asRelativeTime($value, $referenceTime = null)
     {
         $minute = round((time() - $value) / 60);
@@ -72,6 +100,12 @@ class Formatter extends \yii\i18n\Formatter
         }
         return $res;
     }
+
+    /**
+     * 将秒数格式化为绝对的期间值，1年365天，1月30天
+     * @param $value
+     * @return string
+     */
     public function asAbsoluteDuration($value)
     {
 
