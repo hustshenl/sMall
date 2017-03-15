@@ -2,6 +2,7 @@
 
 namespace common\models\store;
 
+use common\components\attachment\UploadImage;
 use common\models\system\Model;
 use Yii;
 
@@ -33,8 +34,8 @@ class Certification extends \yii\db\ActiveRecord
     const CATEGORY_STORE_JOIN = 1;
 
     public static $categories = [
-        self::CATEGORY_STORE_SERVICE=>'店铺服务认证',
-        self::CATEGORY_STORE_JOIN=>'店铺入驻认证',
+        self::CATEGORY_STORE_SERVICE => '店铺服务认证',
+        self::CATEGORY_STORE_JOIN => '店铺入驻认证',
     ];
 
 
@@ -53,12 +54,12 @@ class Certification extends \yii\db\ActiveRecord
     {
         return [
             [['status', 'type', 'category', 'price', 'deposit', 'expires_in', 'sort', 'model_id', 'created_at', 'updated_at'], 'integer'],
-            [['name','model_id'], 'required'],
-            [['name', 'icon', 'reference'], 'string', 'max' => 255],
+            [['name', 'model_id'], 'required'],
+            [['name', 'reference','icon'], 'string', 'max' => 255],
             [['description'], 'string', 'max' => 2048],
-            [['status', 'type', 'category', 'price', 'deposit', 'expires_in'], 'default','value'=>0],
-            [['sort'], 'default','value'=>999],
-            [['formPrice','formDeposit','formExpiresIn',], 'safe'],
+            [['status', 'type', 'category', 'price', 'deposit', 'expires_in'], 'default', 'value' => 0],
+            [['sort'], 'default', 'value' => 999],
+            [['formPrice', 'formDeposit', 'formExpiresIn',], 'safe'],
 
         ];
     }
@@ -87,38 +88,61 @@ class Certification extends \yii\db\ActiveRecord
         ];
     }
 
+    public function load($data, $formName = null)
+    {
+        if (!parent::load($data, $formName)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 上传图片，需要手动调用
+     * @return bool
+     */
+    public function upload(){
+        //  TODO 文件上传处理方案,
+        $imageUpload = new UploadImage(['model' => $this, 'field' => 'icon']);
+        if (!$imageUpload->save()) return false;
+        $this->icon = $imageUpload->uri;
+        return true;
+    }
+
 
     public function getModel()
     {
-        return $this->hasOne(Model::className(),['id'=>'model_id']);
+        return $this->hasOne(Model::className(), ['id' => 'model_id']);
     }
 
     public function getFormPrice()
     {
-        return $this->price===null?0:Yii::$app->formatter->asPrice($this->price,2,'');
+        return $this->price === null ? 0 : Yii::$app->formatter->asPrice($this->price, 2, '');
     }
+
     public function setFormPrice($value)
     {
         $this->price = Yii::$app->formatter->asPriceValue($value);
     }
+
     public function getFormDeposit()
     {
-        return $this->deposit===null?0:Yii::$app->formatter->asPrice($this->deposit,2,'');
+        return $this->deposit === null ? 0 : Yii::$app->formatter->asPrice($this->deposit, 2, '');
     }
 
     public function setFormDeposit($value)
     {
         $this->deposit = Yii::$app->formatter->asPriceValue($value);
     }
+
     public function getFormExpiresIn()
     {
-        if($this->expires_in <= 0) return '永久';
+        if ($this->expires_in <= 0) return '永久';
         return Yii::$app->formatter->asAbsoluteDuration($this->expires_in);
     }
 
     public function setFormExpiresIn($value)
     {
-        $this->expires_in = in_array($value, ['永久','长期','一直有效'])
-            ?0:Yii::$app->formatter->asDurationValue($value);
+        $this->expires_in = in_array($value, ['永久', '长期', '一直有效'])
+            ? 0 : Yii::$app->formatter->asDurationValue($value);
     }
 }

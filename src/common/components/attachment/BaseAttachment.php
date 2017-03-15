@@ -19,13 +19,15 @@ use common\components\base\HttpRequest;
 
 /**
  * Class Attachment
- * 处理附件上传任务
+ * 处理附件任务
  * @package common\components
  * @property HttpRequest $httpRequest
  * @property ActiveRecord $model
  * @property AttachmentModel $attachment
  * @property string $tempExt
  * @property string $tempName
+ * @property array $config
+ * @property string $uri
  * @property string $path
  * @property string $fileName
  * @property string $fileExt
@@ -43,7 +45,6 @@ abstract class BaseAttachment extends Component {
     const CATEGORY_STORE = 'store';
     const CATEGORY_TEMP = 'temp';
 
-    public $maxSize=false;
     public $category = self::CATEGORY_COMMON;
 
     private $_tempName;
@@ -56,6 +57,9 @@ abstract class BaseAttachment extends Component {
      * @var $_attachment AttachmentModel
      */
     private $_attachment;
+    private $_config;
+
+    private $_uri;
     private $_path;
     private $_fileName=false;
     private $_fileExt;
@@ -67,23 +71,20 @@ abstract class BaseAttachment extends Component {
         parent::init();
     }
 
-    /**
-     * 判断文件大小是否超限
-     * @return bool
-     */
-    public function isOutOfSize()
-    {
-        $maxSize = $this->maxSize===false?ArrayHelper::getValue(Yii::$app->params['upload'],'maxSize',2048*1024):$this->maxSize;
-        $maxSize = Yii::$app->formatter->asSizeValue($maxSize);
-        if ($maxSize>0&&$this->fileSize > $maxSize) {
-            $this->model->addError($this->field, sprintf('文件太大,请上传小于 %s 的文件', Yii::$app->formatter->asShortSize($maxSize)));
-            $this->addError('文件大小超过限制');
-            return true;
-        }
-        return false;
-    }
 
     abstract public function save();
+
+    public function getConfig($item,$default=null)
+    {
+        if($this->_config === null) $this->_config =  ArrayHelper::getValue(Yii::$app->params,['attachment',$this->category],[]);
+        if($item === null) return $this->_config;
+        $attachmentConfig = ArrayHelper::getValue(Yii::$app->params,'attachment',[]);
+        return ArrayHelper::getValue($this->_config,$item,ArrayHelper::getValue($attachmentConfig,$item,$default));
+    }
+    public function setConfig($config)
+    {
+        $this->_config  = $config;
+    }
 
     public function getTempName()
     {
@@ -108,6 +109,11 @@ abstract class BaseAttachment extends Component {
         if(!$this->_fileName) $this->_fileName = $this->_generateFileName($this->path,$this->fileExt);
         return $this->_fileName;
     }
+    public function getUri()
+    {
+        if(!$this->_uri) $this->_uri = $this->path.$this->fileName.'.'.$this->fileExt;
+        return $this->_uri;
+    }
     public function clearFileName()
     {
         $this->_fileName = false;
@@ -124,12 +130,12 @@ abstract class BaseAttachment extends Component {
     }
     public function getFileExt()
     {
-        return $this->_fileExt ? $this->_fileExt : $this->_fileExt = $this->instance->getExtension();
+        return $this->_fileExt ? $this->_fileExt : $this->_fileExt = ($this->tempExt?$this->tempExt:'jpg');
     }
     public function getPath()
     {
         if(!$this->_path){
-            $this->_path = static::getBasePath($this->category);
+            $this->_path = $this->_getBasePath();
             $this->_path .= date('Ym', time()).'/';
         }
         return $this->_path;
@@ -138,7 +144,6 @@ abstract class BaseAttachment extends Component {
     {
         $this->_path = $path;
     }
-
 
     public function setAttachment($attachment)
     {
@@ -190,16 +195,17 @@ abstract class BaseAttachment extends Component {
     protected function _generateFileName($path,$ext='jpg')
     {
         do {
-            $_randName = time() .Yii::$app->security->generateRandomString(16);
+            $_randName = time() .'_'.Yii::$app->security->generateRandomString(16);
             $fileName = $_randName . "." . $ext;
         } while (Yii::$app->storage->has(rtrim($path,'/'). '/' . $fileName));
-        return $fileName;
+        return $_randName;
     }
 
-    public static function getBasePath($category)
+    private function _getBasePath()
     {
-        if(!isset(Yii::$app->params['upload'][$category]['path'])) throw new yii\base\InvalidConfigException('配置有误');
-        return Yii::$app->params['upload'][$category]['path'];
+        $path = $this->getConfig('path');//ArrayHelper::getValue(Yii::$app->params,['attachment',$this->category,'path']);
+        if($path===null) throw new yii\base\InvalidConfigException('配置有误');
+        return $path;
     }
 
     /**

@@ -15,6 +15,7 @@ use Yii;
  * @property string $name
  * @property string $description
  * @property integer $permission
+ * @property string $uri
  * @property string $path
  * @property string $filename
  * @property string $file_ext
@@ -46,7 +47,7 @@ class Attachment extends \yii\db\ActiveRecord
     {
         return [
             [['status', 'user_id', 'category', 'type', 'permission', 'file_size', 'thumb', 'reference', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'description', 'path', 'filename', 'file_ext', 'mime'], 'string', 'max' => 255],
+            [['name', 'description', 'uri', 'path', 'filename', 'file_ext', 'mime'], 'string', 'max' => 255],
             [['extra'], 'string', 'max' => 2048],
         ];
     }
@@ -65,8 +66,9 @@ class Attachment extends \yii\db\ActiveRecord
             'name' => Yii::t('common', '附件名称'),
             'description' => Yii::t('common', '附件描述'),
             'permission' => Yii::t('common', '权限'),
-            'path' => Yii::t('common', '文件路径，包含文件名'),
-            'filename' => Yii::t('common', 'Filename'),
+            'uri' => Yii::t('common', '资源地址包含路径文件名后缀'),
+            'path' => Yii::t('common', '文件路径'),
+            'filename' => Yii::t('common', '文件名称'),
             'file_ext' => Yii::t('common', '文件后缀'),
             'file_size' => Yii::t('common', '文件大小'),
             'thumb' => Yii::t('common', '按位存储缩略图'),

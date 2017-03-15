@@ -120,6 +120,11 @@ yii.actionColumn = (function ($) {
             console.log('do something.');
         },
         onSuccess: function (res, $e, modal) {
+            if(typeof res === 'string') {
+                $('.modal-content').html('');
+                modal.find('.modal-content').html(res);
+                return pub.handleUpdateModal($e, modal);
+            }
             modal.modal('hide');
             modal.on('hidden.bs.modal', function (e) {
                 $.pjax.reload("#pjax-content");

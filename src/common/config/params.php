@@ -5,15 +5,10 @@ return [
     'adminEmail' => 'admin@example.com',
     'supportEmail' => 'support@example.com',
     'user.passwordResetTokenExpire' => 3600,
-    'upload' => [
-        'maxSize' => 1024,//单位K
-        'cover' => [
-            'path' => 'images/cover/',//封面保存路径
-            'crop' => true,
-            'width' => 240,
-            'height' => 320,
-            'quality' => 60,
-        ],
+    'attachment' => [
+        'maxSize' => 2048*1024,//单位K
+        'path' => 'images/common/',//临时目录
+
         'avatar' => [
             'path' => 'images/author/',//封面保存路径
             'crop' => true,

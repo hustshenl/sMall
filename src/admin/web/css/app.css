@@ -193,6 +193,10 @@ a.desc:after {
     border-radius: 0!important;
 }
 
+.krajee-default .file-preview-image{
+    max-height: 160px;
+}
+
 
 /* 防止样式未加载时显示开关BUG*/
 .bootstrap-switch .bootstrap-switch-handle-on, .bootstrap-switch .bootstrap-switch-handle-off, .bootstrap-switch .bootstrap-switch-label{

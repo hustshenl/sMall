@@ -93,9 +93,10 @@ class CertificationController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) &&$model->upload()&& $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+            //if ($model->hasErrors()) {var_dump($model->errors);exit();}
             return $this->{$this->renderer}('update', [
                 'model' => $model,
             ]);
